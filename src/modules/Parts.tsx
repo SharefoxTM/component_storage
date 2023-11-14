@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import { TreeView } from "../components/Treeview";
-import { FetchParts, PartsItems } from "../components/InvenTree/apiCalls";
+import { FetchParts } from "../components/InvenTree/apiCalls";
+import { PartsItems } from "../models/PartsItems.model";
 type PartItemsProps = {
 	items: PartsItems;
 	categoryName?: string;

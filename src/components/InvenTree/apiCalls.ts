@@ -1,21 +1,7 @@
 import { useEffect, useState } from "react";
-
-export type CategoryItems = {
-	pk: number;
-	name: string;
-	description: string;
-	default_location: number;
-	default_keywords: string;
-	level: number;
-	parent: number;
-	part_count: number;
-	pathstring: string;
-	starred: string;
-	url: string;
-	structural: boolean;
-	icon: string;
-	children?: CategoryItems;
-}[];
+import { PartQuery } from "../../models/PartQuery.model";
+import { PartsItems } from "../../models/PartsItems.model";
+import { CategoryItems } from "../../models/CategoryItems.models";
 
 export const FetchCategories = (token: string | undefined): CategoryItems => {
 	const [categories, setCategories] = useState<CategoryItems>();
@@ -38,87 +24,7 @@ export const FetchCategories = (token: string | undefined): CategoryItems => {
 	return categories!;
 };
 
-export type PartsItems = {
-	active: boolean;
-	assembly: boolean;
-	barcode_hash: string;
-	category: number;
-	component: boolean;
-	default_expiry: number;
-	default_location: number;
-	default_supplier: number;
-	description: string;
-	full_name: string;
-	image: string;
-	IPN: string;
-	is_template: boolean;
-	keywords: string;
-	last_stocktake: string;
-	link: string;
-	minimum_stock: number;
-	name: string;
-	notes: string;
-	pk: number;
-	purchaseable: boolean;
-	revision: string;
-	salable: boolean;
-	starred: string;
-	thumbnail: string;
-	trackable: boolean;
-	units: string;
-	variant_of: number;
-	virtual: boolean;
-	responsible: number;
-	allocated_to_build_orders: number;
-	allocated_to_sales_orders: number;
-	building: number;
-	in_stock: number;
-	ordering: number;
-	required_for_build_orders: number;
-	stock_item_count: number;
-	suppliers: number;
-	total_in_stock: number;
-	unallocated_stock: number;
-	variant_stock: number;
-	tags: string[];
-}[];
-
-export type PartProps = {
-	IPN?: string; //Filter by exact IPN (internal part number)
-	IPN_regex?: string; //Filter by regex on IPN (internal part number)
-	active?: boolean;
-	ancestor?: string;
-	assembly?: boolean;
-	component?: boolean;
-	category?: number;
-	convert_from?: string;
-	created_after?: string; //Needs to be date format
-	created_before?: string; //Needs to be date format
-	depleted_stock?: boolean;
-	exclude_tree?: string;
-	has_ipn?: boolean;
-	has_pricing?: boolean;
-	has_stock?: boolean;
-	has_units?: boolean;
-	in_bom_for?: string;
-	is_template?: boolean;
-	low_stock?: boolean;
-	name_regex?: string;
-	ordering?: string; //Which field to use when ordering the results.
-	purchaseable?: boolean;
-	salable?: boolean;
-	search?: string; //A search term.
-	stock_to_build?: boolean;
-	stocktake?: boolean;
-	tags_name?: string;
-	tags_slug?: string;
-	trackable?: boolean;
-	unallocated_stock?: boolean;
-	variant_of?: number;
-	virtual?: boolean;
-};
-
-function createURL(url: string, query: PartProps): string {
+function createURL(url: string, query: PartQuery): string {
 	console.log(query);
 	let queriedUrl = url;
 	queriedUrl += query !== undefined ? "?" : "";
@@ -216,7 +122,7 @@ function createURL(url: string, query: PartProps): string {
 
 export const FetchParts = (
 	token: string | undefined,
-	query: PartProps,
+	query: PartQuery,
 ): PartsItems => {
 	const [parts, setParts] = useState<PartsItems>();
 	const [prevUrl, setPrevUrl] = useState("");

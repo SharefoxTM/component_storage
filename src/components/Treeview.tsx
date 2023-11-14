@@ -1,5 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import { FetchCategories, CategoryItems } from "./InvenTree/apiCalls";
+import { CategoryItems } from "../models/CategoryItems.models";
+import { FetchCategories } from "./InvenTree/apiCalls";
 import { Link } from "react-router-dom";
 
 const renderTreeNodes = (nodes: CategoryItems) => {
