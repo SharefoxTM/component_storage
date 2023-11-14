@@ -17,8 +17,10 @@ export type PartQuery = {
 	has_units?: boolean;
 	in_bom_for?: string;
 	is_template?: boolean;
+	// limit?: number;
 	low_stock?: boolean;
 	name_regex?: string;
+	// offset?: number;
 	ordering?: string; //Which field to use when ordering the results.
 	purchaseable?: boolean;
 	salable?: boolean;

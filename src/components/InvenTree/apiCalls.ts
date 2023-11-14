@@ -25,7 +25,6 @@ export const FetchCategories = (token: string | undefined): CategoryItems => {
 };
 
 function createURL(url: string, query: PartQuery): string {
-	console.log(query);
 	let queriedUrl = url;
 	queriedUrl += query !== undefined ? "?" : "";
 	queriedUrl += query?.IPN !== undefined ? "IPN=" + query.IPN + "&" : "";
@@ -79,12 +78,15 @@ function createURL(url: string, query: PartQuery): string {
 		query?.is_template !== undefined
 			? "is_template=" + query.is_template + "&"
 			: "";
+	// queriedUrl += query?.limit !== undefined ? "limit=" + query.limit + "&" : "";
 	queriedUrl +=
 		query?.low_stock !== undefined ? "low_stock=" + query.low_stock + "&" : "";
 	queriedUrl +=
 		query?.name_regex !== undefined
 			? "name_regex=" + query.name_regex + "&"
 			: "";
+	// queriedUrl +=
+	// 	query?.offset !== undefined ? "offset=" + query.offset + "&" : "";
 	queriedUrl +=
 		query?.ordering !== undefined ? "ordering=" + query.ordering + "&" : "";
 	queriedUrl +=
@@ -116,7 +118,6 @@ function createURL(url: string, query: PartQuery): string {
 			? "variant_of=" + query.variant_of + "&"
 			: "";
 	queriedUrl += query?.virtual !== undefined ? "virtual=" + query.virtual : "";
-	console.log(queriedUrl);
 	return queriedUrl;
 }
 
@@ -144,6 +145,6 @@ export const FetchParts = (
 			setPrevUrl(url);
 			getData();
 		}
-	});
+	}, [query, prevUrl, token]);
 	return parts!;
 };
