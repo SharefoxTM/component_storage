@@ -10,6 +10,10 @@ const router = createBrowserRouter([
 		path: "/Parts",
 		element: <Parts />,
 	},
+	{
+		path: "/Parts/:categoryID/:categoryName",
+		element: <Parts />,
+	},
 ]);
 
 export const Routes = () => {

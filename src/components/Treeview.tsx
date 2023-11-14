@@ -1,31 +1,32 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import { FetchCategories, CategoryParts } from "./InvenTree/categories";
+import { FetchCategories, CategoryItems } from "./InvenTree/apiCalls";
+import { Link } from "react-router-dom";
 
-const renderTreeNodes = (nodes: CategoryParts) => {
+const renderTreeNodes = (nodes: CategoryItems) => {
 	return nodes.map((node) => (
 		<li key={node.pk}>
 			{node.children && node.children.length > 0 ? (
 				<details>
 					<summary>
-						<a>
+						<Link to={`/parts/${node.pk}/${node.name}`}>
 							{node.name} ({node.part_count})
-						</a>
+						</Link>
 					</summary>
 					<ul>{renderTreeNodes(node.children)}</ul>
 				</details>
 			) : (
-				<a>
+				<Link to={`/parts/${node.pk}/${node.name}`}>
 					{node.name} ({node.part_count})
-				</a>
+				</Link>
 			)}
 		</li>
 	));
 };
 
 const buildTree = (
-	nodes: CategoryParts,
+	nodes: CategoryItems,
 	parent: number | null,
-): CategoryParts => {
+): CategoryItems => {
 	return nodes
 		.filter((node) => node.parent === parent)
 		.map((node) => {
@@ -33,10 +34,6 @@ const buildTree = (
 			return { ...node, children };
 		});
 };
-
-// type TreeViewProps = {
-// 	data: CategoryParts;
-// };
 
 export const TreeView = () => {
 	const categories = FetchCategories(process.env.REACT_APP_DB_TOKEN);
@@ -48,8 +45,10 @@ export const TreeView = () => {
 		);
 	const organizedData = buildTree(categories, null);
 	return (
-		<ul className="menu bg-base-200 w-56 rounded-box">
-			{renderTreeNodes(organizedData)}
-		</ul>
+		<div className="mt-2 mx-2">
+			<ul className="menu bg-base-200 w-56 rounded-box">
+				{renderTreeNodes(organizedData)}
+			</ul>
+		</div>
 	);
 };
