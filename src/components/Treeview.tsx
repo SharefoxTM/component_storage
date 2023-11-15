@@ -45,10 +45,17 @@ export const TreeView = () => {
 			</ul>
 		);
 	const organizedData = buildTree(categories, null);
+	let totalPartCount = 0;
+	organizedData.forEach((e) => {
+		totalPartCount += e.part_count;
+	});
 	return (
 		<div className="mt-2 mx-2">
 			<ul className="menu bg-base-200 w-56 rounded-box">
-				{renderTreeNodes(organizedData)}
+				<li>
+					<Link to={`/parts/`}>All ({totalPartCount})</Link>
+					<ul>{renderTreeNodes(organizedData)}</ul>
+				</li>
 			</ul>
 		</div>
 	);

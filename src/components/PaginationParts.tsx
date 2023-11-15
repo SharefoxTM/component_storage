@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PartsItems } from "../models/PartsItems.model";
 import ReactPaginate from "react-paginate";
 import { PaginationCountSelector } from "../modules/Parts";
@@ -42,35 +42,59 @@ const PartListItems = ({ items }: PartItemsProps) => {
 	);
 };
 type PaginatedItemsProps = {
-	items: PartsItems;
-	categoryName: string | undefined;
+	items: PartsItems | undefined;
+	categoryName: string;
 };
 
 export const PaginatedItems = ({
 	items,
 	categoryName,
 }: PaginatedItemsProps) => {
+	const [loading, setLoading] = useState(true);
 	const [itemOffset, setItemOffset] = useState(0);
+	const [currentPage, setCurrentPage] = useState(0);
 	const [itemsPerPage, setItemsPerPage] = useState(
 		parseInt(localStorage.getItem("paginationQty") || "25"),
 	);
 	let endOffset: number = 0;
 	let currentItems: PartsItems | undefined = undefined;
 	let pageCount: number = 0;
+
+	useEffect(() => {
+		function categoryUpdate() {
+			setLoading(true);
+		}
+		categoryUpdate();
+	}, [categoryName]);
+
+	useEffect(() => {
+		function itemUpdate() {
+			setItemOffset(0);
+			setCurrentPage(0);
+			setLoading(false);
+		}
+		if (items) itemUpdate();
+	}, [items]);
+
 	if (items) {
 		endOffset = itemOffset + itemsPerPage;
 		currentItems = items.slice(itemOffset, endOffset);
 		pageCount = Math.ceil(items.length / itemsPerPage);
 	}
-
 	const handlePageClick = (selectedItem: { selected: number }) => {
-		const newOffset = (selectedItem.selected * itemsPerPage) % items.length;
+		const newOffset = (selectedItem.selected * itemsPerPage) % items!.length;
 		setItemOffset(newOffset);
+		setCurrentPage(selectedItem.selected);
 	};
+
+	useEffect(() => {
+		window.scrollTo({ top: 0 });
+	}, [currentItems]);
+	useEffect(() => {});
 
 	return (
 		<>
-			<div className="bg-white border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700">
+			<div className="mt-2 bg-white border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700">
 				<div className="flex items-center justify-between mb-4">
 					<h5 className="text-xl font-bold leading-none text-gray-900 dark:text-white">
 						{categoryName}
@@ -82,8 +106,9 @@ export const PaginatedItems = ({
 				</div>
 				<div className="flow-root">
 					<ul className="divide-y divide-gray-200 dark:divide-gray-700">
-						{items && <PartListItems items={currentItems!} />}
-						{!items && (
+						{!loading ? (
+							<PartListItems items={currentItems!} />
+						) : (
 							<li>
 								<div className="flex items-center">
 									<div className="flex-1 min-w-0 ms-4">Loading parts...</div>
@@ -93,23 +118,26 @@ export const PaginatedItems = ({
 					</ul>
 				</div>
 			</div>
-			<div className="flex justify-center">
-				<ReactPaginate
-					breakLabel="..."
-					nextLabel="next >"
-					onPageChange={handlePageClick}
-					pageRangeDisplayed={5}
-					pageCount={pageCount}
-					previousLabel="< prev"
-					renderOnZeroPageCount={null}
-					containerClassName="join"
-					pageClassName="join-item btn"
-					activeClassName="join-item btn btn-active"
-					breakClassName="join-item btn btn-disabled"
-					marginPagesDisplayed={2}
-					nextClassName="join-item btn"
-					previousClassName="join-item btn"
-				/>
+			<div className="flex justify-center my-4">
+				{!loading && (
+					<ReactPaginate
+						breakLabel="..."
+						nextLabel="next >"
+						onPageChange={handlePageClick}
+						pageRangeDisplayed={5}
+						pageCount={pageCount}
+						previousLabel="< prev"
+						renderOnZeroPageCount={null}
+						containerClassName="join"
+						pageLinkClassName="join-item btn"
+						activeLinkClassName="join-item btn btn-active"
+						breakLinkClassName="join-item btn btn-disabled"
+						marginPagesDisplayed={2}
+						nextLinkClassName="join-item btn"
+						previousLinkClassName="join-item btn"
+						forcePage={currentPage > pageCount ? -1 : currentPage}
+					/>
+				)}
 			</div>
 		</>
 	);

@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 import { TreeView } from "../components/Treeview";
 import { FetchParts } from "../components/InvenTree/apiCalls";
 import { PartsItems } from "../models/PartsItems.model";
@@ -42,7 +42,7 @@ const PartList = ({ items, categoryName }: PartItemsProps) => {
 	return (
 		<PaginatedItems
 			items={items}
-			categoryName={categoryName}
+			categoryName={categoryName || "All"}
 		/>
 	);
 };

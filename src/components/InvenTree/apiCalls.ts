@@ -14,7 +14,6 @@ export const FetchCategories = (token: string | undefined): CategoryItems => {
 			})
 				.then((response) => response.json())
 				.then((data: CategoryItems) => {
-					console.log(data);
 					setCategories(data);
 				})
 				.catch((error) => console.log(error));
