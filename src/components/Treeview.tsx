@@ -1,9 +1,9 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import { CategoryItems } from "../models/CategoryItems.models";
-import { FetchCategories } from "./InvenTree/apiCalls";
+import { CategoryTree } from "../models/CategoryTree.model";
+import { FetchCategoryTree } from "./InvenTree/apiCalls";
 import { Link } from "react-router-dom";
 
-const renderTreeNodes = (nodes: CategoryItems) => {
+const renderTreeNodes = (nodes: CategoryTree) => {
 	return nodes.map((node) => (
 		<li key={node.pk}>
 			{node.children && node.children.length > 0 ? (
@@ -24,29 +24,18 @@ const renderTreeNodes = (nodes: CategoryItems) => {
 	));
 };
 
-const buildTree = (
-	nodes: CategoryItems,
-	parent: number | null,
-): CategoryItems => {
-	return nodes
-		.filter((node) => node.parent === parent)
-		.map((node) => {
-			const children = buildTree(nodes, node.pk);
-			return { ...node, children };
-		});
-};
-
 export const TreeView = () => {
-	const categories = FetchCategories(process.env.REACT_APP_DB_TOKEN);
+	const categories = FetchCategoryTree();
 	if (!categories)
 		return (
 			<ul className="menu bg-base-200 w-56 rounded-box">
-				<li>Still loading...</li>
+				<li>
+					<span className="loading loading-spinner loading-lg"></span>
+				</li>
 			</ul>
 		);
-	const organizedData = buildTree(categories, null);
 	let totalPartCount = 0;
-	organizedData.forEach((e) => {
+	categories.forEach((e) => {
 		totalPartCount += e.part_count;
 	});
 	return (
@@ -54,7 +43,7 @@ export const TreeView = () => {
 			<ul className="menu bg-base-200 w-56 rounded-box">
 				<li>
 					<Link to={`/parts/`}>All ({totalPartCount})</Link>
-					<ul>{renderTreeNodes(organizedData)}</ul>
+					<ul>{renderTreeNodes(categories)}</ul>
 				</li>
 			</ul>
 		</div>

@@ -1,8 +1,6 @@
 import { useParams } from "react-router-dom";
 import { Dispatch, SetStateAction } from "react";
 import { TreeView } from "../components/Treeview";
-import { FetchParts } from "../components/InvenTree/apiCalls";
-import { PartsItems } from "../models/PartsItems.model";
 import { PaginatedItems } from "../components/PaginationParts";
 
 type PaginationCountSelectorProps = {
@@ -33,41 +31,20 @@ export const PaginationCountSelector = ({
 	);
 };
 
-type PartItemsProps = {
-	items: PartsItems;
-	categoryName?: string;
-};
-
-const PartList = ({ items, categoryName }: PartItemsProps) => {
-	return (
-		<PaginatedItems
-			items={items}
-			categoryName={categoryName || "All"}
-		/>
-	);
-};
-
 export const Parts = () => {
 	const params = useParams();
-	const category: number | undefined = params?.categoryID
-		? parseInt(params.categoryID)
-		: undefined;
-
-	const parts: PartsItems = FetchParts(process.env.REACT_APP_DB_TOKEN, {
-		category,
-	});
 
 	return (
 		<>
-			<div className="flex flex-row">
-				<div>
+			<div className="flex flex-col md:flex-shrink-0 md:flex-row">
+				<div className="md:basis-1/5">
 					<TreeView />
 				</div>
-				<div className="flex flex-grow justify-center">
-					<div className="basis-5/6">
-						<PartList
-							items={parts}
+				<div className="md:basis-3/5">
+					<div className="">
+						<PaginatedItems
 							categoryName={params.categoryName || "All"}
+							categoryID={params.categoryID || ""}
 						/>
 					</div>
 				</div>

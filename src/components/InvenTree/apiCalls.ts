@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { PartQuery } from "../../models/PartQuery.model";
 import { PartsItems } from "../../models/PartsItems.model";
 import { CategoryItems } from "../../models/CategoryItems.models";
+import { CategoryTree } from "../../models/CategoryTree.model";
 
 export const FetchCategories = (token: string | undefined): CategoryItems => {
 	const [categories, setCategories] = useState<CategoryItems>();
@@ -21,6 +22,22 @@ export const FetchCategories = (token: string | undefined): CategoryItems => {
 		if (!categories) getData();
 	}, [token, categories]);
 	return categories!;
+};
+
+export const FetchCategoryTree = (): CategoryTree => {
+	const [categoryTree, setCategoryTree] = useState<CategoryTree>();
+	useEffect(() => {
+		function getData() {
+			fetch(process.env.REACT_APP_BE_HOST + "categories/tree/")
+				.then((response) => response.json())
+				.then((data: CategoryTree) => {
+					setCategoryTree(data);
+				})
+				.catch((error) => console.log(error));
+		}
+		if (!categoryTree) getData();
+	}, [categoryTree]);
+	return categoryTree!;
 };
 
 function createURL(url: string, query: PartQuery): string {
@@ -77,15 +94,15 @@ function createURL(url: string, query: PartQuery): string {
 		query?.is_template !== undefined
 			? "is_template=" + query.is_template + "&"
 			: "";
-	// queriedUrl += query?.limit !== undefined ? "limit=" + query.limit + "&" : "";
+	queriedUrl += query?.page !== undefined ? "page=" + query.page + "&" : "";
 	queriedUrl +=
 		query?.low_stock !== undefined ? "low_stock=" + query.low_stock + "&" : "";
 	queriedUrl +=
 		query?.name_regex !== undefined
 			? "name_regex=" + query.name_regex + "&"
 			: "";
-	// queriedUrl +=
-	// 	query?.offset !== undefined ? "offset=" + query.offset + "&" : "";
+	queriedUrl +=
+		query?.pageSize !== undefined ? "pageSize=" + query.pageSize + "&" : "";
 	queriedUrl +=
 		query?.ordering !== undefined ? "ordering=" + query.ordering + "&" : "";
 	queriedUrl +=
@@ -120,30 +137,48 @@ function createURL(url: string, query: PartQuery): string {
 	return queriedUrl;
 }
 
-export const FetchParts = (
-	token: string | undefined,
-	query: PartQuery,
-): PartsItems => {
-	const [parts, setParts] = useState<PartsItems>();
-	const [prevUrl, setPrevUrl] = useState("");
+export type APIParts = {
+	data: PartsItems;
+	totalPages: number;
+};
+
+export const FetchParts = async (query: PartQuery): Promise<APIParts> => {
+	const url = createURL(process.env.REACT_APP_BE_HOST + "parts/", query);
+	console.log(url);
+	const parts: APIParts = await fetch(url).then((response) => response.json());
+	return parts;
+};
+
+const getBase64Image = async (res: Response): Promise<string> => {
+	const blob = await res.blob();
+
+	const reader = new FileReader();
+
+	await new Promise((resolve, reject) => {
+		reader.onload = resolve;
+		reader.onerror = reject;
+		reader.readAsDataURL(blob);
+	});
+	return reader.result?.toString() ?? "";
+};
+
+export const FetchImage = (id: number): string => {
+	const [image, setImage] = useState("");
+	const [prevId, setPrevId] = useState<number>();
 	useEffect(() => {
-		const url = createURL(process.env.REACT_APP_DB_HOST + "/api/part/", query);
+		const url = process.env.REACT_APP_BE_HOST + `parts/img/${id}`;
 		function getData() {
-			fetch(url, {
-				headers: new Headers({
-					Authorization: token ?? "",
-				}),
-			})
-				.then((response) => response.json())
-				.then((data: PartsItems) => {
-					setParts(data);
+			fetch(url)
+				.then(getBase64Image)
+				.then((data) => {
+					setImage(data);
 				})
 				.catch((error) => console.log(error));
 		}
-		if (prevUrl !== url) {
-			setPrevUrl(url);
+		if (prevId !== id) {
+			setPrevId(id);
 			getData();
 		}
-	}, [query, prevUrl, token]);
-	return parts!;
+	}, [id, prevId]);
+	return image;
 };
