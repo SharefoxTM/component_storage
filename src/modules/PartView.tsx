@@ -1,3 +1,9 @@
+import { PartViewSideBar } from "../components/PartViewSideBar";
+
 export const PartView = () => {
-	return <div></div>;
+	return (
+		<>
+			<PartViewSideBar />
+		</>
+	);
 };
