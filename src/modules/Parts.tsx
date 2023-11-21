@@ -41,7 +41,7 @@ export const Parts = () => {
 					<TreeView />
 				</div>
 				<div className="md:basis-3/5">
-					<div className="">
+					<div>
 						<PaginatedItems
 							categoryName={params.categoryName || "All"}
 							categoryID={params.categoryID || ""}

@@ -27,11 +27,11 @@ const PartListItems = ({ items }: PartItemsProps) => {
 					key={item.pk}
 				>
 					<Link to={`/part/${item.pk}`}>
-						<div className="flex flex-grow-0 flex-shrink-0 justify-between flex-wrap">
+						<div className="flex flex-grow-0 flex-shrink-0 justify-between">
 							<div className="basis-1/8">
 								<Thumbnail id={item.pk} />
 							</div>
-							<div className="flex-col basis-8/12">
+							<div className="flex-col basis-7/12">
 								<p className="text-md font-medium text-gray-900 truncate dark:text-white">
 									{item.full_name}
 								</p>
@@ -59,7 +59,7 @@ export const PaginatedItems = ({
 	categoryName,
 	categoryID,
 }: PaginatedItemsProps) => {
-	const [currentPage, setCurrentPage] = useState(1);
+	const [currentPage, setCurrentPage] = useState(0);
 	const [totalPages, setTotalPages] = useState(0);
 	const [parts, setParts] = useState<PartsItems>();
 	const [loading, setLoading] = useState(true);
@@ -69,7 +69,7 @@ export const PaginatedItems = ({
 
 	useEffect(() => {
 		setLoading(true);
-		setCurrentPage(1);
+		setCurrentPage(0);
 	}, [itemsPerPage]);
 
 	useEffect(() => {
@@ -101,7 +101,7 @@ export const PaginatedItems = ({
 		<>
 			<div className="mt-2 bg-white border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700">
 				<div className="flex items-center justify-between mb-4">
-					<h5 className="text-xl font-bold leading-none text-gray-900 dark:text-white">
+					<h5 className="text-xl font-bold pl-2 leading-none text-gray-900 dark:text-white">
 						{categoryName}
 					</h5>
 					<PaginationCountSelector
@@ -110,7 +110,7 @@ export const PaginatedItems = ({
 					/>
 				</div>
 				<div className="flow-root">
-					<ul className="divide-y divide-gray-200 dark:divide-gray-700">
+					<ul className="divide-y sm:mx-2 sm:px-1 divide-gray-200 dark:divide-gray-700">
 						{!loading ? (
 							<PartListItems items={parts!} />
 						) : (
@@ -133,17 +133,17 @@ export const PaginatedItems = ({
 						breakLabel="..."
 						nextLabel="next >"
 						onPageChange={handlePageClick}
-						pageRangeDisplayed={5}
+						pageRangeDisplayed={window.innerWidth >= 760 ? 5 : 2}
 						pageCount={totalPages}
 						previousLabel="< prev"
 						renderOnZeroPageCount={null}
 						containerClassName="join"
-						pageLinkClassName="join-item btn"
-						activeLinkClassName="join-item btn btn-active"
+						pageLinkClassName="join-item btn bg-gray-800"
+						activeLinkClassName="join-item btn bg-inherit"
 						breakLinkClassName="join-item btn btn-disabled"
 						marginPagesDisplayed={2}
-						nextLinkClassName="join-item btn"
-						previousLinkClassName="join-item btn"
+						nextLinkClassName="join-item btn bg-gray-800"
+						previousLinkClassName="join-item btn bg-gray-800"
 						forcePage={currentPage > totalPages ? -1 : currentPage}
 					/>
 				)}
