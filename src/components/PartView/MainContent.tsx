@@ -1,12 +1,13 @@
 import { useParams } from "react-router-dom";
-import { Thumbnail } from "../../components/Thumbnail";
-import { DropDownSettings } from "../../components/PartView/DropdownSettings";
+import { Thumbnail } from "../Thumbnail";
+import { DropDownSettings } from "./DropdownSettings";
+import { StatView } from "../StatView";
 
 export const MainContent = () => {
 	const param = useParams();
 	return (
 		<>
-			<div className="card shadow-xl bg-gray-800 rounded-box flex-grow-0 flex-shrink-0 justify-between my-2">
+			<div className="card shadow-xl bg-gray-800 rounded-box flex md:flex-none justify-between my-2">
 				<div className="w-full">
 					<div className="flex flex-wrap items-center justify-between border-b border-gray-500 rounded-t-lg pl-4">
 						<div className="text-white text-5xl font-bold mb-2 align-middle">
@@ -15,8 +16,27 @@ export const MainContent = () => {
 						<DropDownSettings />
 					</div>
 				</div>
-				<div className="p-4">
-					<Thumbnail id={parseInt(param.partID!)} />
+				<div className="p-4 flex flex-col md:flex-none md:flex-row justify-between">
+					<div>
+						<Thumbnail
+							id={parseInt(param.partID!)}
+							size="w-48"
+						/>
+					</div>
+					<div className="stats stats-vertical shadow">
+						<StatView
+							title="Available stock"
+							value={1550}
+						/>
+						<StatView
+							title="Total stock"
+							value={3030}
+						/>
+						<StatView
+							title="Allocated stock"
+							value={3030 - 1550}
+						/>
+					</div>
 				</div>
 			</div>
 		</>

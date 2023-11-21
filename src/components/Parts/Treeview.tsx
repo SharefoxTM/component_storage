@@ -1,10 +1,10 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
+import { useQuery } from "@tanstack/react-query";
 import { CategoryTree } from "../../models/CategoryTree.model";
-import { FetchCategoryTree } from "../InvenTree/apiCalls";
 import { Link } from "react-router-dom";
 
 const renderTreeNodes = (nodes: CategoryTree) => {
-	return nodes.map((node) => (
+	return nodes?.map((node) => (
 		<li key={node.pk}>
 			{node.children && node.children.length > 0 ? (
 				<details>
@@ -25,8 +25,19 @@ const renderTreeNodes = (nodes: CategoryTree) => {
 };
 
 export const TreeView = () => {
-	const categories = FetchCategoryTree();
-	if (!categories)
+	const { isLoading, data, error } = useQuery({
+		queryKey: ["categories", "categories/tree/"],
+		queryFn: ({ signal }) =>
+			fetch(`${process.env.REACT_APP_BE_HOST}categories/tree/`, {
+				signal,
+			}).then((res) => {
+				return res.json();
+			}),
+	});
+	if (error) throw new Error(error.message);
+	const categories: CategoryTree = data;
+
+	if (isLoading)
 		return (
 			<ul className="menu bg-base-200 w-56 rounded-box">
 				<li>
@@ -35,7 +46,7 @@ export const TreeView = () => {
 			</ul>
 		);
 	let totalPartCount = 0;
-	categories.forEach((e) => {
+	categories?.forEach((e) => {
 		totalPartCount += e.part_count;
 	});
 	return (

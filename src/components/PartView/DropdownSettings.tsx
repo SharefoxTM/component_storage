@@ -13,7 +13,6 @@ export const DropDownSettings = () => {
 				<details
 					id="dropdownPartSettings"
 					className="dropdown"
-					open
 				>
 					<summary className="btn bg-inherit border-0 m-1">
 						<FontAwesomeIcon

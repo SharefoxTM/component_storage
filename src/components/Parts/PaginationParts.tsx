@@ -3,8 +3,10 @@ import { PartsItems } from "../../models/PartsItems.model";
 import { PaginationCountSelector } from "../../modules/Parts/Parts";
 import { Link } from "react-router-dom";
 import { Thumbnail } from "../Thumbnail";
-import { APIParts, FetchParts } from "../InvenTree/apiCalls";
+import { createURL } from "../InvenTree/apiCalls";
 import ReactPaginate from "react-paginate";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 type PartItemsProps = {
 	items: PartsItems;
@@ -61,43 +63,37 @@ export const PaginatedItems = ({
 	categoryID,
 }: PaginatedItemsProps) => {
 	const [currentPage, setCurrentPage] = useState(0);
-	const [totalPages, setTotalPages] = useState(0);
-	const [parts, setParts] = useState<PartsItems>();
-	const [loading, setLoading] = useState(true);
 	const [itemsPerPage, setItemsPerPage] = useState(
 		parseInt(localStorage.getItem("paginationQty") || "25"),
 	);
 
+	const { isPending, error, data, isFetching, refetch } = useQuery({
+		queryKey: ["parts"],
+		queryFn: () =>
+			axios
+				.get(
+					createURL(`${process.env.REACT_APP_BE_HOST}parts/`, {
+						page: currentPage,
+						pageSize: itemsPerPage,
+						category: parseInt(categoryID),
+					}),
+				)
+				.then((res) => res.data),
+	});
+
 	useEffect(() => {
-		setLoading(true);
 		setCurrentPage(0);
-	}, [itemsPerPage]);
-
-	useEffect(() => {
-		async function getter() {
-			const response: APIParts = await FetchParts({
-				page: currentPage,
-				pageSize: itemsPerPage,
-				category: parseInt(categoryID),
-			});
-			setParts(response.data);
-			setTotalPages(response.totalPages);
-			setLoading(false);
-		}
-
-		loading && getter();
-	}, [categoryID, currentPage, itemsPerPage, loading]);
-
-	useEffect(() => {
-		setLoading(true);
-	}, [categoryName]);
+		refetch();
+	}, [itemsPerPage, refetch]);
 
 	const handlePageClick = (selectedItem: { selected: number }) => {
 		setCurrentPage(selectedItem.selected);
-		setLoading(true);
 	};
-	console.log(currentPage);
+	const isLoading = isPending || isFetching;
+	const parts: PartsItems = data?.data;
+	const totalPages: number = data?.totalPages;
 
+	if (error) return <p>An error has occurred: {error.message}</p>;
 	return (
 		<>
 			<div className="mt-2 bg-white border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700">
@@ -112,7 +108,7 @@ export const PaginatedItems = ({
 				</div>
 				<div className="flow-root">
 					<ul className="divide-y sm:mx-2 sm:px-1 divide-gray-200 dark:divide-gray-700">
-						{!loading ? (
+						{!isLoading ? (
 							<PartListItems items={parts!} />
 						) : (
 							<li>
@@ -128,7 +124,7 @@ export const PaginatedItems = ({
 			</div>
 
 			<div className="flex justify-center my-4">
-				{!loading && (
+				{!isLoading && (
 					<ReactPaginate
 						breakLabel="..."
 						nextLabel="next >"
