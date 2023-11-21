@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { PartsItems } from "../models/PartsItems.model";
-import { PaginationCountSelector } from "../modules/Parts";
+import { PartsItems } from "../../models/PartsItems.model";
+import { PaginationCountSelector } from "../../modules/Parts/Parts";
 import { Link } from "react-router-dom";
-import { Thumbnail } from "./Thumbnail";
-import { APIParts, FetchParts } from "./InvenTree/apiCalls";
+import { Thumbnail } from "../Thumbnail";
+import { APIParts, FetchParts } from "../InvenTree/apiCalls";
 import ReactPaginate from "react-paginate";
 
 type PartItemsProps = {
@@ -27,11 +27,11 @@ const PartListItems = ({ items }: PartItemsProps) => {
 					key={item.pk}
 				>
 					<Link to={`/part/${item.pk}`}>
-						<div className="flex flex-grow-0 flex-shrink-0 justify-between">
+						<div className="flex flex-none w-full justify-normal">
 							<div className="basis-1/8">
 								<Thumbnail id={item.pk} />
 							</div>
-							<div className="flex-col basis-7/12">
+							<div className="flex-col basis-7/12 ml-4">
 								<p className="text-md font-medium text-gray-900 truncate dark:text-white">
 									{item.full_name}
 								</p>
@@ -39,7 +39,8 @@ const PartListItems = ({ items }: PartItemsProps) => {
 									{item.description}
 								</p>
 							</div>
-							<div className="justify-end text-end dark:text-white">
+							<div className="flex-1"></div>
+							<div className="align-end text-end dark:text-white">
 								<p>Qty reserved: {item.in_stock}</p>
 								<p>Qty in stock: {item.in_stock}</p>
 							</div>
@@ -126,7 +127,6 @@ export const PaginatedItems = ({
 				</div>
 			</div>
 
-			{/* Pagination controls */}
 			<div className="flex justify-center my-4">
 				{!loading && (
 					<ReactPaginate
