@@ -25,7 +25,7 @@ export const PartBadges = ({ part }: PartBadgesProps) => {
 				{badges.map((name, key) => (
 					<div
 						key={key}
-						className="h-6 text-xs font-medium m-2 ms-0 mb-5 px-2.5 py-0.5 rounded-full bg-blue-700 text-white"
+						className="h-6 text-xs font-medium m-2 ms-0 my-2.5 px-2.5 py-0.5 rounded-full bg-blue-700 text-white align-baseline"
 					>
 						{name}
 					</div>
