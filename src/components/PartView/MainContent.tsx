@@ -6,6 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { APIGetPart } from "../../models/APIGetPart.model";
 import { Progressbar } from "./ProgressBar";
+import { PartBadges } from "./PartBadges";
 
 export const MainContent = () => {
 	const param = useParams();
@@ -38,6 +39,7 @@ export const MainContent = () => {
 				</div>
 				<div className="p-4 flex flex-col md:flex-none md:flex-row justify-between w-full">
 					<div>
+						<PartBadges part={part} />
 						<Thumbnail
 							id={parseInt(param.partID!)}
 							size="w-28"
