@@ -3,6 +3,7 @@ import { FetchImage } from "./InvenTree/apiCalls";
 export const Thumbnail = ({ id, size }: { id: number; size?: string }) => {
 	const sizeClass: string = (size || "w-24") + " rounded aspect-square";
 	const image: string = FetchImage(id);
+
 	return image === "" ? (
 		<div className="avatar placeholder">
 			<div className={sizeClass}>

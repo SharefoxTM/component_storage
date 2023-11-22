@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { PartQuery } from "../../models/PartQuery.model";
 
-
 export function createURL(url: string, query: PartQuery): string {
 	let queriedUrl = url;
 	queriedUrl += query !== undefined ? "?" : "";
@@ -99,23 +98,6 @@ export function createURL(url: string, query: PartQuery): string {
 	return queriedUrl;
 }
 
-// export type APIParts = {
-// 	data: PartsItems;
-// 	totalPages: number;
-// };
-// export const FetchParts = (query: PartQuery): APIParts | undefined => {
-// 	fetch(createURL(`${endpoint}parts/`, query), { signal }).then((res) => {
-// 					if (!res.ok) {
-// 						throw new Error("Failed to fetch");
-// 					}
-// 					return res.json();
-// 				}),
-// 		},
-// 		queryClient,
-// 	);
-// 	console.log(fetcher);
-// 	return fetcher.data;
-// };
 const getBase64Image = async (res: Response): Promise<string> => {
 	const blob = await res.blob();
 

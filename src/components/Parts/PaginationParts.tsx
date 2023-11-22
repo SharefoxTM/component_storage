@@ -84,10 +84,11 @@ export const PaginatedItems = ({
 	useEffect(() => {
 		setCurrentPage(0);
 		refetch();
-	}, [itemsPerPage, refetch]);
+	}, [itemsPerPage, refetch, categoryID]);
 
 	const handlePageClick = (selectedItem: { selected: number }) => {
 		setCurrentPage(selectedItem.selected);
+		refetch();
 	};
 	const isLoading = isPending || isFetching;
 	const parts: PartsItems = data?.data;
