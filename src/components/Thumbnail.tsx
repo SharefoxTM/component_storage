@@ -5,7 +5,7 @@ export const Thumbnail = ({ id, size }: { id: number; size?: string }) => {
 	const image: string = FetchImage(id);
 
 	return image === "" ? (
-		<div className="avatar placeholder">
+		<div className="avatar placeholder w-fit">
 			<div className={sizeClass}>
 				<span className="loading loading-spinner loading-xs"></span>
 			</div>

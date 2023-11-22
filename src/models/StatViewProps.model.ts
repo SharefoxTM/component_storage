@@ -1,5 +1,7 @@
+import React from "react";
+
 export type StatViewProps = {
 	title: string;
-	value: string | number;
 	description?: string;
+	children: React.ReactNode;
 };

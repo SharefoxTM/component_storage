@@ -9,7 +9,7 @@ export const PartView = () => {
 				<div className="md:basis-2/12">
 					<PartViewSideBar />
 				</div>
-				<div className="md:basis-4/12">
+				<div className="md:basis-6/12">
 					<MainContent />
 				</div>
 				<PartViewSideDetail />
