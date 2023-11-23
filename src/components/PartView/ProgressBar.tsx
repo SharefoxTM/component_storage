@@ -11,7 +11,7 @@ export const Progressbar = ({ value, max }: ProgressBarProps) => {
 					className="bg-primary p-0.5 text-center text-xs font-medium leading-none text-primary-100 rounded-full"
 					style={{ width: `${percentile}%` }}
 				>
-					{value} /{max}
+					{value} / {max}
 				</div>
 			</div>
 		</>
