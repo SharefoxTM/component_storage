@@ -67,8 +67,8 @@ export const PaginatedItems = ({
 		parseInt(localStorage.getItem("paginationQty") || "25"),
 	);
 
-	const { isPending, error, data, isFetching, refetch } = useQuery({
-		queryKey: ["parts"],
+	const { isPending, error, data, isFetching } = useQuery({
+		queryKey: [categoryID, itemsPerPage, currentPage],
 		queryFn: () =>
 			axios
 				.get(
@@ -83,12 +83,10 @@ export const PaginatedItems = ({
 
 	useEffect(() => {
 		setCurrentPage(0);
-		refetch();
-	}, [itemsPerPage, refetch, categoryID]);
+	}, [itemsPerPage, categoryID]);
 
 	const handlePageClick = (selectedItem: { selected: number }) => {
 		setCurrentPage(selectedItem.selected);
-		refetch();
 	};
 	const isLoading = isPending || isFetching;
 	const parts: PartsItems = data?.data;

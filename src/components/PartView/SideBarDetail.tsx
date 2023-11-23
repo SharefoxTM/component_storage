@@ -4,7 +4,7 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import { APIPartParameter } from "../../models/APIPartParameter.model";
 import { APIPartStock } from "../../models/APIPartStock.model";
-import { useEffect } from "react";
+import { Badge } from "../Badge";
 
 const SideDetailTableHeader = ({ topic }: { topic: string }) => {
 	switch (topic) {
@@ -144,7 +144,6 @@ const SideDetailTableHeader = ({ topic }: { topic: string }) => {
 };
 
 const ParametersTable = ({ data }: { data: APIPartParameter[] }) => {
-	console.log(data);
 	return (
 		<>
 			{data.map((param, key) => (
@@ -167,7 +166,7 @@ const StockTable = ({ data }: { data: APIPartStock[] }) => {
 				<tr key={key}>
 					<th></th>
 					<td>
-						{stock.serial} {stock.status}
+						{stock.serial} <Badge>{stock.status}</Badge>
 					</td>
 					<td>{stock.location}</td>
 					<td>{stock.quantity}</td>
@@ -309,7 +308,6 @@ const GetSideDetailContent = ({ topic }: { topic: string }) => {
 	});
 
 	const isLoading = isFetching || isPending;
-	console.log(topic);
 	return (
 		<>
 			<div className="overflow-x-auto">

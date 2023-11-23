@@ -1,4 +1,5 @@
 import { APIGetPart } from "../../models/APIGetPart.model";
+import { Badge } from "../Badge";
 
 function createBadgeArray(part: APIGetPart): string[] {
 	let arr = new Array<string>();
@@ -21,14 +22,16 @@ export const PartBadges = ({ part }: PartBadgesProps) => {
 	const badges: string[] = createBadgeArray(part);
 	return (
 		<>
-			<div className="flex">
+			<div className="flex align-middle mt-1 gap-2">
 				{badges.map((name, key) => (
-					<div
+					<Badge
 						key={key}
-						className="h-6 text-xs font-medium mr-2 my-2.5 px-2.5 py-0.5 rounded-full bg-blue-700 text-white align-baseline"
+						variant="error"
+						size="lg"
+						className="bg-primary"
 					>
 						{name}
-					</div>
+					</Badge>
 				))}
 			</div>
 		</>
