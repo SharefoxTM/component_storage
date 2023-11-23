@@ -30,14 +30,25 @@ const listItemArray: listItemProps[] = [
 	{ name: "Attachments", iconParam: faPaperclip },
 ];
 
-export const PartViewSideBar = () => {
+export const PartViewSideBar = ({
+	setter,
+}: {
+	setter: React.Dispatch<React.SetStateAction<string>>;
+}) => {
+	function handleClick(e: React.MouseEvent<HTMLElement>) {
+		setter(e.currentTarget.id);
+	}
 	return (
 		<>
 			<div className="mt-2 mx-2">
 				<ul className="menu bg-base-200 w-56 rounded-box text-white">
 					{listItemArray.map((item, index) => (
 						<li key={index}>
-							<div className="flex flex-shrink-0 flex-grow-0 h-12">
+							<div
+								className="flex flex-shrink-0 flex-grow-0 h-12"
+								id={item.name}
+								onClick={handleClick}
+							>
 								<div className="basis-1/4">
 									<FontAwesomeIcon icon={item.iconParam} />
 								</div>

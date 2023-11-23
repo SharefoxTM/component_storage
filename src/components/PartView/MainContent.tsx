@@ -7,6 +7,7 @@ import axios from "axios";
 import { APIGetPart } from "../../models/APIGetPart.model";
 import { Progressbar } from "./ProgressBar";
 import { PartBadges } from "./PartBadges";
+import Card from "../Card/Card";
 
 export const MainContent = () => {
 	const param = useParams();
@@ -24,20 +25,18 @@ export const MainContent = () => {
 	const part: APIGetPart = data;
 	return (
 		<>
-			<div className="card shadow-xl bg-gray-800 rounded-box flex md:flex-none justify-between my-2">
-				<div className="w-full">
-					<div className="flex flex-wrap items-center justify-between border-b border-gray-500 rounded-t-lg pl-4">
-						{!isLoading ? (
-							<div className="text-white text-2xl md:text-4xl font-bold mb-2 align-middle">
-								{part.name}
-							</div>
-						) : (
-							<div className="skeleton my-2 h-10 w-52 align-middle" />
-						)}
-						<DropDownSettings />
-					</div>
-				</div>
-				<div className="p-4 flex flex-col md:flex-none md:flex-row justify-between w-full">
+			<Card.CardContainer>
+				<Card.CardTitle>
+					{!isLoading ? (
+						<div className="text-white text-2xl md:text-4xl font-bold mb-2 align-middle">
+							{part.name}
+						</div>
+					) : (
+						<div className="skeleton my-2 h-10 w-52 align-middle" />
+					)}
+					<DropDownSettings />
+				</Card.CardTitle>
+				<Card.CardBody>
 					<div className="basis-5/12">
 						<Thumbnail
 							id={parseInt(param.partID!)}
@@ -57,7 +56,6 @@ export const MainContent = () => {
 							</>
 						)}
 					</div>
-
 					<div className="basis-1/12" />
 
 					<div className="stats stats-vertical shadow basis-5/12 overflow-clip">
@@ -86,8 +84,8 @@ export const MainContent = () => {
 							)}
 						</StatView>
 					</div>
-				</div>
-			</div>
+				</Card.CardBody>
+			</Card.CardContainer>
 		</>
 	);
 };
