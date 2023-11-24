@@ -31,7 +31,7 @@ const PartListItems = ({ items }: PartItemsProps) => {
 					<Link to={`/part/${item.pk}`}>
 						<div className="flex flex-none w-full justify-normal">
 							<div className="basis-1/8">
-								<Thumbnail id={item.pk} />
+								<Thumbnail src={item.image} />
 							</div>
 							<div className="flex-col basis-7/12 ml-4">
 								<p className="text-md font-medium text-gray-900 truncate dark:text-white">

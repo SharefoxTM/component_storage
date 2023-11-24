@@ -38,10 +38,21 @@ export const MainContent = () => {
 				</Card.CardTitle>
 				<Card.CardBody>
 					<div className="basis-5/12">
-						<Thumbnail
-							id={parseInt(param.partID!)}
-							size="w-28"
-						/>
+						{!isLoading ? (
+							<Thumbnail
+								src={part.image}
+								size="w-28"
+							/>
+						) : (
+							<>
+								<div className="skeleton relative flex">
+									<div className="w-28 rounded aspect-square">
+										<div className="w-full h-full"></div>
+									</div>
+								</div>
+							</>
+						)}
+
 						{!isLoading ? (
 							<>
 								<PartBadges part={part} />

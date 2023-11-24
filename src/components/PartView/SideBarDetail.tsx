@@ -25,7 +25,7 @@ const SideDetailTableHeader = ({ topic }: { topic: string }) => {
 				<>
 					<tr>
 						<th></th>
-						<th>Serial</th>
+						<th>Status</th>
 						<th>Location</th>
 						<th>Quantity</th>
 						<th>Allocated quantity</th>
@@ -142,6 +142,26 @@ const SideDetailTableHeader = ({ topic }: { topic: string }) => {
 			);
 	}
 };
+const getStatusBadgeVariant = (
+	status: 10 | 50 | 55 | 60 | 65 | 70 | 75 | 85,
+): "success" | "warning" | "error" => {
+	switch (status) {
+		case 10:
+			return "success";
+		case 50:
+		case 55:
+		case 85:
+			return "warning";
+		case 60:
+		case 65:
+		case 70:
+		case 75:
+			return "error";
+
+		default:
+			throw new Error("Unknown status code");
+	}
+};
 
 const ParametersTable = ({ data }: { data: APIPartParameter[] }) => {
 	return (
@@ -166,7 +186,9 @@ const StockTable = ({ data }: { data: APIPartStock[] }) => {
 				<tr key={key}>
 					<th></th>
 					<td>
-						{stock.serial} <Badge>{stock.status}</Badge>
+						<Badge variant={getStatusBadgeVariant(stock.status)}>
+							{stock.status_text}
+						</Badge>
 					</td>
 					<td>{stock.location}</td>
 					<td>{stock.quantity}</td>
@@ -176,8 +198,13 @@ const StockTable = ({ data }: { data: APIPartStock[] }) => {
 						{stock.purchase_price} {stock.purchase_price_currency}
 					</td>
 					<td>
-						{stock.expiry_date} {stock.expired && "Expired!"}{" "}
-						{stock.stale && "Stale!"}
+						{stock.expiry_date}
+						{(stock.expired || stock.stale) && (
+							<>
+								{stock.expired && <Badge variant="error">Expired!</Badge>}
+								{stock.stale && <Badge variant="error">Stale!</Badge>}
+							</>
+						)}
 					</td>
 				</tr>
 			))}

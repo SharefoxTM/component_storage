@@ -26,9 +26,7 @@ export const Badge = ({
 		<>
 			<div
 				className={classNames(
-					"badge",
-					[variant ? `badge-${variant}` : ""],
-					`badge-${size}`,
+					["badge", [variant ? `badge-${variant}` : ""], [`badge-${size}`]],
 					className,
 				)}
 			>

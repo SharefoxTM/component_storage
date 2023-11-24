@@ -26,9 +26,7 @@ export const PartBadges = ({ part }: PartBadgesProps) => {
 				{badges.map((name, key) => (
 					<Badge
 						key={key}
-						variant="error"
-						size="lg"
-						className="bg-primary"
+						variant="primary"
 					>
 						{name}
 					</Badge>
