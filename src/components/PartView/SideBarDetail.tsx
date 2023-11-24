@@ -364,7 +364,11 @@ export const PartViewSideDetail = ({ topic }: { topic: string }) => {
 	return (
 		<>
 			<Card.CardContainer>
-				<Card.CardTitle>{topic}</Card.CardTitle>
+				<Card.CardTitle>
+					<div className="text-white text-2xl md:text-4xl font-bold mb-2 align-middle">
+						{topic}
+					</div>
+				</Card.CardTitle>
 				<Card.CardBody>
 					<GetSideDetailContent topic={topic} />
 				</Card.CardBody>
