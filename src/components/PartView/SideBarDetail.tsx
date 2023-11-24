@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import { APIPartParameter } from "../../models/APIPartParameter.model";
 import { APIPartStock } from "../../models/APIPartStock.model";
 import { Badge } from "../Badge";
+import { APIStockLocation } from "../../models/APIStockLocation";
 
 const SideDetailTableHeader = ({ topic }: { topic: string }) => {
 	switch (topic) {
@@ -179,6 +180,19 @@ const ParametersTable = ({ data }: { data: APIPartParameter[] }) => {
 	);
 };
 
+const StockLocationCell = ({ id }: { id: number }) => {
+	const { isPending, isFetching, data } = useQuery({
+		queryKey: [id],
+		queryFn: () =>
+			axios
+				.get(`${process.env.REACT_APP_BE_HOST}parts/location/${id}`)
+				.then((res) => res.data),
+	});
+	const location: APIStockLocation = data;
+	const isLoading = isFetching || isPending;
+	return <>{!isLoading && <div>{location.pathstring}</div>}</>;
+};
+
 const StockTable = ({ data }: { data: APIPartStock[] }) => {
 	return (
 		<>
@@ -190,7 +204,9 @@ const StockTable = ({ data }: { data: APIPartStock[] }) => {
 							{stock.status_text}
 						</Badge>
 					</td>
-					<td>{stock.location}</td>
+					<td>
+						<StockLocationCell id={stock.location} />
+					</td>
 					<td>{stock.quantity}</td>
 					<td>{stock.allocated}</td>
 					<td>{stock.supplier_part}</td>
