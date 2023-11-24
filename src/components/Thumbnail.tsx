@@ -4,18 +4,22 @@ export const Thumbnail = ({ src, size }: { src: string; size?: string }) => {
 	return (
 		<div className="relative flex">
 			<div className={sizeClass}>
-				<object
-					data="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png"
-					type="image/png"
-					className="h-full w-full object-contain"
-				>
+				{src !== null && (
 					<img
 						className="h-full w-full object-contain"
 						src={`${process.env.REACT_APP_BE_HOST}parts${src}`}
 						alt="thumbnail for part"
 						loading="lazy"
 					/>
-				</object>
+				)}
+				{src === null && (
+					<img
+						className="h-full w-full object-contain"
+						src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png"
+						alt="thumbnail for part"
+						loading="lazy"
+					/>
+				)}
 			</div>
 		</div>
 	);
