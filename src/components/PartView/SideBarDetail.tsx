@@ -27,7 +27,7 @@ const SideDetailTableHeader = ({ topic }: { topic: string }) => {
 				<>
 					<tr>
 						<th></th>
-						<th>Status</th>
+						<th className="flex justify-center">Status</th>
 						<th>Location</th>
 						<th>Quantity</th>
 						<th>Allocated quantity</th>
@@ -216,7 +216,9 @@ const SupplierPartCell = ({ id }: { id: number }) => {
 							<div>{SP.SKU}</div>
 						</Link>
 					)}
-					{SP.link === null && <div>{SP.SKU}</div>}
+					{SP.link === null && (
+						<div>{SP.SKU || "No supplier part link found"}</div>
+					)}
 				</>
 			)}
 		</>
@@ -229,7 +231,7 @@ const StockTable = ({ data }: { data: APIPartStock[] }) => {
 			{data!.map((stock, key) => (
 				<tr key={key}>
 					<th></th>
-					<td>
+					<td className="flex justify-center">
 						<Badge variant={getStatusBadgeVariant(stock.status)}>
 							{stock.status_text}
 						</Badge>
@@ -244,20 +246,16 @@ const StockTable = ({ data }: { data: APIPartStock[] }) => {
 					</td>
 					<td>
 						{stock.purchase_price !== null && (
-							<p>
-								{stock.purchase_price} {stock.purchase_price_currency}
-							</p>
-						)}
-						{stock.purchase_price === null && <p>Price unknown</p>}
-					</td>
-					<td>
-						{stock.expiry_date}
-						{(stock.expired || stock.stale) && (
 							<>
-								{stock.expired && <Badge variant="error">Expired!</Badge>}
-								{stock.stale && <Badge variant="error">Stale!</Badge>}
+								{stock.purchase_price} {stock.purchase_price_currency}
 							</>
 						)}
+						{stock.purchase_price === null && "Price unknown"}
+					</td>
+					<td>
+						{stock.expiry_date || "No expiry date"}
+						{stock.expired && <Badge variant="error">Expired!</Badge>}
+						{stock.stale && <Badge variant="error">Stale!</Badge>}
 					</td>
 				</tr>
 			))}
