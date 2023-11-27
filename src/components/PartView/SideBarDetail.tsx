@@ -1,11 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import Card from "../Card/Card";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { APIPartParameter } from "../../models/APIPartParameter.model";
 import { APIPartStock } from "../../models/APIPartStock.model";
 import { Badge } from "../Badge";
 import { APIStockLocation } from "../../models/APIStockLocation";
+import { APISupplierPart } from "../../models/APISupplierPart.model";
 
 const SideDetailTableHeader = ({ topic }: { topic: string }) => {
 	switch (topic) {
@@ -193,6 +194,35 @@ const StockLocationCell = ({ id }: { id: number }) => {
 	return <>{!isLoading && <div>{location.pathstring}</div>}</>;
 };
 
+const SupplierPartCell = ({ id }: { id: number }) => {
+	const { isPending, isFetching, data } = useQuery({
+		queryKey: [id],
+		queryFn: () =>
+			axios
+				.get(`${process.env.REACT_APP_BE_HOST}parts/supplier/${id}`)
+				.then((res) => res.data),
+	});
+	const SP: APISupplierPart = data;
+	const isLoading = isFetching || isPending;
+	return (
+		<>
+			{!isLoading && (
+				<>
+					{SP.link !== null && (
+						<Link
+							className="link link-accent"
+							to={SP.link}
+						>
+							<div>{SP.SKU}</div>
+						</Link>
+					)}
+					{SP.link === null && <div>{SP.SKU}</div>}
+				</>
+			)}
+		</>
+	);
+};
+
 const StockTable = ({ data }: { data: APIPartStock[] }) => {
 	return (
 		<>
@@ -209,9 +239,16 @@ const StockTable = ({ data }: { data: APIPartStock[] }) => {
 					</td>
 					<td>{stock.quantity}</td>
 					<td>{stock.allocated}</td>
-					<td>{stock.supplier_part}</td>
 					<td>
-						{stock.purchase_price} {stock.purchase_price_currency}
+						<SupplierPartCell id={stock.supplier_part} />
+					</td>
+					<td>
+						{stock.purchase_price !== null && (
+							<p>
+								{stock.purchase_price} {stock.purchase_price_currency}
+							</p>
+						)}
+						{stock.purchase_price === null && <p>Price unknown</p>}
 					</td>
 					<td>
 						{stock.expiry_date}
