@@ -7,45 +7,43 @@ import { APIPartStock } from "../../models/APIPartStock.model";
 import { Badge } from "../Badge";
 import { APIStockLocation } from "../../models/APIStockLocation";
 import { APISupplierPart } from "../../models/APISupplierPart.model";
+import { APIBuildOrder } from "../../models/APIBuildOrder.model";
+import { Progressbar } from "./ProgressBar";
 
 const SideDetailTableHeader = ({ topic }: { topic: string }) => {
 	switch (topic) {
 		case "Parameters":
 			return (
 				<>
-					<tr>
+					<tr className="text-left">
+						<th className="w-2/12">Name</th>
+						<th className="w-5/12">Description</th>
+						<th className="w-1/12">Data</th>
+						<th className="w-1/12">Units</th>
 						<th></th>
-						<th>Name</th>
-						<th>Description</th>
-						<th>Data</th>
-						<th>Units</th>
 					</tr>
 				</>
 			);
 		case "Stock":
 			return (
 				<>
-					<tr>
-						<th></th>
-						<th className="flex justify-center">Status</th>
-						<th>Location</th>
-						<th>Quantity</th>
-						<th>Allocated quantity</th>
-						<th>Supplier part</th>
-						<th>Price</th>
-						<th>Expiry Date</th>
+					<tr className="text-left align-center">
+						<th className="text-center w-fit">Status</th>
+						<th className="w-fit">Location</th>
+						<th className="text-center w-3/12">Allocated / Quantity</th>
+						<th className="w-2/12">Supplier part</th>
+						<th className="w-2/12">Expiry Date</th>
 					</tr>
 				</>
 			);
 		case "Build Orders":
 			return (
 				<>
-					<tr>
-						<th></th>
-						<th>Name</th>
-						<th>Description</th>
-						<th>Data</th>
-						<th>Units</th>
+					<tr className="text-left">
+						<th className="w-3/12">Name</th>
+						<th className="w-1/12 text-center">State</th>
+						<th className="w-3/12">Progress</th>
+						<th className="w-1/12 text-center">Qty needed</th>
 					</tr>
 				</>
 			);
@@ -144,7 +142,8 @@ const SideDetailTableHeader = ({ topic }: { topic: string }) => {
 			);
 	}
 };
-const getStatusBadgeVariant = (
+
+const getStockStatusBadgeVariant = (
 	status: 10 | 50 | 55 | 60 | 65 | 70 | 75 | 85,
 ): "success" | "warning" | "error" => {
 	switch (status) {
@@ -165,16 +164,42 @@ const getStatusBadgeVariant = (
 	}
 };
 
+const getProductionStatusBadgeVariant = (
+	status: 10 | 20 | 30 | 40,
+): "primary" | "success" | "info" | "error" => {
+	switch (status) {
+		case 10:
+			return "info";
+		case 20:
+			return "primary";
+		case 30:
+			return "error";
+		case 40:
+			return "success";
+
+		default:
+			throw new Error("Unknown status code");
+	}
+};
+
 const ParametersTable = ({ data }: { data: APIPartParameter[] }) => {
 	return (
 		<>
 			{data.map((param, key) => (
-				<tr key={key}>
-					<th></th>
-					<td>{param.template_detail.name}</td>
-					<td>{param.template_detail.description}</td>
-					<td>{param.data}</td>
-					<td>{param.template_detail.units}</td>
+				<tr
+					key={key}
+					className="text-left align-center"
+				>
+					<td className="text-left align-center">
+						{param.template_detail.name}
+					</td>
+					<td className="text-left align-center">
+						{param.template_detail.description}
+					</td>
+					<td className="text-left align-center">{param.data}</td>
+					<td className="text-left align-center">
+						{param.template_detail.units}
+					</td>
 				</tr>
 			))}
 		</>
@@ -210,6 +235,8 @@ const SupplierPartCell = ({ id }: { id: number }) => {
 				<>
 					{SP.link !== null && (
 						<Link
+							target="_blank"
+							rel="noopener noreferrer"
 							className="link link-accent"
 							to={SP.link}
 						>
@@ -230,52 +257,79 @@ const StockTable = ({ data }: { data: APIPartStock[] }) => {
 		<>
 			{data!.map((stock, key) => (
 				<tr key={key}>
-					<th></th>
-					<td className="flex justify-center">
-						<Badge variant={getStatusBadgeVariant(stock.status)}>
-							{stock.status_text}
-						</Badge>
+					<td className="text-center">
+						{(stock.expired || stock.stale) && (
+							<div
+								className="tooltip"
+								data-tip={
+									<>
+										{stock.stale && "Stock has gone stale! "} ||{" "}
+										{stock.expired && "Stock has expired!"}
+									</>
+								}
+							>
+								<Badge variant={getStockStatusBadgeVariant(stock.status)}>
+									{stock.status_text}
+								</Badge>
+							</div>
+						)}
+						{!(stock.expired || stock.stale) && (
+							<Badge variant={getStockStatusBadgeVariant(stock.status)}>
+								{stock.status_text}
+							</Badge>
+						)}
 					</td>
 					<td>
 						<StockLocationCell id={stock.location} />
 					</td>
-					<td>{stock.quantity}</td>
-					<td>{stock.allocated}</td>
+					<td>
+						<Progressbar
+							max={stock.quantity}
+							value={stock.allocated}
+						/>
+					</td>
 					<td>
 						<SupplierPartCell id={stock.supplier_part} />
 					</td>
-					<td>
-						{stock.purchase_price !== null && (
-							<>
-								{stock.purchase_price} {stock.purchase_price_currency}
-							</>
-						)}
-						{stock.purchase_price === null && "Price unknown"}
-					</td>
-					<td>
-						{stock.expiry_date || "No expiry date"}
-						{stock.expired && <Badge variant="error">Expired!</Badge>}
-						{stock.stale && <Badge variant="error">Stale!</Badge>}
-					</td>
+					<td>{stock.expiry_date || "No expiry date"}</td>
 				</tr>
 			))}
 		</>
 	);
 };
 
-// const BuildOrdersTable = ({data}:{data:APIPartParameter[]}) => {
-// 	return data!.map((temp: APIPartParameter) => (
-// 		<>
-// 			<tr>
-// 				<th></th>
-// 				<td>{temp.template_detail.name}</td>
-// 				<td>{temp.template_detail.description}</td>
-// 				<td>{temp.data}</td>
-// 				<td>{temp.template_detail.units}</td>
-// 			</tr>
-// 		</>
-// 	))
-// };
+const BuildOrdersTable = ({ data }: { data: APIBuildOrder[] }) => {
+	return (
+		<>
+			{data!.map((bo: APIBuildOrder, key) => (
+				<tr key={key}>
+					<td>
+						<Link
+							to={`/Part/${bo.build_detail.part}`}
+							className="link link-accent"
+						>
+							{bo.build_detail.reference} {bo.build_detail.title}
+						</Link>
+					</td>
+					<td className="text-center">
+						<Badge
+							variant={getProductionStatusBadgeVariant(bo.build_detail.status)}
+						>
+							{bo.build_detail.status_text}
+						</Badge>
+					</td>
+					<td>
+						<Progressbar
+							max={bo.build_detail.quantity}
+							value={bo.build_detail.completed}
+						/>
+					</td>
+					<td className="text-center">{bo.quantity}</td>
+				</tr>
+			))}
+		</>
+	);
+};
 
 // const UsedInTable = ({data}:{data:APIPartParameter[]}) => {
 // 	return data!.map((temp: APIPartParameter) => (
@@ -388,12 +442,12 @@ const GetSideDetailContent = ({ topic }: { topic: string }) => {
 	const isLoading = isFetching || isPending;
 	return (
 		<>
-			<div className="overflow-x-auto">
-				<table className="table">
+			<div className="overflow-x-auto w-full">
+				<table className="table-fixed border-separate border-spacing-2">
 					<thead>
 						<SideDetailTableHeader topic={topic} />
 					</thead>
-					<tbody>
+					<tbody className="">
 						{isLoading ? (
 							<tr>
 								<td>Loading...</td>
@@ -402,6 +456,7 @@ const GetSideDetailContent = ({ topic }: { topic: string }) => {
 							<>
 								{topic === "Parameters" && <ParametersTable data={data} />}
 								{topic === "Stock" && <StockTable data={data} />}
+								{topic === "Build Orders" && <BuildOrdersTable data={data} />}
 							</>
 						)}
 					</tbody>
