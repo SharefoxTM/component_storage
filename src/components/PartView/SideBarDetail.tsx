@@ -7,6 +7,8 @@ import { APIPartStock } from "../../models/APIPartStock.model";
 import { Badge } from "../Badge";
 import { APIBuildOrder } from "../../models/APIBuildOrder.model";
 import { Progressbar } from "./ProgressBar";
+import { APIUsedIn } from "../../models/APIUsedIn.model";
+import { Thumbnail } from "../Thumbnail";
 
 const SideDetailTableHeader = ({ topic }: { topic: string }) => {
 	switch (topic) {
@@ -25,7 +27,7 @@ const SideDetailTableHeader = ({ topic }: { topic: string }) => {
 		case "Stock":
 			return (
 				<>
-					<tr className="text-left align-center">
+					<tr className="text-left">
 						<th className="text-center w-fit">Status</th>
 						<th className="w-fit">Location</th>
 						<th className="text-center w-3/12">Allocated / Quantity</th>
@@ -48,12 +50,9 @@ const SideDetailTableHeader = ({ topic }: { topic: string }) => {
 		case "Used In":
 			return (
 				<>
-					<tr>
-						<th></th>
-						<th>Name</th>
-						<th>Description</th>
-						<th>Data</th>
-						<th>Units</th>
+					<tr className="text-left">
+						<th className="w-8/12">Assembly</th>
+						<th className="w-4/12">Required quantity</th>
 					</tr>
 				</>
 			);
@@ -312,19 +311,28 @@ const BuildOrdersTable = ({ data }: { data: APIBuildOrder[] }) => {
 	);
 };
 
-// const UsedInTable = ({data}:{data:APIPartParameter[]}) => {
-// 	return data!.map((temp: APIPartParameter) => (
-// 		<>
-// 			<tr>
-// 				<th></th>
-// 				<td>{temp.template_detail.name}</td>
-// 				<td>{temp.template_detail.description}</td>
-// 				<td>{temp.data}</td>
-// 				<td>{temp.template_detail.units}</td>
-// 			</tr>
-// 		</>
-// 	))
-// };
+const UsedInsTable = ({ data }: { data: APIUsedIn[] }) => {
+	return (
+		<>
+			{data!.map((ui: APIUsedIn, key) => (
+				<tr key={key}>
+					<td>
+						<Link
+							to={`/Part/${ui.part_detail.pk}`}
+							className="link link-accent"
+						>
+							<div className="flex flex-row items-center justify-start gap-5 text-center">
+								<Thumbnail src={ui.part_detail.thumbnail} />
+								<div>{ui.part_detail.full_name}</div>
+							</div>
+						</Link>
+					</td>
+					<td className="text-center">{ui.quantity}</td>
+				</tr>
+			))}
+		</>
+	);
+};
 
 // const PricingTable = ({data}:{data:APIPartParameter[]}) => {
 // 	return data!.map((temp: APIPartParameter) => (
@@ -449,6 +457,7 @@ const GetSideDetailContent = ({ topic }: { topic: string }) => {
 											{topic === "Build Orders" && (
 												<BuildOrdersTable data={data} />
 											)}
+											{topic === "Used In" && <UsedInsTable data={data} />}
 										</>
 									) : (
 										<tr>
