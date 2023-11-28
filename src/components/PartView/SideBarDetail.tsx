@@ -255,7 +255,7 @@ const StockTable = ({ data }: { data: APIPartStock[] }) => {
 							</Badge>
 						)}
 					</td>
-					<td>{stock.LocationName}</td>
+					<td>{stock.LocationName || "No location."}</td>
 					<td>
 						<Progressbar
 							max={stock.quantity}
@@ -263,12 +263,16 @@ const StockTable = ({ data }: { data: APIPartStock[] }) => {
 						/>
 					</td>
 					<td>
-						<SupplierPartCell
-							name={stock.supplier_part_detail.name}
-							url={stock.supplier_part_detail.url}
-						/>
+						{stock.supplier_part_detail !== null ? (
+							<SupplierPartCell
+								name={stock.supplier_part_detail.name}
+								url={stock.supplier_part_detail.url}
+							/>
+						) : (
+							"No supplier part."
+						)}
 					</td>
-					<td>{stock.expiry_date || "No expiry date"}</td>
+					<td>{stock.expiry_date || "No expiry date."}</td>
 				</tr>
 			))}
 		</>
@@ -408,8 +412,9 @@ const BuildOrdersTable = ({ data }: { data: APIBuildOrder[] }) => {
 
 const GetSideDetailContent = ({ topic }: { topic: string }) => {
 	const param = useParams();
+	if (!param.partID) throw new Error("No part id specified!");
 	const { isPending, isFetching, data, error } = useQuery({
-		queryKey: [topic],
+		queryKey: [topic, param.partID],
 		queryFn: () =>
 			axios
 				.get(`${process.env.REACT_APP_BE_HOST}parts/${param.partID}/${topic}`)
@@ -423,24 +428,40 @@ const GetSideDetailContent = ({ topic }: { topic: string }) => {
 	return (
 		<>
 			<div className="overflow-x-auto w-full">
-				<table className="table-fixed border-separate border-spacing-2">
-					<thead>
-						<SideDetailTableHeader topic={topic} />
-					</thead>
-					<tbody className="">
-						{isLoading ? (
-							<tr>
-								<td>Loading...</td>
-							</tr>
-						) : (
-							<>
-								{topic === "Parameters" && <ParametersTable data={data} />}
-								{topic === "Stock" && <StockTable data={data} />}
-								{topic === "Build Orders" && <BuildOrdersTable data={data} />}
-							</>
-						)}
-					</tbody>
-				</table>
+				<>
+					<table className="table-fixed border-separate border-spacing-2">
+						<thead>
+							<SideDetailTableHeader topic={topic} />
+						</thead>
+						<tbody className="">
+							{isLoading ? (
+								<tr>
+									<td>Loading...</td>
+								</tr>
+							) : (
+								<>
+									{data.length !== 0 ? (
+										<>
+											{topic === "Parameters" && (
+												<ParametersTable data={data} />
+											)}
+											{topic === "Stock" && <StockTable data={data} />}
+											{topic === "Build Orders" && (
+												<BuildOrdersTable data={data} />
+											)}
+										</>
+									) : (
+										<tr>
+											<td colSpan={3}>
+												No {topic.toLowerCase()} found for this item.
+											</td>
+										</tr>
+									)}
+								</>
+							)}
+						</tbody>
+					</table>
+				</>
 			</div>
 		</>
 	);

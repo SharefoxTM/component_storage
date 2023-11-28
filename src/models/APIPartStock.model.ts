@@ -3,7 +3,7 @@ export type APIPartStock = {
 	build: number;
 	expiry_date: string;
 	is_building: boolean;
-	LocationName: string;
+	LocationName: string | null;
 	packaging: string;
 	part: number;
 	pk: number;
