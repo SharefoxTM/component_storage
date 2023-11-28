@@ -3,8 +3,7 @@ export type APIPartStock = {
 	build: number;
 	expiry_date: string;
 	is_building: boolean;
-	link: string;
-	location: number;
+	LocationName: string;
 	packaging: string;
 	part: number;
 	pk: number;
@@ -12,7 +11,10 @@ export type APIPartStock = {
 	serial: string;
 	status: 10 | 50 | 55 | 60 | 65 | 70 | 75 | 85;
 	status_text: string;
-	supplier_part: number;
+	supplier_part_detail: {
+		name: string;
+		url: string | null;
+	};
 	barcode_hash: string;
 	updated: string;
 	purchase_price: string;

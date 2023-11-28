@@ -5,8 +5,6 @@ import { Link, useParams } from "react-router-dom";
 import { APIPartParameter } from "../../models/APIPartParameter.model";
 import { APIPartStock } from "../../models/APIPartStock.model";
 import { Badge } from "../Badge";
-import { APIStockLocation } from "../../models/APIStockLocation";
-import { APISupplierPart } from "../../models/APISupplierPart.model";
 import { APIBuildOrder } from "../../models/APIBuildOrder.model";
 import { Progressbar } from "./ProgressBar";
 
@@ -206,48 +204,26 @@ const ParametersTable = ({ data }: { data: APIPartParameter[] }) => {
 	);
 };
 
-const StockLocationCell = ({ id }: { id: number }) => {
-	const { isPending, isFetching, data } = useQuery({
-		queryKey: [id],
-		queryFn: () =>
-			axios
-				.get(`${process.env.REACT_APP_BE_HOST}parts/location/${id}`)
-				.then((res) => res.data),
-	});
-	const location: APIStockLocation = data;
-	const isLoading = isFetching || isPending;
-	return <>{!isLoading && <div>{location.pathstring}</div>}</>;
-};
-
-const SupplierPartCell = ({ id }: { id: number }) => {
-	const { isPending, isFetching, data } = useQuery({
-		queryKey: [id],
-		queryFn: () =>
-			axios
-				.get(`${process.env.REACT_APP_BE_HOST}parts/supplier/${id}`)
-				.then((res) => res.data),
-	});
-	const SP: APISupplierPart = data;
-	const isLoading = isFetching || isPending;
+const SupplierPartCell = ({
+	name,
+	url,
+}: {
+	name: string;
+	url: string | null;
+}) => {
 	return (
 		<>
-			{!isLoading && (
-				<>
-					{SP.link !== null && (
-						<Link
-							target="_blank"
-							rel="noopener noreferrer"
-							className="link link-accent"
-							to={SP.link}
-						>
-							<div>{SP.SKU}</div>
-						</Link>
-					)}
-					{SP.link === null && (
-						<div>{SP.SKU || "No supplier part link found"}</div>
-					)}
-				</>
+			{url !== null && (
+				<Link
+					target="_blank"
+					rel="noopener noreferrer"
+					className="link link-accent"
+					to={url}
+				>
+					<div>{name}</div>
+				</Link>
 			)}
+			{url === null && <div>{name || "No supplier part link found"}</div>}
 		</>
 	);
 };
@@ -279,9 +255,7 @@ const StockTable = ({ data }: { data: APIPartStock[] }) => {
 							</Badge>
 						)}
 					</td>
-					<td>
-						<StockLocationCell id={stock.location} />
-					</td>
+					<td>{stock.LocationName}</td>
 					<td>
 						<Progressbar
 							max={stock.quantity}
@@ -289,7 +263,10 @@ const StockTable = ({ data }: { data: APIPartStock[] }) => {
 						/>
 					</td>
 					<td>
-						<SupplierPartCell id={stock.supplier_part} />
+						<SupplierPartCell
+							name={stock.supplier_part_detail.name}
+							url={stock.supplier_part_detail.url}
+						/>
 					</td>
 					<td>{stock.expiry_date || "No expiry date"}</td>
 				</tr>
@@ -431,7 +408,7 @@ const BuildOrdersTable = ({ data }: { data: APIBuildOrder[] }) => {
 
 const GetSideDetailContent = ({ topic }: { topic: string }) => {
 	const param = useParams();
-	const { isPending, isFetching, data } = useQuery({
+	const { isPending, isFetching, data, error } = useQuery({
 		queryKey: [topic],
 		queryFn: () =>
 			axios
@@ -440,6 +417,9 @@ const GetSideDetailContent = ({ topic }: { topic: string }) => {
 	});
 
 	const isLoading = isFetching || isPending;
+	if (error) {
+		throw new Error(error.message);
+	}
 	return (
 		<>
 			<div className="overflow-x-auto w-full">
