@@ -14,7 +14,7 @@ export const MainContent = () => {
 	if (!param.partID) throw new Error("No part id specified!");
 
 	const { isPending, isFetching, error, data } = useQuery({
-		queryKey: ["parts"],
+		queryKey: [param.partID],
 		queryFn: () =>
 			axios
 				.get(`${process.env.REACT_APP_BE_HOST}parts/${param.partID}`)
