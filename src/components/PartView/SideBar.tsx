@@ -12,22 +12,24 @@ import {
 	faScrewdriverWrench,
 	faShoppingCart,
 } from "@fortawesome/free-solid-svg-icons";
+import classNames from "classnames";
 
 type listItemProps = {
 	name: string;
 	iconParam: IconDefinition;
+	disabled?: boolean;
 };
 const listItemArray: listItemProps[] = [
 	{ name: "Parameters", iconParam: faList },
 	{ name: "Stock", iconParam: faBoxesStacked },
-	{ name: "Build Orders", iconParam: faScrewdriverWrench },
-	{ name: "Used In", iconParam: faLayerGroup },
-	{ name: "Pricing", iconParam: faDollarSign },
-	{ name: "Suppliers", iconParam: faBuilding },
-	{ name: "Purchase Orders", iconParam: faShoppingCart },
-	{ name: "Scheduling", iconParam: faCalendarDays },
-	{ name: "Related Parts", iconParam: faRandom },
-	{ name: "Attachments", iconParam: faPaperclip },
+	{ name: "Build Orders", iconParam: faScrewdriverWrench, disabled: true },
+	{ name: "Used In", iconParam: faLayerGroup, disabled: true },
+	{ name: "Pricing", iconParam: faDollarSign, disabled: true },
+	{ name: "Suppliers", iconParam: faBuilding, disabled: true },
+	{ name: "Purchase Orders", iconParam: faShoppingCart, disabled: true },
+	{ name: "Scheduling", iconParam: faCalendarDays, disabled: true },
+	{ name: "Related Parts", iconParam: faRandom, disabled: true },
+	{ name: "Attachments", iconParam: faPaperclip, disabled: true },
 ];
 
 export const PartViewSideBar = ({
@@ -45,7 +47,9 @@ export const PartViewSideBar = ({
 					{listItemArray.map((item, index) => (
 						<li key={index}>
 							<div
-								className="flex flex-shrink-0 flex-grow-0 h-12"
+								className={classNames("flex flex-shrink-0 flex-grow-0 h-12", [
+									item.disabled && "pointer-events-none",
+								])}
 								id={item.name}
 								onClick={handleClick}
 							>

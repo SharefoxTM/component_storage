@@ -16,11 +16,10 @@ const SideDetailTableHeader = ({ topic }: { topic: string }) => {
 			return (
 				<>
 					<tr className="text-left">
-						<th className="w-2/12">Name</th>
-						<th className="w-5/12">Description</th>
-						<th className="w-1/12">Data</th>
-						<th className="w-1/12">Units</th>
-						<th></th>
+						<th>Name</th>
+						<th>Description</th>
+						<th>Data</th>
+						<th>Units</th>
 					</tr>
 				</>
 			);
@@ -28,11 +27,11 @@ const SideDetailTableHeader = ({ topic }: { topic: string }) => {
 			return (
 				<>
 					<tr className="text-left">
-						<th className="text-center w-fit">Status</th>
-						<th className="w-fit">Location</th>
-						<th className="text-center w-3/12">Allocated / Quantity</th>
+						<th className="text-center w-1/5">Status</th>
+						<th className="w-3/12">Location</th>
+						<th className="text-center w-4/12">Allocated / Quantity</th>
 						<th className="w-2/12">Supplier part</th>
-						<th className="w-2/12">Expiry Date</th>
+						<th>Expiry Date</th>
 					</tr>
 				</>
 			);
@@ -40,10 +39,10 @@ const SideDetailTableHeader = ({ topic }: { topic: string }) => {
 			return (
 				<>
 					<tr className="text-left">
-						<th className="w-3/12">Name</th>
-						<th className="w-1/12 text-center">State</th>
-						<th className="w-3/12">Progress</th>
-						<th className="w-1/12 text-center">Qty needed</th>
+						<th>Name</th>
+						<th className="text-center">State</th>
+						<th>Progress</th>
+						<th className="text-center">Qty needed</th>
 					</tr>
 				</>
 			);
@@ -185,18 +184,12 @@ const ParametersTable = ({ data }: { data: APIPartParameter[] }) => {
 			{data.map((param, key) => (
 				<tr
 					key={key}
-					className="text-left align-center"
+					className="text-left"
 				>
-					<td className="text-left align-center">
-						{param.template_detail.name}
-					</td>
-					<td className="text-left align-center">
-						{param.template_detail.description}
-					</td>
-					<td className="text-left align-center">{param.data}</td>
-					<td className="text-left align-center">
-						{param.template_detail.units}
-					</td>
+					<td>{param.template_detail.name}</td>
+					<td>{param.template_detail.description}</td>
+					<td>{param.data}</td>
+					<td>{param.template_detail.units}</td>
 				</tr>
 			))}
 		</>
@@ -231,7 +224,10 @@ const StockTable = ({ data }: { data: APIPartStock[] }) => {
 	return (
 		<>
 			{data!.map((stock, key) => (
-				<tr key={key}>
+				<tr
+					key={key}
+					className="text-xs"
+				>
 					<td className="text-center">
 						{(stock.expired || stock.stale) && (
 							<div
@@ -334,90 +330,6 @@ const UsedInsTable = ({ data }: { data: APIUsedIn[] }) => {
 	);
 };
 
-// const PricingTable = ({data}:{data:APIPartParameter[]}) => {
-// 	return data!.map((temp: APIPartParameter) => (
-// 		<>
-// 			<tr>
-// 				<th></th>
-// 				<td>{temp.template_detail.name}</td>
-// 				<td>{temp.template_detail.description}</td>
-// 				<td>{temp.data}</td>
-// 				<td>{temp.template_detail.units}</td>
-// 			</tr>
-// 		</>
-// 	))
-// };
-
-// const SuppliersTable = ({data}:{data:APIPartParameter[]}) => {
-// 	return data!.map((temp: APIPartParameter) => (
-// 		<>
-// 			<tr>
-// 				<th></th>
-// 				<td>{temp.template_detail.name}</td>
-// 				<td>{temp.template_detail.description}</td>
-// 				<td>{temp.data}</td>
-// 				<td>{temp.template_detail.units}</td>
-// 			</tr>
-// 		</>
-// 	))
-// };
-
-// const PurchaseOrdersTable = ({data}:{data:APIPartParameter[]}) => {
-// 	return data!.map((temp: APIPartParameter) => (
-// 		<>
-// 			<tr>
-// 				<th></th>
-// 				<td>{temp.template_detail.name}</td>
-// 				<td>{temp.template_detail.description}</td>
-// 				<td>{temp.data}</td>
-// 				<td>{temp.template_detail.units}</td>
-// 			</tr>
-// 		</>
-// 	))
-// };
-
-// const SchedulingTable = ({data}:{data:APIPartParameter[]}) => {
-// 	return data!.map((temp: APIPartParameter) => (
-// 		<>
-// 			<tr>
-// 				<th></th>
-// 				<td>{temp.template_detail.name}</td>
-// 				<td>{temp.template_detail.description}</td>
-// 				<td>{temp.data}</td>
-// 				<td>{temp.template_detail.units}</td>
-// 			</tr>
-// 		</>
-// 	))
-// };
-
-// const RelatedPartsTable = ({data}:{data:APIPartParameter[]}) => {
-// 	return data!.map((temp: APIPartParameter) => (
-// 		<>
-// 			<tr>
-// 				<th></th>
-// 				<td>{temp.template_detail.name}</td>
-// 				<td>{temp.template_detail.description}</td>
-// 				<td>{temp.data}</td>
-// 				<td>{temp.template_detail.units}</td>
-// 			</tr>
-// 		</>
-// 	))
-// };
-
-// const AttachmentsTable = ({data}:{data:APIPartParameter[]}) => {
-// 	return data!.map((temp: APIPartParameter) => (
-// 		<>
-// 			<tr>
-// 				<th></th>
-// 				<td>{temp.template_detail.name}</td>
-// 				<td>{temp.template_detail.description}</td>
-// 				<td>{temp.data}</td>
-// 				<td>{temp.template_detail.units}</td>
-// 			</tr>
-// 		</>
-// 	))
-// };
-
 const GetSideDetailContent = ({ topic }: { topic: string }) => {
 	const param = useParams();
 	if (!param.partID) throw new Error("No part id specified!");
@@ -435,43 +347,35 @@ const GetSideDetailContent = ({ topic }: { topic: string }) => {
 	}
 	return (
 		<>
-			<div className="overflow-x-auto w-full">
-				<>
-					<table className="table-fixed border-separate border-spacing-2">
-						<thead>
-							<SideDetailTableHeader topic={topic} />
-						</thead>
-						<tbody className="">
-							{isLoading ? (
-								<tr>
-									<td>Loading...</td>
-								</tr>
-							) : (
+			<table className="table border-white gap-2">
+				<thead>
+					<SideDetailTableHeader topic={topic} />
+				</thead>
+				<tbody>
+					{isLoading ? (
+						<tr>
+							<td>Loading...</td>
+						</tr>
+					) : (
+						<>
+							{data.length !== 0 ? (
 								<>
-									{data.length !== 0 ? (
-										<>
-											{topic === "Parameters" && (
-												<ParametersTable data={data} />
-											)}
-											{topic === "Stock" && <StockTable data={data} />}
-											{topic === "Build Orders" && (
-												<BuildOrdersTable data={data} />
-											)}
-											{topic === "Used In" && <UsedInsTable data={data} />}
-										</>
-									) : (
-										<tr>
-											<td colSpan={3}>
-												No {topic.toLowerCase()} found for this item.
-											</td>
-										</tr>
-									)}
+									{topic === "Parameters" && <ParametersTable data={data} />}
+									{topic === "Stock" && <StockTable data={data} />}
+									{topic === "Build Orders" && <BuildOrdersTable data={data} />}
+									{topic === "Used In" && <UsedInsTable data={data} />}
 								</>
+							) : (
+								<tr>
+									<td colSpan={3}>
+										No {topic.toLowerCase()} found for this item.
+									</td>
+								</tr>
 							)}
-						</tbody>
-					</table>
-				</>
-			</div>
+						</>
+					)}
+				</tbody>
+			</table>
 		</>
 	);
 };
