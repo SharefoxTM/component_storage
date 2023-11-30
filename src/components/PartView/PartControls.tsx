@@ -1,20 +1,26 @@
 import { useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import axios, { AxiosError } from "axios";
 import Card from "../Card/Card";
+import axios from "axios";
+
+const handleModeClick = (e: React.MouseEvent<HTMLElement>) => {
+	const data = JSON.stringify({
+		mode: e.currentTarget.id,
+	});
+	axios
+		.post(`${process.env.REACT_APP_BE_HOST}storage/mode/`, data, {
+			headers: {
+				"Content-Type": "application/json",
+			},
+		})
+		.then((res) => res.data)
+		.catch((r) => {
+			console.log(r.message);
+		});
+};
 
 export const PartControls = () => {
 	const param = useParams();
 	if (!param.partID) throw new Error("No part id specified!");
-
-	const { isPending, isFetching, data, error } = useQuery({
-		queryKey: ["shelve"],
-		queryFn: () =>
-			axios
-				.get(`${process.env.REACT_APP_BE_HOST}shelves/ping`)
-				.then((res) => res.data),
-	});
-	const isLoading = isFetching || isPending;
 	return (
 		<>
 			<Card.CardContainer>
@@ -24,15 +30,35 @@ export const PartControls = () => {
 					</div>
 				</Card.CardTitle>
 				<Card.CardBody>
-					{isLoading && (
-						<div>Trying to establish connection to the shelves</div>
-					)}
-					{!isLoading && (
-						<>
-							{error && <div>Could not establish a connection</div>}
-							{!error && <></>}
-						</>
-					)}
+					<div className="flex flex-col gap-3 justify-center w-full">
+						<p>Mode</p>
+						<div className="flex w-full justify-evenly">
+							<button
+								className="btn"
+								onClick={handleModeClick}
+								id="0"
+							>
+								Normal
+							</button>
+							<button
+								className="btn"
+								onClick={handleModeClick}
+								id="1"
+							>
+								Vegas
+							</button>
+							<button
+								className="btn"
+								onClick={handleModeClick}
+								id="2"
+							>
+								Knight Rider
+							</button>
+						</div>
+						Controls
+						<button className="btn">Fetch</button>
+						<button className="btn">Put</button>
+					</div>
 				</Card.CardBody>
 			</Card.CardContainer>
 		</>
