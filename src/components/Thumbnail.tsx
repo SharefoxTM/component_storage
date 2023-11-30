@@ -1,6 +1,5 @@
 export const Thumbnail = ({ src, size }: { src: string; size?: string }) => {
 	const sizeClass: string = (size || "w-24") + " rounded aspect-square";
-	console.log(src);
 	return (
 		<div className="relative flex">
 			<div className={sizeClass}>
