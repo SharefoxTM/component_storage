@@ -4,6 +4,10 @@ import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { APIMovingStock } from "../../models/APIMovingStock.model";
+import { APILocationDetail } from "../../models/APILocationDetail.model";
+import { APISupplierPart } from "../../models/APISupplierPart.model";
+import { Input } from "../Form/Input";
+import { Select } from "../Form/Select";
 
 const handleModeClick = (e: React.MouseEvent<HTMLElement>) => {
 	const data = JSON.stringify({
@@ -21,61 +25,99 @@ const handleModeClick = (e: React.MouseEvent<HTMLElement>) => {
 		});
 };
 
+const submitNewReel = (e: React.FormEvent) => {
+	const ip = document.getElementById("newReelSelectIP") as HTMLSelectElement;
+	if (ip.value === "Select location...") {
+	}
+};
+
+const setNewSelection = (
+	e: React.ChangeEvent<HTMLSelectElement>,
+	data: APISupplierPart[],
+) => {
+	console.log([data, e.currentTarget.value]);
+	document
+		.getElementById("newReelSKU")!
+		.setAttribute(
+			"value",
+			data[e.currentTarget.value as unknown as number].SKU,
+		);
+};
+
 const NewReelForm = ({ id }: { id: string }) => {
-	const { isLoading, data } = useQuery({
-		queryKey: [`reel ${id}`],
+	const ip = useQuery({
+		queryKey: ["ip"],
 		queryFn: () =>
 			axios
-				.get(`${process.env.REACT_APP_BE_HOST}parts/reel/new/${id}`)
+				.get(`${process.env.REACT_APP_BE_HOST}location/IPs`)
+				.then((res) => res.data),
+	});
+	const supplierPart = useQuery({
+		queryKey: ["sp"],
+		queryFn: () =>
+			axios
+				.get(`${process.env.REACT_APP_BE_HOST}company/?part=${id}`)
 				.then((res) => res.data),
 	});
 	return (
-		<form
-			action=""
-			method="post"
-		>
-			<label className="form-control w-full max-w-xs">
-				<div className="label">
-					<span className="label-text">Part *</span>
-				</div>
-				<select
-					className="select select-bordered"
-					defaultValue={0}
-				>
-					<option
-						disabled
-						value={0}
-					>
-						Select part...
-					</option>
-					<option>Star Wars</option>
-					<option>Harry Potter</option>
-					<option>Lord of the Rings</option>
-					<option>Planet of the Apes</option>
-					<option>Star Trek</option>
-				</select>
-			</label>
+		<form onSubmit={submitNewReel}>
+			<div className="w-full flex gap-2">
+				<Select
+					id="newReelSelectIP"
+					label="Location *"
+					placeholder="Select location..."
+					data={ip.data?.map((val: APILocationDetail) => ({
+						value: val.pk,
+						name: val.name,
+					}))}
+					width="w-8/12"
+					fallback="Please add new storage"
+				/>
+				<Select
+					id="newReelSelectWidth"
+					label="Width *"
+					placeholder="Select..."
+					data={[
+						{ value: 1, name: "1" },
+						{ value: 2, name: "2" },
+						{ value: 3, name: "3" },
+						{ value: 4, name: "4" },
+					]}
+					width="w-4/12"
+				/>
+			</div>
+			<div className="w-full flex">
+				<Select
+					id="newReelSelectSP"
+					label="Supplier Part *"
+					placeholder="Select supplier part..."
+					data={supplierPart.data?.map(
+						(val: APISupplierPart, index: number) => ({
+							value: index,
+							name: val.SKU,
+						}),
+					)}
+					fallback="please add new supplier part"
+					onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+						setNewSelection(e, supplierPart.data)
+					}
+				/>
+			</div>
 			<div className="flex gap-2 w-full">
-				<label className="form-control w-1/2 max-w-xs">
-					<div className="label">
-						<span className="label-text">Quantity</span>
-					</div>
-					<input
-						type="number"
-						placeholder="0"
-						className="input input-bordered w-full max-w-xs"
-					/>
-				</label>
-				<label className="form-control w-1/2 max-w-xs">
-					<div className="label">
-						<span className="label-text">MPN</span>
-					</div>
-					<input
-						type="text"
-						placeholder="insert MPN"
-						className="input input-bordered w-full max-w-xs"
-					/>
-				</label>
+				<Input
+					label="Quantity"
+					id="newReelQty"
+					type="number"
+					placeholder="0"
+					width="w-1/2"
+				/>
+				<Input
+					label="SKU"
+					id="newReelSKU"
+					type="text"
+					placeholder="insertSKU"
+					width="w-1/2"
+				/>
 			</div>
 		</form>
 	);
@@ -100,7 +142,7 @@ const setSelection = (
 };
 
 const ReturnReelForm = ({ id }: { id: string }) => {
-	const { isFetching, isPending, data, error } = useQuery({
+	const stock = useQuery({
 		queryKey: [`reel ${id}`, "reel"],
 		queryFn: () =>
 			axios
@@ -108,85 +150,40 @@ const ReturnReelForm = ({ id }: { id: string }) => {
 				.then((res) => res.data),
 	});
 
-	if (error) return <p>An error has occurred: {error.message}</p>;
-	const stock: APIMovingStock[] = data;
-	const isLoading = isFetching || isPending;
+	if (stock.error) return <p>An error has occurred: {stock.error.message}</p>;
 	return (
 		<form
 			action=""
 			method="post"
 		>
-			<label className="form-control w-full max-w-xs">
-				<div className="label">
-					<span className="label-text">Part *</span>
-				</div>
-				<select
-					className="select select-bordered"
-					defaultValue={"none"}
-					onChange={(e) => setSelection(e, data)}
-				>
-					<option
-						disabled
-						value="none"
-					>
-						Select supplier part...
-					</option>
-					{isLoading && (
-						<>
-							<option
-								className="skeleton"
-								disabled
-							>
-								Loading parts
-							</option>
-						</>
-					)}
-					{!isLoading && (
-						<>
-							{stock.length !== 0 &&
-								stock.map((e, key) => (
-									<option
-										key={key}
-										value={key}
-									>
-										{e.supplier_part_SKU}
-									</option>
-								))}
-							{stock.length === 0 && (
-								<>
-									<option disabled>No reels are moving.</option>
-									<option disabled>
-										Please deselect the return reel option.
-									</option>
-								</>
-							)}
-						</>
-					)}
-				</select>
-			</label>
+			<Select
+				id="returnReelSelectSP"
+				label="Part *"
+				placeholder="Select supplier part..."
+				data={stock.data?.map((val: APIMovingStock, index: number) => ({
+					value: index,
+					name: val.supplier_part_SKU,
+				}))}
+				fallback="Please deselect the return reel option"
+				onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+					setSelection(e, stock.data)
+				}
+			/>
 			<div className="flex gap-2 w-full">
-				<label className="form-control w-1/2 max-w-xs">
-					<div className="label">
-						<span className="label-text">Quantity</span>
-					</div>
-					<input
-						id="QtyInput"
-						type="number"
-						placeholder="0"
-						className="input input-bordered w-full max-w-xs"
-					/>
-				</label>
-				<label className="form-control w-1/2 max-w-xs">
-					<div className="label">
-						<span className="label-text">SKU</span>
-					</div>
-					<input
-						id="SKUInput"
-						type="text"
-						placeholder="insert MPN"
-						className="input input-bordered w-full max-w-xs"
-					/>
-				</label>
+				<Input
+					label="Quantity"
+					id="QtyInput"
+					type="number"
+					placeholder="0"
+					width="w-1/2"
+				/>
+				<Input
+					label="SKU"
+					id="SKUInput"
+					type="text"
+					placeholder="insertSKU"
+					width="w-1/2"
+				/>
 			</div>
 		</form>
 	);
