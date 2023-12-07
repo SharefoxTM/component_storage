@@ -8,6 +8,7 @@ import { APILocationDetail } from "../../models/APILocationDetail.model";
 import { APISupplierPart } from "../../models/APISupplierPart.model";
 import { Input } from "../Form/Input";
 import { Select } from "../Form/Select";
+import { FieldValues, FormProvider, useForm } from "react-hook-form";
 
 const handleModeClick = (e: React.MouseEvent<HTMLElement>) => {
 	const data = JSON.stringify({
@@ -23,12 +24,6 @@ const handleModeClick = (e: React.MouseEvent<HTMLElement>) => {
 		.catch((r) => {
 			console.log(r.message);
 		});
-};
-
-const submitNewReel = (e: React.FormEvent) => {
-	const ip = document.getElementById("newReelSelectIP") as HTMLSelectElement;
-	if (ip.value === "Select location...") {
-	}
 };
 
 const setNewSelection = (
@@ -60,66 +55,71 @@ const NewReelForm = ({ id }: { id: string }) => {
 				.then((res) => res.data),
 	});
 	return (
-		<form onSubmit={submitNewReel}>
-			<div className="w-full flex gap-2">
-				<Select
-					id="newReelSelectIP"
-					label="Location *"
-					placeholder="Select location..."
-					data={ip.data?.map((val: APILocationDetail) => ({
-						value: val.pk,
-						name: val.name,
-					}))}
-					width="w-8/12"
-					fallback="Please add new storage"
-				/>
-				<Select
-					id="newReelSelectWidth"
-					label="Width *"
-					placeholder="Select..."
-					data={[
-						{ value: 1, name: "1" },
-						{ value: 2, name: "2" },
-						{ value: 3, name: "3" },
-						{ value: 4, name: "4" },
-					]}
-					width="w-4/12"
-				/>
-			</div>
-			<div className="w-full flex">
-				<Select
-					id="newReelSelectSP"
-					label="Supplier Part *"
-					placeholder="Select supplier part..."
-					data={supplierPart.data?.map(
-						(val: APISupplierPart, index: number) => ({
-							value: index,
-							name: val.SKU,
-						}),
-					)}
-					fallback="please add new supplier part"
-					onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-						setNewSelection(e, supplierPart.data)
-					}
-				/>
-			</div>
-			<div className="flex gap-2 w-full">
-				<Input
-					label="Quantity"
-					id="newReelQty"
-					type="number"
-					placeholder="0"
-					width="w-1/2"
-				/>
-				<Input
-					label="SKU"
-					id="newReelSKU"
-					type="text"
-					placeholder="insertSKU"
-					width="w-1/2"
-				/>
-			</div>
-		</form>
+		<FormProvider {...methods}>
+			<form
+				onSubmit={(e) => e.preventDefault()}
+				noValidate
+			>
+				<div className="w-full flex gap-2">
+					<Select
+						id="newReelSelectIP"
+						label="Location *"
+						placeholder="Select location..."
+						data={ip.data?.map((val: APILocationDetail) => ({
+							value: val.pk,
+							name: val.name,
+						}))}
+						width="w-8/12"
+						fallback="Please add new storage"
+					/>
+					<Select
+						id="newReelSelectWidth"
+						label="Width *"
+						placeholder="Select..."
+						data={[
+							{ value: 1, name: "1" },
+							{ value: 2, name: "2" },
+							{ value: 3, name: "3" },
+							{ value: 4, name: "4" },
+						]}
+						width="w-4/12"
+					/>
+				</div>
+				<div className="w-full flex">
+					<Select
+						id="newReelSelectSP"
+						label="Supplier Part *"
+						placeholder="Select supplier part..."
+						data={supplierPart.data?.map(
+							(val: APISupplierPart, index: number) => ({
+								value: index,
+								name: val.SKU,
+							}),
+						)}
+						fallback="please add new supplier part"
+						onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+							setNewSelection(e, supplierPart.data)
+						}
+					/>
+				</div>
+				<div className="flex gap-2 w-full">
+					<Input
+						label="Quantity"
+						id="newReelQty"
+						type="number"
+						placeholder="0"
+						width="w-1/2"
+					/>
+					<Input
+						label="SKU"
+						id="newReelSKU"
+						type="text"
+						placeholder="insertSKU"
+						width="w-1/2"
+					/>
+				</div>
+			</form>
+		</FormProvider>
 	);
 };
 
