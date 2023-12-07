@@ -8,7 +8,7 @@ import { APILocationDetail } from "../../models/APILocationDetail.model";
 import { APISupplierPart } from "../../models/APISupplierPart.model";
 import { Input } from "../Form/Input";
 import { Select } from "../Form/Select";
-import { FieldValues, FormProvider, useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 
 const handleModeClick = (e: React.MouseEvent<HTMLElement>) => {
 	const data = JSON.stringify({
@@ -26,20 +26,24 @@ const handleModeClick = (e: React.MouseEvent<HTMLElement>) => {
 		});
 };
 
-const setNewSelection = (
-	e: React.ChangeEvent<HTMLSelectElement>,
-	data: APISupplierPart[],
-) => {
-	console.log([data, e.currentTarget.value]);
-	document
-		.getElementById("newReelSKU")!
-		.setAttribute(
-			"value",
-			data[e.currentTarget.value as unknown as number].SKU,
-		);
-};
+// const setNewSelection = (
+// 	e: React.ChangeEvent<HTMLSelectElement>,
+// 	data: APISupplierPart[],
+// ) => {
+// 	document
+// 		.getElementById("newReelSKU")!
+// 		.setAttribute(
+// 			"value",
+// 			data[e.currentTarget.value as unknown as number].SKU,
+// 		);
+// };
 
 const NewReelForm = ({ id }: { id: string }) => {
+	const methods = useForm();
+	const onSubmit = methods.handleSubmit((data) => {
+		console.log(data);
+	});
+
 	const ip = useQuery({
 		queryKey: ["ip"],
 		queryFn: () =>
@@ -71,6 +75,8 @@ const NewReelForm = ({ id }: { id: string }) => {
 						}))}
 						width="w-8/12"
 						fallback="Please add new storage"
+						required
+						errormsg="Select the location."
 					/>
 					<Select
 						id="newReelSelectWidth"
@@ -83,6 +89,8 @@ const NewReelForm = ({ id }: { id: string }) => {
 							{ value: 4, name: "4" },
 						]}
 						width="w-4/12"
+						required
+						errormsg="Select width."
 					/>
 				</div>
 				<div className="w-full flex">
@@ -97,9 +105,8 @@ const NewReelForm = ({ id }: { id: string }) => {
 							}),
 						)}
 						fallback="please add new supplier part"
-						onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-							setNewSelection(e, supplierPart.data)
-						}
+						required
+						errormsg="Please select a supplier part"
 					/>
 				</div>
 				<div className="flex gap-2 w-full">
@@ -109,6 +116,8 @@ const NewReelForm = ({ id }: { id: string }) => {
 						type="number"
 						placeholder="0"
 						width="w-1/2"
+						required
+						errormsg="Please enter a quantity."
 					/>
 					<Input
 						label="SKU"
@@ -116,32 +125,46 @@ const NewReelForm = ({ id }: { id: string }) => {
 						type="text"
 						placeholder="insertSKU"
 						width="w-1/2"
+						required
+						errormsg="Please enter the stock keeping unit."
 					/>
+				</div>
+				<div>
+					<button
+						className="btn btn-success mt-5"
+						onClick={onSubmit}
+					>
+						Put new reel
+					</button>
 				</div>
 			</form>
 		</FormProvider>
 	);
 };
 
-const setSelection = (
-	e: React.ChangeEvent<HTMLSelectElement>,
-	data: APIMovingStock[],
-) => {
-	document
-		.getElementById("SKUInput")!
-		.setAttribute(
-			"value",
-			data[e.currentTarget.value as unknown as number].supplier_part_SKU,
-		);
-	document
-		.getElementById("QtyInput")!
-		.setAttribute(
-			"value",
-			data[e.currentTarget.value as unknown as number].quantity.toString(),
-		);
-};
+// const setSelection = (
+// 	e: React.ChangeEvent<HTMLSelectElement>,
+// 	data: APIMovingStock[],
+// ) => {
+// 	document
+// 		.getElementById("SKUInput")!
+// 		.setAttribute(
+// 			"value",
+// 			data[e.currentTarget.value as unknown as number].supplier_part_SKU,
+// 		);
+// 	document
+// 		.getElementById("QtyInput")!
+// 		.setAttribute(
+// 			"value",
+// 			data[e.currentTarget.value as unknown as number].quantity.toString(),
+// 		);
+// };
 
 const ReturnReelForm = ({ id }: { id: string }) => {
+	const methods = useForm();
+	const onSubmit = methods.handleSubmit((data) => {
+		console.log(data);
+	});
 	const stock = useQuery({
 		queryKey: [`reel ${id}`, "reel"],
 		queryFn: () =>
@@ -152,40 +175,45 @@ const ReturnReelForm = ({ id }: { id: string }) => {
 
 	if (stock.error) return <p>An error has occurred: {stock.error.message}</p>;
 	return (
-		<form
-			action=""
-			method="post"
-		>
-			<Select
-				id="returnReelSelectSP"
-				label="Part *"
-				placeholder="Select supplier part..."
-				data={stock.data?.map((val: APIMovingStock, index: number) => ({
-					value: index,
-					name: val.supplier_part_SKU,
-				}))}
-				fallback="Please deselect the return reel option"
-				onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-					setSelection(e, stock.data)
-				}
-			/>
-			<div className="flex gap-2 w-full">
-				<Input
-					label="Quantity"
-					id="QtyInput"
-					type="number"
-					placeholder="0"
-					width="w-1/2"
+		<FormProvider {...methods}>
+			<form
+				action=""
+				method="post"
+			>
+				<Select
+					id="returnReelSelectSP"
+					label="Part *"
+					placeholder="Select supplier part..."
+					data={stock.data?.map((val: APIMovingStock, index: number) => ({
+						value: index,
+						name: val.supplier_part_SKU,
+					}))}
+					fallback="Please deselect the return reel option"
+					required
+					errormsg="Please select a supplier part"
 				/>
-				<Input
-					label="SKU"
-					id="SKUInput"
-					type="text"
-					placeholder="insertSKU"
-					width="w-1/2"
-				/>
-			</div>
-		</form>
+				<div className="flex gap-2 w-full">
+					<Input
+						label="Quantity"
+						id="QtyInput"
+						type="number"
+						placeholder="0"
+						width="w-1/2"
+						required
+						errormsg="Please enter a quantity"
+					/>
+					<Input
+						label="SKU"
+						id="SKUInput"
+						type="text"
+						placeholder="insertSKU"
+						width="w-1/2"
+						required
+						errormsg="Please enter the stock keeping unit"
+					/>
+				</div>
+			</form>
+		</FormProvider>
 	);
 };
 

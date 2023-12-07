@@ -1,4 +1,5 @@
 import classNames from "classnames";
+import { useFormContext } from "react-hook-form";
 
 type InputProps = {
 	id: string;
@@ -10,7 +11,8 @@ type InputProps = {
 		name: string;
 	}[];
 	width?: string;
-	onChange?: React.ChangeEventHandler;
+	required?: boolean;
+	errormsg?: string;
 };
 
 export const Select = ({
@@ -20,8 +22,11 @@ export const Select = ({
 	fallback,
 	data,
 	width,
-	onChange,
+	required = false,
+	errormsg = "",
 }: InputProps) => {
+	const { register } = useFormContext();
+
 	return (
 		<>
 			<label className={classNames("form-control", [width || "w-full"])}>
@@ -32,7 +37,12 @@ export const Select = ({
 					id={id}
 					className="select select-bordered"
 					defaultValue={0}
-					onChange={onChange}
+					{...register(id, {
+						required: {
+							value: required,
+							message: errormsg,
+						},
+					})}
 				>
 					<option
 						disabled
