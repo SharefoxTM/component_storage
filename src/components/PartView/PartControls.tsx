@@ -1,14 +1,11 @@
 import { useParams } from "react-router-dom";
 import Card from "../Card/Card";
 import axios from "axios";
-import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { APIMovingStock } from "../../models/APIMovingStock.model";
-import { APILocationDetail } from "../../models/APILocationDetail.model";
-import { APISupplierPart } from "../../models/APISupplierPart.model";
-import { Input } from "../Form/Input";
-import { Select } from "../Form/Select";
-import { FormProvider, useForm } from "react-hook-form";
+import { Button } from "../Button";
+import { ReturnReelForm } from "../Form/ReturnReelForm";
+import { NewReelForm } from "../Form/NewReelForm";
+import { UseFormReturn, useForm } from "react-hook-form";
 
 const handleModeClick = (e: React.MouseEvent<HTMLElement>) => {
 	const data = JSON.stringify({
@@ -26,200 +23,22 @@ const handleModeClick = (e: React.MouseEvent<HTMLElement>) => {
 		});
 };
 
-// const setNewSelection = (
-// 	e: React.ChangeEvent<HTMLSelectElement>,
-// 	data: APISupplierPart[],
-// ) => {
-// 	document
-// 		.getElementById("newReelSKU")!
-// 		.setAttribute(
-// 			"value",
-// 			data[e.currentTarget.value as unknown as number].SKU,
-// 		);
-// };
-
-const NewReelForm = ({ id }: { id: string }) => {
-	const methods = useForm();
-	const onSubmit = methods.handleSubmit((data) => {
-		console.log(data);
-	});
-
-	const ip = useQuery({
-		queryKey: ["ip"],
-		queryFn: () =>
-			axios
-				.get(`${process.env.REACT_APP_BE_HOST}location/IPs`)
-				.then((res) => res.data),
-	});
-	const supplierPart = useQuery({
-		queryKey: ["sp"],
-		queryFn: () =>
-			axios
-				.get(`${process.env.REACT_APP_BE_HOST}company/?part=${id}`)
-				.then((res) => res.data),
-	});
-	return (
-		<FormProvider {...methods}>
-			<form
-				onSubmit={(e) => e.preventDefault()}
-				noValidate
-			>
-				<div className="w-full flex gap-2">
-					<Select
-						id="newReelSelectIP"
-						label="Location *"
-						placeholder="Select location..."
-						data={ip.data?.map((val: APILocationDetail) => ({
-							value: val.pk,
-							name: val.name,
-						}))}
-						width="w-8/12"
-						fallback="Please add new storage"
-						required
-						errormsg="Select the location."
-					/>
-					<Select
-						id="newReelSelectWidth"
-						label="Width *"
-						placeholder="Select..."
-						data={[
-							{ value: 1, name: "1" },
-							{ value: 2, name: "2" },
-							{ value: 3, name: "3" },
-							{ value: 4, name: "4" },
-						]}
-						width="w-4/12"
-						required
-						errormsg="Select width."
-					/>
-				</div>
-				<div className="w-full flex">
-					<Select
-						id="newReelSelectSP"
-						label="Supplier Part *"
-						placeholder="Select supplier part..."
-						data={supplierPart.data?.map(
-							(val: APISupplierPart, index: number) => ({
-								value: index,
-								name: val.SKU,
-							}),
-						)}
-						fallback="please add new supplier part"
-						required
-						errormsg="Please select a supplier part"
-					/>
-				</div>
-				<div className="flex gap-2 w-full">
-					<Input
-						label="Quantity"
-						id="newReelQty"
-						type="number"
-						placeholder="0"
-						width="w-1/2"
-						required
-						errormsg="Please enter a quantity."
-					/>
-					<Input
-						label="SKU"
-						id="newReelSKU"
-						type="text"
-						placeholder="insertSKU"
-						width="w-1/2"
-						required
-						errormsg="Please enter the stock keeping unit."
-					/>
-				</div>
-				<div>
-					<button
-						className="btn btn-success mt-5"
-						onClick={onSubmit}
-					>
-						Put new reel
-					</button>
-				</div>
-			</form>
-		</FormProvider>
-	);
-};
-
-// const setSelection = (
-// 	e: React.ChangeEvent<HTMLSelectElement>,
-// 	data: APIMovingStock[],
-// ) => {
-// 	document
-// 		.getElementById("SKUInput")!
-// 		.setAttribute(
-// 			"value",
-// 			data[e.currentTarget.value as unknown as number].supplier_part_SKU,
-// 		);
-// 	document
-// 		.getElementById("QtyInput")!
-// 		.setAttribute(
-// 			"value",
-// 			data[e.currentTarget.value as unknown as number].quantity.toString(),
-// 		);
-// };
-
-const ReturnReelForm = ({ id }: { id: string }) => {
-	const methods = useForm();
-	const onSubmit = methods.handleSubmit((data) => {
-		console.log(data);
-	});
-	const stock = useQuery({
-		queryKey: [`reel ${id}`, "reel"],
-		queryFn: () =>
-			axios
-				.get(`${process.env.REACT_APP_BE_HOST}storage/moving/${id}`)
-				.then((res) => res.data),
-	});
-
-	if (stock.error) return <p>An error has occurred: {stock.error.message}</p>;
-	return (
-		<FormProvider {...methods}>
-			<form
-				action=""
-				method="post"
-			>
-				<Select
-					id="returnReelSelectSP"
-					label="Part *"
-					placeholder="Select supplier part..."
-					data={stock.data?.map((val: APIMovingStock, index: number) => ({
-						value: index,
-						name: val.supplier_part_SKU,
-					}))}
-					fallback="Please deselect the return reel option"
-					required
-					errormsg="Please select a supplier part"
-				/>
-				<div className="flex gap-2 w-full">
-					<Input
-						label="Quantity"
-						id="QtyInput"
-						type="number"
-						placeholder="0"
-						width="w-1/2"
-						required
-						errormsg="Please enter a quantity"
-					/>
-					<Input
-						label="SKU"
-						id="SKUInput"
-						type="text"
-						placeholder="insertSKU"
-						width="w-1/2"
-						required
-						errormsg="Please enter the stock keeping unit"
-					/>
-				</div>
-			</form>
-		</FormProvider>
-	);
-};
-
 const PutReelModal = () => {
 	const [checked, setChecked] = useState(true);
 	const param = useParams();
+	const methodsNew = useForm();
+	const methodsReturn = useForm();
+
+	const onSubmitNew = methodsNew.handleSubmit((data) => {
+		console.log(data);
+	});
+	const onSubmitReturn = methodsReturn.handleSubmit((data) => {
+		console.log(data);
+	});
+	const onCancel = () => {
+		methodsNew.reset();
+		methodsReturn.reset();
+	};
 
 	return (
 		<Modal
@@ -248,10 +67,37 @@ const PutReelModal = () => {
 				/>
 			</label>
 			{checked ? (
-				<ReturnReelForm id={param.partID!} />
+				<ReturnReelForm
+					id={param.partID!}
+					methods={methodsReturn}
+				/>
 			) : (
-				<NewReelForm id={param.partID!} />
+				<NewReelForm
+					id={param.partID!}
+					methods={methodsNew}
+				/>
 			)}
+			<form method="dialog">
+				<Button
+					size="sm"
+					variant="ghost"
+					className="btn-circle absolute right-2 top-2"
+					onClick={onCancel}
+				>
+					✕
+				</Button>
+			</form>
+			<div className="modal-action">
+				<Button
+					variant="success"
+					onClick={() => (checked ? onSubmitReturn() : onSubmitNew())}
+				>
+					Submit
+				</Button>
+				<form method="dialog">
+					<Button onClick={onCancel}>Cancel</Button>
+				</form>
+			</div>
 		</Modal>
 	);
 };
@@ -270,16 +116,6 @@ const Modal = ({ id, title, children }: ModalProps) => {
 			<div className="modal-box">
 				<h3 className="font-bold text-lg">{title}</h3>
 				{children}
-				<form method="dialog">
-					<button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
-						✕
-					</button>
-				</form>
-				<div className="modal-action">
-					<form method="dialog">
-						<button className="btn">Close</button>
-					</form>
-				</div>
 			</div>
 		</dialog>
 	);

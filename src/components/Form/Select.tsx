@@ -25,7 +25,10 @@ export const Select = ({
 	required = false,
 	errormsg = "",
 }: InputProps) => {
-	const { register } = useFormContext();
+	const {
+		register,
+		formState: { errors },
+	} = useFormContext();
 
 	return (
 		<>
@@ -35,8 +38,8 @@ export const Select = ({
 				</div>
 				<select
 					id={id}
+					defaultValue=""
 					className="select select-bordered"
-					defaultValue={0}
 					{...register(id, {
 						required: {
 							value: required,
@@ -45,8 +48,8 @@ export const Select = ({
 					})}
 				>
 					<option
+						value=""
 						disabled
-						value={0}
 					>
 						{placeholder}
 					</option>
@@ -79,7 +82,28 @@ export const Select = ({
 						></option>
 					)}
 				</select>
+				{Object.keys(errors).length !== 0 && (
+					<>{errors[id] && <InputError message={errormsg} />}</>
+				)}
 			</label>
 		</>
 	);
+};
+
+const InputError = ({ message }: { message: string }) => {
+	return (
+		<p
+			className="flex items-center gap-1 px-2 font-semibold text-red-500 bg-red-100 rounded-md"
+			{...framer_error}
+		>
+			{message}
+		</p>
+	);
+};
+
+const framer_error = {
+	initial: { opacity: 0, y: 10 },
+	animate: { opacity: 1, y: 0 },
+	exit: { opacity: 0, y: 10 },
+	transition: { duration: 0.2 },
 };
