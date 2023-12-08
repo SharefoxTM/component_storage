@@ -5,5 +5,5 @@ module.exports = {
 		extend: {},
 	},
 	plugins: [require("daisyui")],
-	safelist: [{ pattern: /badge-+/ }],
+	safelist: [{ pattern: /badge-+/ }, { pattern: /btn-+/ }],
 };
