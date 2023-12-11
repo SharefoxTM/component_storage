@@ -6,10 +6,8 @@ import axios from "axios";
 import { APISupplierDetail } from "../../models/APISupplierDetail.model";
 
 export const NewSupplierPartForm = ({
-	id,
 	methods,
 }: {
-	id: string;
 	methods: UseFormReturn;
 }) => {
 	const suppliers = useQuery({
@@ -37,7 +35,7 @@ export const NewSupplierPartForm = ({
 						required
 					/>
 					<Select
-						id="Supplier"
+						id="supplier"
 						label={<p>Supplier</p>}
 						placeholder="Select a supplier"
 						data={suppliers.data?.map((val: APISupplierDetail) => ({

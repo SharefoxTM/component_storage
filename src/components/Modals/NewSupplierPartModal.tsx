@@ -1,8 +1,35 @@
-import { useForm } from "react-hook-form";
+import { FieldValues, useForm } from "react-hook-form";
 import { Modal } from "./Modal";
 import { Button } from "../Button";
 import { NewSupplierPartForm } from "../Form/NewSupplierPartForm";
 import { useParams } from "react-router-dom";
+import axios from "axios";
+
+const postData = (data: FieldValues) => {
+	axios
+		.post(`${process.env.REACT_APP_BE_HOST}company/parts/`, data, {
+			headers: {
+				"Content-Type": "application/json",
+			},
+		})
+		.then((res) => {
+			(
+				document.getElementById("newSupplierPartModal")! as HTMLDialogElement
+			).close();
+			const selector = document.getElementById(
+				"newReelSelectSP",
+			)! as HTMLSelectElement;
+			console.log(res.data);
+			const option = document.createElement("option");
+			option.value = res.data.pk;
+			option.text = res.data.SKU;
+			selector.appendChild(option);
+			selector.value = option.value;
+		})
+		.catch((r) => {
+			console.log(r.message);
+		});
+};
 
 export const NewSupplierPartModal = () => {
 	const methods = useForm();
@@ -11,6 +38,10 @@ export const NewSupplierPartModal = () => {
 	const onCancel = () => {
 		methods.reset();
 	};
+	const onSubmit = methods.handleSubmit((data) => {
+		data.part = params.partID;
+		postData(data);
+	});
 
 	return (
 		<Modal
@@ -27,12 +58,14 @@ export const NewSupplierPartModal = () => {
 					✕
 				</Button>
 			</form>
-			<NewSupplierPartForm
-				id={params.PartID!}
-				methods={methods}
-			/>
+			<NewSupplierPartForm methods={methods} />
 			<div className="modal-action">
-				<Button variant="success">Submit</Button>
+				<Button
+					variant="success"
+					onClick={onSubmit}
+				>
+					Submit
+				</Button>
 				<form method="dialog">
 					<Button onClick={onCancel}>Cancel</Button>
 				</form>
