@@ -70,6 +70,21 @@ export const NewReelForm = ({
 						label={
 							<p>
 								Supplier Part *
+								<Button
+									variant="success"
+									size="xs"
+									negative
+									className="ml-2"
+									onClick={() => {
+										(
+											document.getElementById(
+												"newSupplierPartModal",
+											)! as HTMLDialogElement
+										).showModal();
+									}}
+								>
+									+
+								</Button>
 							</p>
 						}
 						placeholder="Select supplier part..."
