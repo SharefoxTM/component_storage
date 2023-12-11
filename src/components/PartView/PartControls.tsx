@@ -3,6 +3,7 @@ import Card from "../Card/Card";
 import axios from "axios";
 import { Button } from "../Button";
 import { PutReelModal } from "../Modals/PutReelModal";
+import { NewSupplierPartModal } from "../Modals/NewSupplierPartModal";
 
 const handleModeClick = (e: React.MouseEvent<HTMLElement>) => {
 	const data = JSON.stringify({
@@ -80,6 +81,7 @@ export const PartControls = () => {
 							Put reel
 						</Button>
 						<PutReelModal />
+						<NewSupplierPartModal />
 					</div>
 				</Card.CardBody>
 			</Card.CardContainer>

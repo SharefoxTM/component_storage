@@ -29,7 +29,7 @@ export const Select = ({
 		register,
 		formState: { errors },
 	} = useFormContext();
-
+	console.log(data);
 	return (
 		<>
 			<label className={classNames("form-control", [width])}>
@@ -72,10 +72,9 @@ export const Select = ({
 										</option>
 									),
 								)}
-							{data?.length === 0 && <option disabled>{fallback}</option>}
 						</>
 					)}
-					{!data && (
+					{!data === undefined && (
 						<option
 							className="skeleton"
 							disabled

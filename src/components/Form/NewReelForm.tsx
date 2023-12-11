@@ -25,7 +25,7 @@ export const NewReelForm = ({
 		queryKey: ["sp"],
 		queryFn: () =>
 			axios
-				.get(`${process.env.REACT_APP_BE_HOST}company/?part=${id}`)
+				.get(`${process.env.REACT_APP_BE_HOST}company/parts/?part=${id}`)
 				.then((res) => res.data),
 	});
 	return (
