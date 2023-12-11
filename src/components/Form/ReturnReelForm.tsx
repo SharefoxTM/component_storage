@@ -38,7 +38,7 @@ export const ReturnReelForm = ({
 				<div className="w-full flex gap-2">
 					<Select
 						id="newReelSelectIP"
-						label="Location *"
+						label={<p>Location *</p>}
 						placeholder="Select location..."
 						data={ip.data?.map((val: APILocationDetail) => ({
 							value: val.pk,
@@ -51,7 +51,7 @@ export const ReturnReelForm = ({
 					/>
 					<Select
 						id="newReelSelectWidth"
-						label="Width *"
+						label={<p>Width *</p>}
 						placeholder="Select width..."
 						data={[
 							{ value: 1, name: "1" },
@@ -68,7 +68,7 @@ export const ReturnReelForm = ({
 				<div className="w-full flex gap-2">
 					<Select
 						id="returnReelSelectSP"
-						label="Supplier Part *"
+						label={<p>Supplier Part *</p>}
 						placeholder="Select supplier part..."
 						data={stock.data?.map((val: APIMovingStock, index: number) => ({
 							value: index,

@@ -5,6 +5,7 @@ import { Select } from "./Select";
 import { APILocationDetail } from "../../models/APILocationDetail.model";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
+import { Button } from "../Button";
 
 export const NewReelForm = ({
 	id,
@@ -37,7 +38,7 @@ export const NewReelForm = ({
 				<div className="w-full flex gap-2">
 					<Select
 						id="newReelSelectIP"
-						label="Location *"
+						label={<p>Location *</p>}
 						placeholder="Select location..."
 						data={ip.data?.map((val: APILocationDetail) => ({
 							value: val.pk,
@@ -50,7 +51,7 @@ export const NewReelForm = ({
 					/>
 					<Select
 						id="newReelSelectWidth"
-						label="Width *"
+						label={<p>Width *</p>}
 						placeholder="Select width..."
 						data={[
 							{ value: 1, name: "1" },
@@ -66,7 +67,11 @@ export const NewReelForm = ({
 				<div className="w-full flex gap-2">
 					<Select
 						id="newReelSelectSP"
-						label="Supplier Part *"
+						label={
+							<p>
+								Supplier Part *
+							</p>
+						}
 						placeholder="Select supplier part..."
 						data={supplierPart.data?.map(
 							(val: APISupplierPart, index: number) => ({

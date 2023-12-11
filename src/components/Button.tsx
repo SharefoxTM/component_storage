@@ -1,7 +1,7 @@
 import classNames from "classnames";
 
 type ButtonProps = {
-	size?: "sm" | "md" | "lg" | "flex";
+	size?: "sm" | "md" | "lg" | "xs";
 	variant?:
 		| "primary"
 		| "secondary"
@@ -34,8 +34,9 @@ export const Button = ({
 			className={classNames(
 				[
 					"btn",
-					[`btn-${variant}${negative ? "-negative" : ""}`],
+					[`btn-${variant}`],
 					[`btn-${size}`],
+					[negative ? "btn-outline" : ""],
 				],
 				className,
 			)}

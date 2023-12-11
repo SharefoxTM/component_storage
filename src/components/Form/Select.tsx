@@ -3,7 +3,7 @@ import { useFormContext } from "react-hook-form";
 
 type InputProps = {
 	id: string;
-	label: string;
+	label: React.ReactElement;
 	placeholder: string;
 	fallback?: string;
 	data?: {
@@ -21,7 +21,7 @@ export const Select = ({
 	placeholder,
 	fallback,
 	data,
-	width,
+	width = "w-full",
 	required = false,
 	errormsg = "",
 }: InputProps) => {
@@ -32,7 +32,7 @@ export const Select = ({
 
 	return (
 		<>
-			<label className={classNames("form-control", [width || "w-full"])}>
+			<label className={classNames("form-control", [width])}>
 				<div className="label">
 					<span className="label-text">{label}</span>
 				</div>

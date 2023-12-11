@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Button } from "../Button";
 import { ReturnReelForm } from "../Form/ReturnReelForm";
 import { NewReelForm } from "../Form/NewReelForm";
-import { UseFormReturn, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 
 const handleModeClick = (e: React.MouseEvent<HTMLElement>) => {
 	const data = JSON.stringify({

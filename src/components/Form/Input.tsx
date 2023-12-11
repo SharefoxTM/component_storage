@@ -16,7 +16,7 @@ export const Input = ({
 	type,
 	label,
 	placeholder,
-	width,
+	width = "w-full",
 	required = false,
 	errormsg = "",
 }: InputProps) => {
@@ -26,9 +26,7 @@ export const Input = ({
 	} = useFormContext();
 	return (
 		<>
-			<label
-				className={classNames("form-control", [width || "w-full"], "max-w-xs")}
-			>
+			<label className={classNames("form-control", [width], "max-w-xs")}>
 				<div className="label">
 					<span className="label-text">{label}</span>
 				</div>
