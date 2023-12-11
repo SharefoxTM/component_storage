@@ -145,38 +145,33 @@ export const PartControls = () => {
 					<div className="flex flex-col gap-3 justify-center w-full">
 						<p>Mode</p>
 						<div className="flex w-full justify-evenly">
-							<button
-								className="btn"
+							<Button
 								onClick={handleModeClick}
 								id="0"
 							>
 								Normal
-							</button>
-							<button
-								className="btn"
+							</Button>
+							<Button
 								onClick={handleModeClick}
 								id="1"
 							>
 								Vegas
-							</button>
-							<button
-								className="btn"
+							</Button>
+							<Button
 								onClick={handleModeClick}
 								id="2"
 							>
 								Knight Rider
-							</button>
+							</Button>
 						</div>
 						Controls
-						<button
+						<Button
 							id={param.partID}
-							className="btn"
 							onClick={getReel}
 						>
 							Get reel
-						</button>
-						<button
-							className="btn"
+						</Button>
+						<Button
 							onClick={() => {
 								(
 									document.getElementById("putReelModal")! as HTMLDialogElement
@@ -184,7 +179,7 @@ export const PartControls = () => {
 							}}
 						>
 							Put reel
-						</button>
+						</Button>
 						<PutReelModal />
 					</div>
 				</Card.CardBody>
