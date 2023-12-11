@@ -88,12 +88,10 @@ export const NewReelForm = ({
 							</p>
 						}
 						placeholder="Select supplier part..."
-						data={supplierPart.data?.map(
-							(val: APISupplierPart, index: number) => ({
-								value: index,
-								name: val.SKU,
-							}),
-						)}
+						data={supplierPart.data?.map((val: APISupplierPart) => ({
+							value: val.pk,
+							name: val.SKU,
+						}))}
 						fallback="please add new supplier part"
 						required
 						errormsg="Please select a supplier part"

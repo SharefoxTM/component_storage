@@ -1,10 +1,26 @@
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { FieldValues, useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 import { Modal } from "./Modal";
 import { ReturnReelForm } from "../Form/ReturnReelForm";
 import { NewReelForm } from "../Form/NewReelForm";
 import { Button } from "../Button";
+import axios from "axios";
+
+const postNewReel = async (data: FieldValues) => {
+	axios
+		.post(`${process.env.REACT_APP_BE_HOST}storage/`, data, {
+			headers: {
+				"Content-Type": "application/json",
+			},
+		})
+		.then(() => {
+			(document.getElementById("putReelModal")! as HTMLDialogElement).close();
+		})
+		.catch((r) => {
+			console.log(r.message);
+		});
+};
 
 export const PutReelModal = () => {
 	const [checked, setChecked] = useState(true);
@@ -13,7 +29,8 @@ export const PutReelModal = () => {
 	const methodsReturn = useForm();
 
 	const onSubmitNew = methodsNew.handleSubmit((data) => {
-		console.log(data);
+		data.part = param.partID;
+		postNewReel(data);
 	});
 	const onSubmitReturn = methodsReturn.handleSubmit((data) => {
 		console.log(data);

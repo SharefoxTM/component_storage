@@ -70,8 +70,8 @@ export const ReturnReelForm = ({
 						id="returnReelSelectSP"
 						label={<p>Supplier Part *</p>}
 						placeholder="Select supplier part..."
-						data={stock.data?.map((val: APIMovingStock, index: number) => ({
-							value: index,
+						data={stock.data?.map((val: APIMovingStock) => ({
+							value: val.pk,
 							name: val.supplier_part_SKU,
 						}))}
 						fallback="Please deselect the return reel option"
