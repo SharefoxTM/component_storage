@@ -7,6 +7,29 @@ import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "../Button";
 
+const enterToTab = (e: React.KeyboardEvent) => {
+	if (e.key === "Enter" && !e.getModifierState("Shift")) {
+		switch ((e.target as HTMLElement).id) {
+			case "newReelSelectIP":
+				document.getElementById("newReelSelectWidth")?.focus();
+				break;
+			case "newReelSelectWidth":
+				document.getElementById("newReelSelectSP")?.focus();
+				break;
+			case "newReelSelectSP":
+				document.getElementById("newReelQty")?.focus();
+				break;
+			case "newReelQty":
+				document.getElementById("newReelSelectIP")?.focus();
+				break;
+
+			default:
+				break;
+		}
+	}
+	e.preventDefault();
+};
+
 export const NewReelForm = ({
 	id,
 	methods,
@@ -32,6 +55,7 @@ export const NewReelForm = ({
 		<FormProvider {...methods}>
 			<form
 				id="newReelForm"
+				onKeyUp={enterToTab}
 				onSubmit={(e) => e.preventDefault()}
 				noValidate
 			>

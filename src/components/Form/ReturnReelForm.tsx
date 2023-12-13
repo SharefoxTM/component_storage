@@ -6,6 +6,31 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { APILocationDetail } from "../../models/APILocationDetail.model";
 
+const enterToTab = (e: React.KeyboardEvent) => {
+	if (e.key === "Enter" && !e.getModifierState("Shift")) {
+		switch ((e.target as HTMLElement).id) {
+			case "returnReelSelectIP":
+				console.log("This is awkward");
+				document.getElementById("returnReelSelectWidth")?.focus();
+				break;
+			case "returnReelSelectWidth":
+				document.getElementById("returnReelSelectSP")?.focus();
+				break;
+			case "returnReelSelectSP":
+				document.getElementById("returnReelQty")?.focus();
+				break;
+			case "returnReelQty":
+				document.getElementById("returnReelSelectIP")?.focus();
+				break;
+
+			default:
+				console.log(["This is awkward", (e.target as HTMLElement).id]);
+				break;
+		}
+	}
+	e.preventDefault();
+};
+
 export const ReturnReelForm = ({
 	id,
 	methods,
@@ -33,11 +58,12 @@ export const ReturnReelForm = ({
 			<form
 				id="returnReelForm"
 				onSubmit={(e) => e.preventDefault()}
+				onKeyUp={enterToTab}
 				noValidate
 			>
 				<div className="w-full flex gap-2">
 					<Select
-						id="newReelSelectIP"
+						id="returnReelSelectIP"
 						label={<p>Location *</p>}
 						placeholder="Select location..."
 						data={ip.data?.map((val: APILocationDetail) => ({
@@ -50,7 +76,7 @@ export const ReturnReelForm = ({
 						errormsg="Select the location."
 					/>
 					<Select
-						id="newReelSelectWidth"
+						id="returnReelSelectWidth"
 						label={<p>Width *</p>}
 						placeholder="Select width..."
 						data={[
@@ -80,7 +106,7 @@ export const ReturnReelForm = ({
 					/>
 					<Input
 						label="Quantity"
-						id="newReelQty"
+						id="returnReelQty"
 						type="number"
 						placeholder="0"
 						width="w-1/2"

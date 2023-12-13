@@ -5,6 +5,26 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { APISupplierDetail } from "../../models/APISupplierDetail.model";
 
+const enterToTab = (e: React.KeyboardEvent) => {
+	if (
+		e.key === "Enter" &&
+		!e.getModifierState("Shift") &&
+		(e.target as HTMLElement).nodeName === "INPUT"
+	) {
+		document.getElementById("supplier")?.focus();
+		e.preventDefault();
+	} else if (
+		e.key === "Enter" &&
+		!e.getModifierState("Shift") &&
+		(e.target as HTMLElement).nodeName !== "INPUT"
+	) {
+		document.getElementById("SKU")?.focus();
+		e.preventDefault();
+	} else {
+		e.preventDefault();
+	}
+};
+
 export const NewSupplierPartForm = ({
 	methods,
 }: {
@@ -21,6 +41,7 @@ export const NewSupplierPartForm = ({
 		<FormProvider {...methods}>
 			<form
 				id="newSupplierPartForm"
+				onKeyUp={enterToTab}
 				onSubmit={(e) => e.preventDefault()}
 				noValidate
 			>
