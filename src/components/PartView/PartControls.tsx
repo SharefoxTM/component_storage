@@ -8,6 +8,7 @@ import { NewSupplierPartModal } from "../Modals/NewSupplierPartModal";
 const handleModeClick = (e: React.MouseEvent<HTMLElement>) => {
 	const data = JSON.stringify({
 		mode: e.currentTarget.id,
+		ip: "172.17.6.6",
 	});
 	axios
 		.post(`${process.env.REACT_APP_BE_HOST}storage/mode/`, data, {
