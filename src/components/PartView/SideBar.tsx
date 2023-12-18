@@ -11,6 +11,7 @@ import {
 	faRandom,
 	faScrewdriverWrench,
 	faShoppingCart,
+	faPersonDigging,
 } from "@fortawesome/free-solid-svg-icons";
 import classNames from "classnames";
 
@@ -56,7 +57,12 @@ export const PartViewSideBar = ({
 								<div className="basis-1/4">
 									<FontAwesomeIcon icon={item.iconParam} />
 								</div>
-								{item.name}
+								<div className="basis-1/2">{item.name}</div>
+								{item.disabled && (
+									<div className="basis-1/4 text-right">
+										<FontAwesomeIcon icon={faPersonDigging} />
+									</div>
+								)}
 							</div>
 						</li>
 					))}
