@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
-import { PartsItems } from "../models/PartsItems.model";
-import { PaginationCountSelector } from "../modules/Parts";
+import { PartsItems } from "../../models/PartsItems.model";
+import { PaginationCountSelector } from "../../modules/Parts/Parts";
 import { Link } from "react-router-dom";
-import { Thumbnail } from "./Thumbnail";
-import { APIParts, FetchParts } from "./InvenTree/apiCalls";
+import { Thumbnail } from "../Thumbnail";
+import { createURL } from "../InvenTree/apiCalls";
 import ReactPaginate from "react-paginate";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 type PartItemsProps = {
 	items: PartsItems;
@@ -27,11 +29,11 @@ const PartListItems = ({ items }: PartItemsProps) => {
 					key={item.pk}
 				>
 					<Link to={`/part/${item.pk}`}>
-						<div className="flex flex-grow-0 flex-shrink-0 justify-between">
+						<div className="flex flex-none w-full justify-normal">
 							<div className="basis-1/8">
-								<Thumbnail id={item.pk} />
+								<Thumbnail src={item.image} />
 							</div>
-							<div className="flex-col basis-7/12">
+							<div className="flex-col basis-7/12 ml-4">
 								<p className="text-md font-medium text-gray-900 truncate dark:text-white">
 									{item.full_name}
 								</p>
@@ -39,7 +41,8 @@ const PartListItems = ({ items }: PartItemsProps) => {
 									{item.description}
 								</p>
 							</div>
-							<div className="justify-end text-end dark:text-white">
+							<div className="flex-1"></div>
+							<div className="align-end text-end dark:text-white">
 								<p>Qty reserved: {item.in_stock}</p>
 								<p>Qty in stock: {item.in_stock}</p>
 							</div>
@@ -60,43 +63,36 @@ export const PaginatedItems = ({
 	categoryID,
 }: PaginatedItemsProps) => {
 	const [currentPage, setCurrentPage] = useState(0);
-	const [totalPages, setTotalPages] = useState(0);
-	const [parts, setParts] = useState<PartsItems>();
-	const [loading, setLoading] = useState(true);
 	const [itemsPerPage, setItemsPerPage] = useState(
 		parseInt(localStorage.getItem("paginationQty") || "25"),
 	);
 
+	const { isPending, error, data, isFetching } = useQuery({
+		queryKey: [categoryID, itemsPerPage, currentPage],
+		queryFn: () =>
+			axios
+				.get(
+					createURL(`${process.env.REACT_APP_BE_HOST}parts/`, {
+						page: currentPage,
+						pageSize: itemsPerPage,
+						category: parseInt(categoryID),
+					}),
+				)
+				.then((res) => res.data),
+	});
+
 	useEffect(() => {
-		setLoading(true);
 		setCurrentPage(0);
-	}, [itemsPerPage]);
-
-	useEffect(() => {
-		async function getter() {
-			const response: APIParts = await FetchParts({
-				page: currentPage,
-				pageSize: itemsPerPage,
-				category: parseInt(categoryID),
-			});
-			setParts(response.data);
-			setTotalPages(response.totalPages);
-			setLoading(false);
-		}
-
-		loading && getter();
-	}, [categoryID, currentPage, itemsPerPage, loading]);
-
-	useEffect(() => {
-		setLoading(true);
-	}, [categoryName]);
+	}, [itemsPerPage, categoryID]);
 
 	const handlePageClick = (selectedItem: { selected: number }) => {
 		setCurrentPage(selectedItem.selected);
-		setLoading(true);
 	};
-	console.log(currentPage);
+	const isLoading = isPending || isFetching;
+	const parts: PartsItems = data?.data;
+	const totalPages: number = data?.totalPages;
 
+	if (error) return <p>An error has occurred: {error.message}</p>;
 	return (
 		<>
 			<div className="mt-2 bg-white border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700">
@@ -111,7 +107,7 @@ export const PaginatedItems = ({
 				</div>
 				<div className="flow-root">
 					<ul className="divide-y sm:mx-2 sm:px-1 divide-gray-200 dark:divide-gray-700">
-						{!loading ? (
+						{!isLoading ? (
 							<PartListItems items={parts!} />
 						) : (
 							<li>
@@ -126,9 +122,8 @@ export const PaginatedItems = ({
 				</div>
 			</div>
 
-			{/* Pagination controls */}
 			<div className="flex justify-center my-4">
-				{!loading && (
+				{!isLoading && (
 					<ReactPaginate
 						breakLabel="..."
 						nextLabel="next >"

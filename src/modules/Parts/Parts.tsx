@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { Dispatch, SetStateAction } from "react";
-import { TreeView } from "../components/Treeview";
-import { PaginatedItems } from "../components/PaginationParts";
+import { TreeView } from "../../components/Parts/Treeview";
+import { PaginatedItems } from "../../components/Parts/PaginationParts";
 
 type PaginationCountSelectorProps = {
 	partCount: number;

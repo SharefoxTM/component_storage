@@ -1,0 +1,20 @@
+export type APISupplierPart = {
+	available: string;
+	description: string;
+	in_stock: number;
+	link: string;
+	manufacturer: string;
+	MPN: string;
+	note: string;
+	pk: number;
+	barcode_hash: string;
+	packaging: string;
+	pack_quantity: string;
+	pack_quantity_native: string;
+	part: number;
+	SKU: string;
+	supplier: number;
+	url: string;
+	updated: string;
+	tags: string[];
+};

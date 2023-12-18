@@ -1,26 +1,24 @@
-import { FetchImage } from "./InvenTree/apiCalls";
-
-export const Thumbnail = ({ id }: { id: number }) => {
-	const image: string = FetchImage(id);
-	return image === "" ? (
-		<div className="avatar placeholder">
-			<div className="w-24 border rounded">
-				<span className="loading loading-spinner loading-xs"></span>
-			</div>
-		</div>
-	) : image === "data:img/jpeg;base64," ? (
-		<div className="avatar placeholder">
-			<div className="w-24 border rounded">
-				<p>No image</p>
-			</div>
-		</div>
-	) : (
-		<div className="avatar">
-			<div className="w-24 border rounded">
-				<img
-					src={image}
-					alt="thumbnail for part"
-				/>
+export const Thumbnail = ({ src, size }: { src: string; size?: string }) => {
+	const sizeClass: string = (size || "w-24") + " rounded aspect-square";
+	return (
+		<div className="relative flex">
+			<div className={sizeClass}>
+				{src !== null && (
+					<img
+						className="h-full w-full object-contain"
+						src={`${process.env.REACT_APP_BE_HOST}parts${src}`}
+						alt="thumbnail for part"
+						loading="lazy"
+					/>
+				)}
+				{src === null && (
+					<img
+						className="h-full w-full object-contain"
+						src={`${process.env.REACT_APP_BE_HOST}parts/static/img/blank_image.thumbnail.png`}
+						alt="thumbnail for part"
+						loading="lazy"
+					/>
+				)}
 			</div>
 		</div>
 	);

@@ -1,46 +1,7 @@
 import { useEffect, useState } from "react";
 import { PartQuery } from "../../models/PartQuery.model";
-import { PartsItems } from "../../models/PartsItems.model";
-import { CategoryItems } from "../../models/CategoryItems.models";
-import { CategoryTree } from "../../models/CategoryTree.model";
 
-export const FetchCategories = (token: string | undefined): CategoryItems => {
-	const [categories, setCategories] = useState<CategoryItems>();
-	useEffect(() => {
-		function getData() {
-			fetch(process.env.REACT_APP_DB_HOST + "/api/part/category/", {
-				headers: new Headers({
-					Authorization: token ?? "",
-				}),
-			})
-				.then((response) => response.json())
-				.then((data: CategoryItems) => {
-					setCategories(data);
-				})
-				.catch((error) => console.log(error));
-		}
-		if (!categories) getData();
-	}, [token, categories]);
-	return categories!;
-};
-
-export const FetchCategoryTree = (): CategoryTree => {
-	const [categoryTree, setCategoryTree] = useState<CategoryTree>();
-	useEffect(() => {
-		function getData() {
-			fetch(process.env.REACT_APP_BE_HOST + "categories/tree/")
-				.then((response) => response.json())
-				.then((data: CategoryTree) => {
-					setCategoryTree(data);
-				})
-				.catch((error) => console.log(error));
-		}
-		if (!categoryTree) getData();
-	}, [categoryTree]);
-	return categoryTree!;
-};
-
-function createURL(url: string, query: PartQuery): string {
+export function createURL(url: string, query: PartQuery): string {
 	let queriedUrl = url;
 	queriedUrl += query !== undefined ? "?" : "";
 	queriedUrl += query?.IPN !== undefined ? "IPN=" + query.IPN + "&" : "";
@@ -136,18 +97,6 @@ function createURL(url: string, query: PartQuery): string {
 	queriedUrl += query?.virtual !== undefined ? "virtual=" + query.virtual : "";
 	return queriedUrl;
 }
-
-export type APIParts = {
-	data: PartsItems;
-	totalPages: number;
-};
-
-export const FetchParts = async (query: PartQuery): Promise<APIParts> => {
-	const url = createURL(process.env.REACT_APP_BE_HOST + "parts/", query);
-	console.log(url);
-	const parts: APIParts = await fetch(url).then((response) => response.json());
-	return parts;
-};
 
 const getBase64Image = async (res: Response): Promise<string> => {
 	const blob = await res.blob();

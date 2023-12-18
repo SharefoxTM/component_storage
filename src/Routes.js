@@ -4,8 +4,8 @@ import {
 	RouterProvider,
 	useRouteError,
 } from "react-router-dom";
-import { Parts } from "./modules/Parts";
-import { PartView } from "./modules/PartView";
+import { Parts } from "./modules/Parts/Parts";
+import { PartView } from "./modules/PartView/PartView";
 
 export const ErrorFallback = () => {
 	const error = useRouteError();
@@ -79,6 +79,7 @@ const router = createBrowserRouter([
 	{
 		path: "/Part/:partID",
 		element: <PartView />,
+		errorElement: <ErrorFallback />,
 	},
 ]);
 
