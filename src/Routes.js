@@ -6,6 +6,7 @@ import {
 } from "react-router-dom";
 import { Parts } from "./modules/Parts/Parts";
 import { PartView } from "./modules/PartView/PartView";
+import { Storage } from "./modules/Storage/Storage";
 
 export const ErrorFallback = () => {
 	const error = useRouteError();
@@ -67,18 +68,23 @@ const router = createBrowserRouter([
 		errorElement: <ErrorFallback />,
 	},
 	{
-		path: "/Parts",
+		path: "/parts",
 		element: <Parts />,
 		errorElement: <ErrorFallback />,
 	},
 	{
-		path: "/Parts/:categoryID/:categoryName",
+		path: "/parts/:categoryID/:categoryName",
 		element: <Parts />,
 		errorElement: <ErrorFallback />,
 	},
 	{
-		path: "/Part/:partID",
+		path: "/part/:partID",
 		element: <PartView />,
+		errorElement: <ErrorFallback />,
+	},
+	{
+		path: "/storage",
+		element: <Storage />,
 		errorElement: <ErrorFallback />,
 	},
 ]);

@@ -19,7 +19,7 @@ const NavButton = ({ children, className, href }: NavButtonProps) => {
 
 export const Navbar = () => {
 	return (
-		<div className="navbar bg-base-300 flex align-baseline">
+		<div className="navbar bg-base-300 flex align-baseline w-full">
 			<NavButton
 				className="text-xl"
 				href="/"
@@ -29,6 +29,12 @@ export const Navbar = () => {
 			<NavButton href="/parts">Parts</NavButton>
 			<NavButton href="/PO">Add PO</NavButton>
 			<NavButton href="/SO">Add SO</NavButton>
+			<NavButton
+				href="/storage"
+				className="justify-end ml-auto"
+			>
+				Storage
+			</NavButton>
 		</div>
 	);
 };
