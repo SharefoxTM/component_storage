@@ -3,19 +3,19 @@ import { Dispatch, SetStateAction } from "react";
 import { TreeView } from "../../components/Parts/Treeview";
 import { PaginatedItems } from "../../components/Parts/PaginationParts";
 
-type PaginationCountSelectorProps = {
+type PaginationCountSelectororProps = {
 	partCount: number;
 	setPartCount: Dispatch<SetStateAction<number>>;
 };
 
-export const PaginationCountSelector = ({
+export const PaginationCountSelectoror = ({
 	partCount,
 	setPartCount,
-}: PaginationCountSelectorProps) => {
-	function handleChange(event: React.ChangeEvent<HTMLSelectElement>) {
+}: PaginationCountSelectororProps) => {
+	const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
 		setPartCount(parseInt(event.currentTarget.value));
 		localStorage.setItem("paginationQty", event.currentTarget.value);
-	}
+	};
 	return (
 		<div>
 			<select

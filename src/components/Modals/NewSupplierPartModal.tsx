@@ -17,7 +17,7 @@ const postData = (data: FieldValues) => {
 				document.getElementById("newSupplierPartModal")! as HTMLDialogElement
 			).close();
 			const selector = document.getElementById(
-				"newReelSelectSP",
+				"newReelSelectorSP",
 			)! as HTMLSelectElement;
 			console.log(res.data);
 			const option = document.createElement("option");

@@ -1,26 +1,27 @@
-import { FormProvider, UseFormReturn } from "react-hook-form";
+import { Controller, FormProvider, UseFormReturn } from "react-hook-form";
 import { Input } from "./Input";
 import { APISupplierPart } from "../../models/APISupplierPart.model";
-import { Select } from "./Select";
+import { Selector } from "./Select";
 import { APILocationDetail } from "../../models/APILocationDetail.model";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "../Button";
+import { APIGetPart } from "../../models/APIGetPart.model";
 
 const enterToTab = (e: React.KeyboardEvent) => {
 	if (e.key === "Enter" && !e.getModifierState("Shift")) {
 		switch ((e.target as HTMLElement).id) {
-			case "newReelSelectIP":
-				document.getElementById("newReelSelectWidth")?.focus();
+			case "newReelSelectorIP":
+				document.getElementById("newReelSelectorWidth")?.focus();
 				break;
-			case "newReelSelectWidth":
-				document.getElementById("newReelSelectSP")?.focus();
+			case "newReelSelectorWidth":
+				document.getElementById("newReelSelectorSP")?.focus();
 				break;
-			case "newReelSelectSP":
+			case "newReelSelectorSP":
 				document.getElementById("newReelQty")?.focus();
 				break;
 			case "newReelQty":
-				document.getElementById("newReelSelectIP")?.focus();
+				document.getElementById("newReelSelectorIP")?.focus();
 				break;
 
 			default:
@@ -34,9 +35,18 @@ export const NewReelForm = ({
 	id,
 	methods,
 }: {
-	id: string;
+	id?: string;
 	methods: UseFormReturn;
 }) => {
+	let partID = id;
+	const parts = useQuery({
+		queryKey: ["parts"],
+		queryFn: () =>
+			axios
+				.get(`${process.env.REACT_APP_BE_HOST}parts/`)
+				.then((res) => res.data),
+	});
+
 	const ip = useQuery({
 		queryKey: ["ip"],
 		queryFn: () =>
@@ -45,12 +55,14 @@ export const NewReelForm = ({
 				.then((res) => res.data),
 	});
 	const supplierPart = useQuery({
-		queryKey: ["sp"],
+		queryKey: ["sp", partID],
 		queryFn: () =>
 			axios
-				.get(`${process.env.REACT_APP_BE_HOST}company/parts/?part=${id}`)
+				.get(`${process.env.REACT_APP_BE_HOST}company/parts/?part=${partID}`)
 				.then((res) => res.data),
+		enabled: partID !== undefined,
 	});
+	console.log(parts.data);
 	return (
 		<FormProvider {...methods}>
 			<form
@@ -59,66 +71,111 @@ export const NewReelForm = ({
 				onSubmit={(e) => e.preventDefault()}
 				noValidate
 			>
+				{id === undefined && (
+					<div className="w-full flex gap-2">
+						<Controller
+							control={methods.control}
+							defaultValue={[]}
+							name="part"
+							rules={{ required: true }}
+							render={({ field }) => {
+								return (
+									<Selector
+										id={field.name}
+										label={<p>Select part *</p>}
+										data={parts.data?.map((val: APIGetPart) => ({
+											value: val.pk,
+											label: val.name,
+										}))}
+										errormsg="Select the part"
+									/>
+								);
+							}}
+						/>
+					</div>
+				)}
 				<div className="w-full flex gap-2">
-					<Select
-						id="newReelSelectIP"
-						label={<p>Location *</p>}
-						placeholder="Select location..."
-						data={ip.data?.map((val: APILocationDetail) => ({
-							value: val.pk,
-							name: val.name,
-						}))}
-						width="w-8/12"
-						fallback="Please add new storage"
-						required
-						errormsg="Select the location."
+					<Controller
+						control={methods.control}
+						defaultValue={[]}
+						name="newReelSelectIP"
+						rules={{ required: true }}
+						render={({ field }) => {
+							return (
+								<Selector
+									id={field.name}
+									label={<p>Location *</p>}
+									data={ip.data?.map((val: APILocationDetail) => ({
+										value: val.pk,
+										label: val.name,
+									}))}
+									width="w-8/12"
+									errormsg="Select the location."
+								/>
+							);
+						}}
 					/>
-					<Select
-						id="newReelSelectWidth"
-						label={<p>Width *</p>}
-						placeholder="Select width..."
-						data={[
-							{ value: 1, name: "1" },
-							{ value: 2, name: "2" },
-							{ value: 3, name: "3" },
-							{ value: 4, name: "4" },
-						]}
-						width="w-4/12"
-						required
-						errormsg="Select width."
+					<Controller
+						control={methods.control}
+						defaultValue={[]}
+						name="newReelSelectWidth"
+						rules={{ required: true }}
+						render={({ field }) => {
+							return (
+								<Selector
+									id={field.name}
+									label={<p>Width *</p>}
+									data={[
+										{ value: 1, label: "1" },
+										{ value: 2, label: "2" },
+										{ value: 3, label: "3" },
+										{ value: 4, label: "4" },
+									]}
+									width="w-4/12"
+									errormsg="Select width."
+								/>
+							);
+						}}
 					/>
 				</div>
 				<div className="w-full flex gap-2">
-					<Select
-						id="newReelSelectSP"
-						label={
-							<p>
-								Supplier Part *
-								<Button
-									variant="success"
-									size="xs"
-									negative
-									className="ml-2"
-									onClick={() => {
-										(
-											document.getElementById(
-												"newSupplierPartModal",
-											)! as HTMLDialogElement
-										).showModal();
-									}}
-								>
-									+
-								</Button>
-							</p>
-						}
-						placeholder="Select supplier part..."
-						data={supplierPart.data?.map((val: APISupplierPart) => ({
-							value: val.pk,
-							name: val.SKU,
-						}))}
-						fallback="please add new supplier part"
-						required
-						errormsg="Please select a supplier part"
+					<Controller
+						control={methods.control}
+						defaultValue={[]}
+						name="newReelSelectSP"
+						rules={{ required: true }}
+						render={({ field }) => {
+							return (
+								<Selector
+									id={field.name}
+									label={
+										<p>
+											Supplier Part *
+											<Button
+												variant="success"
+												size="xs"
+												negative
+												className="ml-2"
+												onClick={() => {
+													(
+														document.getElementById(
+															"newSupplierPartModal",
+														)! as HTMLDialogElement
+													).showModal();
+												}}
+											>
+												+
+											</Button>
+										</p>
+									}
+									data={supplierPart.data?.map((val: APISupplierPart) => ({
+										value: val.pk,
+										name: val.SKU,
+									}))}
+									errormsg="Please select a supplier part"
+								/>
+							);
+						}}
 					/>
 					<Input
 						label="Quantity"

@@ -6,6 +6,7 @@ import { ReturnReelForm } from "../Form/ReturnReelForm";
 import { NewReelForm } from "../Form/NewReelForm";
 import { Button } from "../Button";
 import axios from "axios";
+import { NewSupplierPartModal } from "./NewSupplierPartModal";
 
 const postNewReel = async (data: FieldValues) => {
 	axios
@@ -68,12 +69,12 @@ export const PutReelModal = () => {
 			</label>
 			{checked ? (
 				<ReturnReelForm
-					id={param.partID!}
+					id={param.partID}
 					methods={methodsReturn}
 				/>
 			) : (
 				<NewReelForm
-					id={param.partID!}
+					id={param.partID}
 					methods={methodsNew}
 				/>
 			)}
@@ -98,6 +99,7 @@ export const PutReelModal = () => {
 					<Button onClick={onCancel}>Cancel</Button>
 				</form>
 			</div>
+			<NewSupplierPartModal />
 		</Modal>
 	);
 };

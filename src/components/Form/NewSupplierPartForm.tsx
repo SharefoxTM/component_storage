@@ -1,6 +1,6 @@
-import { FormProvider, UseFormReturn } from "react-hook-form";
+import { Controller, FormProvider, UseFormReturn } from "react-hook-form";
 import { Input } from "./Input";
-import { Select } from "./Select";
+import { Selector } from "./Select";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { APISupplierDetail } from "../../models/APISupplierDetail.model";
@@ -55,18 +55,25 @@ export const NewSupplierPartForm = ({
 						width="w-1/2"
 						required
 					/>
-					<Select
-						id="supplier"
-						label={<p>Supplier</p>}
-						placeholder="Select a supplier"
-						data={suppliers.data?.map((val: APISupplierDetail) => ({
-							value: val.pk,
-							name: val.name,
-						}))}
-						errormsg="Please select a supplier"
-						fallback="No suppliers found!"
-						width="w-1/2"
-						required
+					<Controller
+						control={methods.control}
+						defaultValue={[]}
+						name="supplier"
+						rules={{ required: true }}
+						render={({ field }) => {
+							return (
+								<Selector
+									id={field.name}
+									label={<p>Supplier *</p>}
+									data={suppliers.data?.map((val: APISupplierDetail) => ({
+										value: val.pk,
+										label: val.name,
+									}))}
+									width="w-1/2"
+									errormsg="Select the a supplier."
+								/>
+							);
+						}}
 					/>
 				</div>
 			</form>

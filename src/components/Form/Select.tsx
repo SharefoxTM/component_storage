@@ -1,86 +1,58 @@
 import classNames from "classnames";
 import { useFormContext } from "react-hook-form";
+import AsyncSelect from "react-select/async";
 
 type InputProps = {
 	id: string;
 	label: React.ReactElement;
-	placeholder: string;
-	fallback?: string;
 	data?: {
 		value: number;
-		name: string;
+		label: string;
 	}[];
 	width?: string;
-	required?: boolean;
 	errormsg?: string;
 };
 
-export const Select = ({
+type dataOptions = {
+	value: number;
+	label: string;
+};
+
+export const Selector = ({
 	id,
 	label,
-	placeholder,
-	fallback,
 	data,
 	width = "w-full",
-	required = false,
 	errormsg = "",
 }: InputProps) => {
 	const {
-		register,
 		formState: { errors },
 	} = useFormContext();
-	console.log(data);
+
+	const filterData = (inputValue: string) => {
+		return data!.filter((i) =>
+			i.label.toLowerCase().includes(inputValue.toLowerCase()),
+		) as dataOptions[];
+	};
+
+	const promiseOptions = (inputValue: string) =>
+		new Promise<dataOptions[]>((resolve) => {
+			setTimeout(() => {
+				resolve(filterData(inputValue));
+			}, 1000);
+		});
+
 	return (
 		<>
 			<label className={classNames("form-control", [width])}>
 				<div className="label">
 					<span className="label-text">{label}</span>
 				</div>
-				<select
-					id={id}
-					defaultValue=""
-					className="select select-bordered"
-					{...register(id, {
-						required: {
-							value: required,
-							message: errormsg,
-						},
-					})}
-				>
-					<option
-						value=""
-						disabled
-					>
-						{placeholder}
-					</option>
-					{data && (
-						<>
-							{data?.length !== 0 &&
-								data?.map(
-									(
-										optionData: {
-											value: number;
-											name: string;
-										},
-										key: number,
-									) => (
-										<option
-											key={key}
-											value={optionData.value}
-										>
-											{optionData.name}
-										</option>
-									),
-								)}
-						</>
-					)}
-					{!data === undefined && (
-						<option
-							className="skeleton"
-							disabled
-						></option>
-					)}
-				</select>
+				<AsyncSelect
+					cacheOptions
+					defaultOptions={data}
+					loadOptions={promiseOptions}
+				/>
 				{Object.keys(errors).length !== 0 && (
 					<>{errors[id] && <InputError message={errormsg} />}</>
 				)}

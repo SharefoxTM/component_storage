@@ -1,26 +1,27 @@
-import { FormProvider, UseFormReturn } from "react-hook-form";
+import { Controller, FormProvider, UseFormReturn } from "react-hook-form";
 import { APIMovingStock } from "../../models/APIMovingStock.model";
 import { Input } from "./Input";
-import { Select } from "./Select";
+import { Selector } from "./Select";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { APILocationDetail } from "../../models/APILocationDetail.model";
+import { APIGetPart } from "../../models/APIGetPart.model";
 
 const enterToTab = (e: React.KeyboardEvent) => {
 	if (e.key === "Enter" && !e.getModifierState("Shift")) {
 		switch ((e.target as HTMLElement).id) {
-			case "returnReelSelectIP":
+			case "returnReelSelectorIP":
 				console.log("This is awkward");
-				document.getElementById("returnReelSelectWidth")?.focus();
+				document.getElementById("returnReelSelectorWidth")?.focus();
 				break;
-			case "returnReelSelectWidth":
-				document.getElementById("returnReelSelectSP")?.focus();
+			case "returnReelSelectorWidth":
+				document.getElementById("returnReelSelectorSP")?.focus();
 				break;
-			case "returnReelSelectSP":
+			case "returnReelSelectorSP":
 				document.getElementById("returnReelQty")?.focus();
 				break;
 			case "returnReelQty":
-				document.getElementById("returnReelSelectIP")?.focus();
+				document.getElementById("returnReelSelectorIP")?.focus();
 				break;
 
 			default:
@@ -35,15 +36,24 @@ export const ReturnReelForm = ({
 	id,
 	methods,
 }: {
-	id: string;
+	id?: string;
 	methods: UseFormReturn;
 }) => {
-	const stock = useQuery({
-		queryKey: [`reel ${id}`, "reel"],
+	let partID = id;
+	const parts = useQuery({
+		queryKey: ["parts"],
 		queryFn: () =>
 			axios
-				.get(`${process.env.REACT_APP_BE_HOST}storage/moving/${id}`)
+				.get(`${process.env.REACT_APP_BE_HOST}parts/`)
 				.then((res) => res.data),
+	});
+	const stock = useQuery({
+		queryKey: [partID, "reel"],
+		queryFn: () =>
+			axios
+				.get(`${process.env.REACT_APP_BE_HOST}storage/moving/${partID}`)
+				.then((res) => res.data),
+		enabled: partID !== undefined,
 	});
 	const ip = useQuery({
 		queryKey: ["ip"],
@@ -61,48 +71,92 @@ export const ReturnReelForm = ({
 				onKeyUp={enterToTab}
 				noValidate
 			>
+				{id === undefined && (
+					<div className="w-full flex gap-2">
+						<Controller
+							control={methods.control}
+							defaultValue={[]}
+							name="part"
+							rules={{ required: true }}
+							render={({ field }) => {
+								return (
+									<Selector
+										id={field.name}
+										label={<p>Select part *</p>}
+										data={parts.data?.map((val: APIGetPart) => ({
+											value: val.pk,
+											label: val.name,
+										}))}
+										errormsg="Select the part"
+									/>
+								);
+							}}
+						/>
+					</div>
+				)}
 				<div className="w-full flex gap-2">
-					<Select
-						id="returnReelSelectIP"
-						label={<p>Location *</p>}
-						placeholder="Select location..."
-						data={ip.data?.map((val: APILocationDetail) => ({
-							value: val.pk,
-							name: val.name,
-						}))}
-						width="w-8/12"
-						fallback="Please add new storage"
-						required
-						errormsg="Select the location."
+					<Controller
+						control={methods.control}
+						defaultValue={[]}
+						name="returnReelSelectIP"
+						rules={{ required: true }}
+						render={({ field }) => {
+							return (
+								<Selector
+									id={field.name}
+									label={<p>Location *</p>}
+									data={ip.data?.map((val: APILocationDetail) => ({
+										value: val.pk,
+										label: val.name,
+									}))}
+									width="w-8/12"
+									errormsg="Select the location."
+								/>
+							);
+						}}
 					/>
-					<Select
-						id="returnReelSelectWidth"
-						label={<p>Width *</p>}
-						placeholder="Select width..."
-						data={[
-							{ value: 1, name: "1" },
-							{ value: 2, name: "2" },
-							{ value: 3, name: "3" },
-							{ value: 4, name: "4" },
-						]}
-						width="w-4/12"
-						required
-						errormsg="Select width."
+					<Controller
+						control={methods.control}
+						defaultValue={[]}
+						name="returnReelSelectWidth"
+						rules={{ required: true }}
+						render={({ field }) => {
+							return (
+								<Selector
+									id={field.name}
+									label={<p>Width *</p>}
+									data={[
+										{ value: 1, label: "1" },
+										{ value: 2, label: "2" },
+										{ value: 3, label: "3" },
+										{ value: 4, label: "4" },
+									]}
+									width="w-4/12"
+									errormsg="Select width."
+								/>
+							);
+						}}
 					/>
 				</div>
-
 				<div className="w-full flex gap-2">
-					<Select
-						id="returnReelSelectSP"
-						label={<p>Supplier Part *</p>}
-						placeholder="Select supplier part..."
-						data={stock.data?.map((val: APIMovingStock) => ({
-							value: val.pk,
-							name: val.supplier_part_SKU,
-						}))}
-						fallback="Please deselect the return reel option"
-						required
-						errormsg="Please select a supplier part"
+					<Controller
+						control={methods.control}
+						defaultValue={[]}
+						name="returnReelSelectSP"
+						rules={{ required: true }}
+						render={({ field }) => {
+							return (
+								<Selector
+									id={field.name}
+									label={<p>Supplier Part *</p>}
+									data={stock.data?.map((val: APIMovingStock) => ({
+										value: val.pk,
+										name: val.supplier_part_SKU,
+									}))}
+									errormsg="Please select a supplier part"
+								/>
+							);
+						}}
 					/>
 					<Input
 						label="Quantity"
