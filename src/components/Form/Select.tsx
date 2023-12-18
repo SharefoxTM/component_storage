@@ -1,5 +1,6 @@
 import classNames from "classnames";
 import { useFormContext } from "react-hook-form";
+import { ActionMeta, ClassNamesConfig } from "react-select";
 import AsyncSelect from "react-select/async";
 
 type InputProps = {
@@ -11,19 +12,40 @@ type InputProps = {
 	}[];
 	width?: string;
 	errormsg?: string;
+	autoFocus?: boolean;
+	isDisabled?: boolean;
+	isMulti?: boolean;
+	isSearchable?: boolean;
+	onChange?: (newValue: unknown, actionMeta: ActionMeta<unknown>) => void;
 };
-
 type dataOptions = {
 	value: number;
 	label: string;
 };
 
-export const Selector = ({
+const SelectClassNames: ClassNamesConfig = {
+	container: () => "border dark:border-gray-700 h-12 rounded align-center",
+	indicatorsContainer: () => "p-3",
+	input: () => "dark:text-white ps-3",
+	menu: () => "dark:bg-neutral-700 bg-neutral-300",
+	noOptionsMessage: () => "dark:bg-gray-700 dark:text-white p-3",
+	option: () =>
+		"dark:text-white p-2 dark:bg-gray-800 hover:dark:bg-neutral-500 active:bg-blue-300",
+	placeholder: () => "dark:text-white ps-3",
+	singleValue: () => "dark:text-white ps-3",
+};
+
+export const Select = ({
 	id,
 	label,
 	data,
 	width = "w-full",
 	errormsg = "",
+	autoFocus = false,
+	isDisabled = false,
+	isMulti = false,
+	isSearchable = false,
+	onChange,
 }: InputProps) => {
 	const {
 		formState: { errors },
@@ -49,9 +71,17 @@ export const Selector = ({
 					<span className="label-text">{label}</span>
 				</div>
 				<AsyncSelect
+					classNames={SelectClassNames}
 					cacheOptions
+					unstyled
 					defaultOptions={data}
 					loadOptions={promiseOptions}
+					autoFocus={autoFocus}
+					isDisabled={isDisabled}
+					isMulti={isMulti}
+					isSearchable={isSearchable}
+					onChange={onChange}
+					placeholder={isSearchable ? "Search..." : "Select..."}
 				/>
 				{Object.keys(errors).length !== 0 && (
 					<>{errors[id] && <InputError message={errormsg} />}</>

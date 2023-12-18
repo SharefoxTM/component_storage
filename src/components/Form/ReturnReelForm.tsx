@@ -1,27 +1,28 @@
 import { Controller, FormProvider, UseFormReturn } from "react-hook-form";
 import { APIMovingStock } from "../../models/APIMovingStock.model";
 import { Input } from "./Input";
-import { Selector } from "./Select";
+import { Select } from "./Select";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { APILocationDetail } from "../../models/APILocationDetail.model";
 import { APIGetPart } from "../../models/APIGetPart.model";
+import { useState } from "react";
 
 const enterToTab = (e: React.KeyboardEvent) => {
 	if (e.key === "Enter" && !e.getModifierState("Shift")) {
 		switch ((e.target as HTMLElement).id) {
-			case "returnReelSelectorIP":
+			case "returnReelSelectIP":
 				console.log("This is awkward");
-				document.getElementById("returnReelSelectorWidth")?.focus();
+				document.getElementById("returnReelSelectWidth")?.focus();
 				break;
-			case "returnReelSelectorWidth":
-				document.getElementById("returnReelSelectorSP")?.focus();
+			case "returnReelSelectWidth":
+				document.getElementById("returnReelSelectSP")?.focus();
 				break;
-			case "returnReelSelectorSP":
+			case "returnReelSelectSP":
 				document.getElementById("returnReelQty")?.focus();
 				break;
 			case "returnReelQty":
-				document.getElementById("returnReelSelectorIP")?.focus();
+				document.getElementById("returnReelSelectIP")?.focus();
 				break;
 
 			default:
@@ -39,7 +40,8 @@ export const ReturnReelForm = ({
 	id?: string;
 	methods: UseFormReturn;
 }) => {
-	let partID = id;
+	const [partID, setPartID] = useState<number | undefined>();
+	if (id !== undefined) setPartID(parseInt(id));
 	const parts = useQuery({
 		queryKey: ["parts"],
 		queryFn: () =>
@@ -80,9 +82,17 @@ export const ReturnReelForm = ({
 							rules={{ required: true }}
 							render={({ field }) => {
 								return (
-									<Selector
+									<Select
 										id={field.name}
+										isSearchable
 										label={<p>Select part *</p>}
+										onChange={(newValue, actionMeta) => {
+											const { value } = newValue as {
+												value: number;
+												label: string;
+											};
+											setPartID(value);
+										}}
 										data={parts.data?.map((val: APIGetPart) => ({
 											value: val.pk,
 											label: val.name,
@@ -102,7 +112,7 @@ export const ReturnReelForm = ({
 						rules={{ required: true }}
 						render={({ field }) => {
 							return (
-								<Selector
+								<Select
 									id={field.name}
 									label={<p>Location *</p>}
 									data={ip.data?.map((val: APILocationDetail) => ({
@@ -122,7 +132,7 @@ export const ReturnReelForm = ({
 						rules={{ required: true }}
 						render={({ field }) => {
 							return (
-								<Selector
+								<Select
 									id={field.name}
 									label={<p>Width *</p>}
 									data={[
@@ -146,7 +156,7 @@ export const ReturnReelForm = ({
 						rules={{ required: true }}
 						render={({ field }) => {
 							return (
-								<Selector
+								<Select
 									id={field.name}
 									label={<p>Supplier Part *</p>}
 									data={stock.data?.map((val: APIMovingStock) => ({

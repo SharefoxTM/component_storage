@@ -57,6 +57,7 @@ export const PutReelModal = () => {
 				</div>
 				<input
 					type="checkbox"
+					id="checkSelection"
 					className="toggle toggle-primary"
 					onChange={() => {
 						setChecked(!checked);

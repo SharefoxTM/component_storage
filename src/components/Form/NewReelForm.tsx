@@ -1,27 +1,28 @@
 import { Controller, FormProvider, UseFormReturn } from "react-hook-form";
 import { Input } from "./Input";
 import { APISupplierPart } from "../../models/APISupplierPart.model";
-import { Selector } from "./Select";
+import { Select } from "./Select";
 import { APILocationDetail } from "../../models/APILocationDetail.model";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "../Button";
 import { APIGetPart } from "../../models/APIGetPart.model";
+import { useState } from "react";
 
 const enterToTab = (e: React.KeyboardEvent) => {
 	if (e.key === "Enter" && !e.getModifierState("Shift")) {
 		switch ((e.target as HTMLElement).id) {
-			case "newReelSelectorIP":
-				document.getElementById("newReelSelectorWidth")?.focus();
+			case "newReelSelectIP":
+				document.getElementById("newReelSelectWidth")?.focus();
 				break;
-			case "newReelSelectorWidth":
-				document.getElementById("newReelSelectorSP")?.focus();
+			case "newReelSelectWidth":
+				document.getElementById("newReelSelectSP")?.focus();
 				break;
-			case "newReelSelectorSP":
+			case "newReelSelectSP":
 				document.getElementById("newReelQty")?.focus();
 				break;
 			case "newReelQty":
-				document.getElementById("newReelSelectorIP")?.focus();
+				document.getElementById("newReelSelectIP")?.focus();
 				break;
 
 			default:
@@ -38,7 +39,10 @@ export const NewReelForm = ({
 	id?: string;
 	methods: UseFormReturn;
 }) => {
-	let partID = id;
+	const [partID, setPartID] = useState<number | undefined>();
+	if (id !== undefined) {
+		setPartID(parseInt(id));
+	}
 	const parts = useQuery({
 		queryKey: ["parts"],
 		queryFn: () =>
@@ -80,9 +84,17 @@ export const NewReelForm = ({
 							rules={{ required: true }}
 							render={({ field }) => {
 								return (
-									<Selector
+									<Select
 										id={field.name}
 										label={<p>Select part *</p>}
+										isSearchable
+										onChange={(newValue, actionMeta) => {
+											const { value } = newValue as {
+												value: number;
+												label: string;
+											};
+											setPartID(value);
+										}}
 										data={parts.data?.map((val: APIGetPart) => ({
 											value: val.pk,
 											label: val.name,
@@ -102,7 +114,7 @@ export const NewReelForm = ({
 						rules={{ required: true }}
 						render={({ field }) => {
 							return (
-								<Selector
+								<Select
 									id={field.name}
 									label={<p>Location *</p>}
 									data={ip.data?.map((val: APILocationDetail) => ({
@@ -122,7 +134,7 @@ export const NewReelForm = ({
 						rules={{ required: true }}
 						render={({ field }) => {
 							return (
-								<Selector
+								<Select
 									id={field.name}
 									label={<p>Width *</p>}
 									data={[
@@ -146,16 +158,16 @@ export const NewReelForm = ({
 						rules={{ required: true }}
 						render={({ field }) => {
 							return (
-								<Selector
+								<Select
 									id={field.name}
 									label={
-										<p>
+										<div className="flex flex-row">
 											Supplier Part *
 											<Button
 												variant="success"
 												size="xs"
 												negative
-												className="ml-2"
+												className="ml-2 overflow-hidden"
 												onClick={() => {
 													(
 														document.getElementById(
@@ -166,7 +178,7 @@ export const NewReelForm = ({
 											>
 												+
 											</Button>
-										</p>
+										</div>
 									}
 									data={supplierPart.data?.map((val: APISupplierPart) => ({
 										value: val.pk,

@@ -1,6 +1,6 @@
 import { Controller, FormProvider, UseFormReturn } from "react-hook-form";
 import { Input } from "./Input";
-import { Selector } from "./Select";
+import { Select } from "./Select";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { APISupplierDetail } from "../../models/APISupplierDetail.model";
@@ -62,7 +62,7 @@ export const NewSupplierPartForm = ({
 						rules={{ required: true }}
 						render={({ field }) => {
 							return (
-								<Selector
+								<Select
 									id={field.name}
 									label={<p>Supplier *</p>}
 									data={suppliers.data?.map((val: APISupplierDetail) => ({

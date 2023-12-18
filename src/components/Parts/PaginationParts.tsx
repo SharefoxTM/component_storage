@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { PartsItems } from "../../models/PartsItems.model";
-import { PaginationCountSelectoror } from "../../modules/Parts/Parts";
+import { PaginationCountSelector } from "../../modules/Parts/Parts";
 import { Link } from "react-router-dom";
 import { Thumbnail } from "../Thumbnail";
 import { createURL } from "../InvenTree/apiCalls";
@@ -100,7 +100,7 @@ export const PaginatedItems = ({
 					<h5 className="text-xl font-bold pl-2 leading-none text-gray-900 dark:text-white">
 						{categoryName}
 					</h5>
-					<PaginationCountSelectoror
+					<PaginationCountSelector
 						partCount={itemsPerPage}
 						setPartCount={setItemsPerPage}
 					/>
