@@ -1,16 +1,13 @@
-import classNames from "classnames";
 import { useFormContext } from "react-hook-form";
 import { ActionMeta, ClassNamesConfig } from "react-select";
 import AsyncSelect from "react-select/async";
 
 type InputProps = {
 	id: string;
-	label: React.ReactElement;
 	data?: {
 		value: number;
 		label: string;
 	}[];
-	width?: string;
 	errormsg?: string;
 	autoFocus?: boolean;
 	isDisabled?: boolean;
@@ -37,9 +34,7 @@ const SelectClassNames: ClassNamesConfig = {
 
 export const Select = ({
 	id,
-	label,
 	data,
-	width = "w-full",
 	errormsg = "",
 	autoFocus = false,
 	isDisabled = false,
@@ -66,27 +61,22 @@ export const Select = ({
 
 	return (
 		<>
-			<label className={classNames("form-control", [width])}>
-				<div className="label">
-					<span className="label-text">{label}</span>
-				</div>
-				<AsyncSelect
-					classNames={SelectClassNames}
-					cacheOptions
-					unstyled
-					defaultOptions={data}
-					loadOptions={promiseOptions}
-					autoFocus={autoFocus}
-					isDisabled={isDisabled}
-					isMulti={isMulti}
-					isSearchable={isSearchable}
-					onChange={onChange}
-					placeholder={isSearchable ? "Search..." : "Select..."}
-				/>
-				{Object.keys(errors).length !== 0 && (
-					<>{errors[id] && <InputError message={errormsg} />}</>
-				)}
-			</label>
+			<AsyncSelect
+				classNames={SelectClassNames}
+				cacheOptions
+				unstyled
+				defaultOptions={data}
+				loadOptions={promiseOptions}
+				autoFocus={autoFocus}
+				isDisabled={isDisabled}
+				isMulti={isMulti}
+				isSearchable={isSearchable}
+				onChange={onChange}
+				placeholder={isSearchable ? "Search..." : "Select..."}
+			/>
+			{Object.keys(errors).length !== 0 && (
+				<>{errors[id] && <InputError message={errormsg} />}</>
+			)}
 		</>
 	);
 };

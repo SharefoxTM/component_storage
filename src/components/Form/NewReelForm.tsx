@@ -77,127 +77,141 @@ export const NewReelForm = ({
 			>
 				{id === undefined && (
 					<div className="w-full flex gap-2">
+						<div className="form-control w-full">
+							<div className="label">
+								<span className="label-text">Select Part *</span>
+							</div>
+							<Controller
+								control={methods.control}
+								defaultValue={[]}
+								name="part"
+								rules={{ required: true }}
+								render={({ field }) => {
+									return (
+										<Select
+											id={field.name}
+											isSearchable
+											onChange={(newValue, actionMeta) => {
+												const { value } = newValue as {
+													value: number;
+													label: string;
+												};
+												setPartID(value);
+											}}
+											data={parts.data?.map((val: APIGetPart) => ({
+												value: val.pk,
+												label: val.name,
+											}))}
+											errormsg="Select the part"
+										/>
+									);
+								}}
+							/>
+						</div>
+					</div>
+				)}
+				<div className="w-full flex gap-2">
+					<div className="form-control w-8/12">
+						<div className="label">
+							<span className="label-text">Select IP *</span>
+						</div>
 						<Controller
 							control={methods.control}
 							defaultValue={[]}
-							name="part"
+							name="newReelSelectIP"
 							rules={{ required: true }}
 							render={({ field }) => {
 								return (
 									<Select
 										id={field.name}
-										label={<p>Select part *</p>}
-										isSearchable
-										onChange={(newValue, actionMeta) => {
-											const { value } = newValue as {
-												value: number;
-												label: string;
-											};
-											setPartID(value);
-										}}
-										data={parts.data?.map((val: APIGetPart) => ({
+										data={ip.data?.map((val: APILocationDetail) => ({
 											value: val.pk,
 											label: val.name,
 										}))}
-										errormsg="Select the part"
+										errormsg="Select the location."
 									/>
 								);
 							}}
 						/>
 					</div>
-				)}
-				<div className="w-full flex gap-2">
-					<Controller
-						control={methods.control}
-						defaultValue={[]}
-						name="newReelSelectIP"
-						rules={{ required: true }}
-						render={({ field }) => {
-							return (
-								<Select
-									id={field.name}
-									label={<p>Location *</p>}
-									data={ip.data?.map((val: APILocationDetail) => ({
-										value: val.pk,
-										label: val.name,
-									}))}
-									width="w-8/12"
-									errormsg="Select the location."
-								/>
-							);
-						}}
-					/>
-					<Controller
-						control={methods.control}
-						defaultValue={[]}
-						name="newReelSelectWidth"
-						rules={{ required: true }}
-						render={({ field }) => {
-							return (
-								<Select
-									id={field.name}
-									label={<p>Width *</p>}
-									data={[
-										{ value: 1, label: "1" },
-										{ value: 2, label: "2" },
-										{ value: 3, label: "3" },
-										{ value: 4, label: "4" },
-									]}
-									width="w-4/12"
-									errormsg="Select width."
-								/>
-							);
-						}}
-					/>
+					<div className="form-control w-4/12">
+						<div className="label">
+							<span className="label-text">Select Width *</span>
+						</div>
+						<Controller
+							control={methods.control}
+							defaultValue={[]}
+							name="newReelSelectWidth"
+							rules={{ required: true }}
+							render={({ field }) => {
+								return (
+									<Select
+										id={field.name}
+										data={[
+											{ value: 1, label: "1" },
+											{ value: 2, label: "2" },
+											{ value: 3, label: "3" },
+											{ value: 4, label: "4" },
+										]}
+										errormsg="Select width."
+									/>
+								);
+							}}
+						/>
+					</div>
 				</div>
 				<div className="w-full flex gap-2">
-					<Controller
-						control={methods.control}
-						defaultValue={[]}
-						name="newReelSelectSP"
-						rules={{ required: true }}
-						render={({ field }) => {
-							return (
-								<Select
-									id={field.name}
-									label={
-										<div className="flex flex-row">
-											Supplier Part *
-											<Button
-												variant="success"
-												size="xs"
-												negative
-												className="ml-2 overflow-hidden"
-												onClick={() => {
-													(
-														document.getElementById(
-															"newSupplierPartModal",
-														)! as HTMLDialogElement
-													).showModal();
-												}}
-											>
-												+
-											</Button>
-										</div>
-									}
-									data={supplierPart.data?.map((val: APISupplierPart) => ({
-										value: val.pk,
-										name: val.SKU,
-									}))}
-									errormsg="Please select a supplier part"
-								/>
-							);
-						}}
-					/>
-					<Input
-						label="Quantity"
-						id="newReelQty"
-						type="number"
-						placeholder="0"
-						width="w-1/2"
-						required
-						errormsg="Please enter a quantity."
-					/>
+					<div className="form-control w-1/2">
+						<div className="label">
+							<span className="label-text">Select Supplier Part * </span>
+							<Button
+								variant="success"
+								size="xs"
+								negative
+								className="ml-2 overflow-hidden"
+								onClick={() => {
+									(
+										document.getElementById(
+											"newSupplierPartModal",
+										)! as HTMLDialogElement
+									).showModal();
+								}}
+							>
+								+
+							</Button>
+						</div>
+						<Controller
+							control={methods.control}
+							defaultValue={[]}
+							name="newReelSelectSP"
+							rules={{ required: true }}
+							render={({ field }) => {
+								return (
+									<Select
+										id={field.name}
+										isSearchable
+										data={supplierPart.data?.map((val: APISupplierPart) => ({
+											value: val.pk,
+											label: val.SKU,
+										}))}
+										errormsg="Please select a supplier part"
+									/>
+								);
+							}}
+						/>
+					</div>
+					<div className="form-control w-1/2">
+						<div className="label">
+							<span className="label-text">Quantity *</span>
+						</div>
+						<Input
+							id="newReelQty"
+							type="number"
+							placeholder="0"
+							required
+							errormsg="Please enter a quantity."
+						/>
+					</div>
 				</div>
 			</form>
 		</FormProvider>

@@ -65,19 +65,22 @@ export const Storage = () => {
 										</Button>
 									</div>
 								</div>
-								<div className="basis-1/2 md:shrink-0 gap-2">
-									<Button onClick={getReel}>Get reel</Button>
-									<Button
-										onClick={() => {
-											(
-												document.getElementById(
-													"putReelModal",
-												)! as HTMLDialogElement
-											).showModal();
-										}}
-									>
-										Put reel
-									</Button>
+								<div className="basis-1/2 md:shrink-0 gap-2 border-s-2 pl-5">
+									<h1 className="text-white text-lg font-bold">Controls:</h1>
+									<div className="flex w-full gap-5">
+										<Button onClick={getReel}>Get reel</Button>
+										<Button
+											onClick={() => {
+												(
+													document.getElementById(
+														"putReelModal",
+													)! as HTMLDialogElement
+												).showModal();
+											}}
+										>
+											Put reel
+										</Button>
+									</div>
 								</div>
 								<PutReelModal />
 							</div>

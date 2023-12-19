@@ -46,35 +46,42 @@ export const NewSupplierPartForm = ({
 				noValidate
 			>
 				<div className="w-full flex gap-2">
-					<Input
-						id="SKU"
-						label="Stock keeping unit"
-						placeholder="SKU"
-						type="text"
-						errormsg="Please fill in the SKU"
-						width="w-1/2"
-						required
-					/>
-					<Controller
-						control={methods.control}
-						defaultValue={[]}
-						name="supplier"
-						rules={{ required: true }}
-						render={({ field }) => {
-							return (
-								<Select
-									id={field.name}
-									label={<p>Supplier *</p>}
-									data={suppliers.data?.map((val: APISupplierDetail) => ({
-										value: val.pk,
-										label: val.name,
-									}))}
-									width="w-1/2"
-									errormsg="Select the a supplier."
-								/>
-							);
-						}}
-					/>
+					<div className="form-control w-1/2">
+						<div className="label">
+							<span className="label-text">Stock keeping unit *</span>
+						</div>
+						<Input
+							id="SKU"
+							placeholder="SKU"
+							type="text"
+							errormsg="Please fill in the SKU"
+							required
+						/>
+					</div>
+
+					<div className="form-control w-1/2">
+						<div className="label">
+							<span className="label-text">Select supplier *</span>
+						</div>
+						<Controller
+							control={methods.control}
+							defaultValue={[]}
+							name="supplier"
+							rules={{ required: true }}
+							render={({ field }) => {
+								return (
+									<Select
+										id={field.name}
+										data={suppliers.data?.map((val: APISupplierDetail) => ({
+											value: val.pk,
+											label: val.name,
+										}))}
+										errormsg="Select the supplier."
+									/>
+								);
+							}}
+						/>
+					</div>
 				</div>
 			</form>
 		</FormProvider>
