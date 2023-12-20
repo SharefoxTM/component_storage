@@ -14,12 +14,13 @@ export const LocationList = () => {
 	return (
 		<>
 			<ul className="w-full">
-				{loc.data?.map((ip: APILocationDetail) => (
+				{loc.data?.map((ip: APILocationDetail, key: number) => (
 					<li
 						id={ip.pk.toString()}
 						className="w-full"
+						key={key}
 					>
-						<div className="flex w-full flex-row">
+						<div className="flex w-full flex-row gap-2">
 							<p className="me-auto">{ip.name}</p>
 							<Button
 								size="xs"
@@ -34,6 +35,81 @@ export const LocationList = () => {
 								}
 							>
 								init
+							</Button>
+							<Button
+								size="xs"
+								variant="info"
+								onClick={(e) =>
+									axios
+										.post(
+											`${process.env.REACT_APP_BE_HOST}storage/mode/`,
+											JSON.stringify({
+												mode: "0",
+												ip: ip.name,
+											}),
+											{
+												headers: {
+													"Content-Type": "application/json",
+												},
+											},
+										)
+										.then((res) => res.data)
+										.catch((r) => {
+											console.log(r.message);
+										})
+								}
+							>
+								Normal
+							</Button>
+							<Button
+								size="xs"
+								variant="info"
+								onClick={(e) =>
+									axios
+										.post(
+											`${process.env.REACT_APP_BE_HOST}storage/mode/`,
+											JSON.stringify({
+												mode: "1",
+												ip: ip.name,
+											}),
+											{
+												headers: {
+													"Content-Type": "application/json",
+												},
+											},
+										)
+										.then((res) => res.data)
+										.catch((r) => {
+											console.log(r.message);
+										})
+								}
+							>
+								Vegas
+							</Button>
+							<Button
+								size="xs"
+								variant="info"
+								onClick={(e) =>
+									axios
+										.post(
+											`${process.env.REACT_APP_BE_HOST}storage/mode/`,
+											JSON.stringify({
+												mode: "2",
+												ip: ip.name,
+											}),
+											{
+												headers: {
+													"Content-Type": "application/json",
+												},
+											},
+										)
+										.then((res) => res.data)
+										.catch((r) => {
+											console.log(r.message);
+										})
+								}
+							>
+								Knight Rider
 							</Button>
 						</div>
 					</li>
