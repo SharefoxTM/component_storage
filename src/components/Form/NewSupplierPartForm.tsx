@@ -1,9 +1,11 @@
-import { Controller, FormProvider, UseFormReturn } from "react-hook-form";
+import { FormProvider, UseFormReturn } from "react-hook-form";
 import { Input } from "./Input";
 import { Select } from "./Select";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { APISupplierDetail } from "../../models/APISupplierDetail.model";
+import { useState } from "react";
+import { APIGetPart } from "../../models/APIGetPart.model";
 
 const enterToTab = (e: React.KeyboardEvent) => {
 	if (
@@ -26,12 +28,26 @@ const enterToTab = (e: React.KeyboardEvent) => {
 };
 
 export const NewSupplierPartForm = ({
+	id,
 	methods,
 }: {
+	id?: string;
 	methods: UseFormReturn;
 }) => {
+	const [partID, setPartID] = useState<number | undefined>(
+		id !== undefined ? parseInt(id) : undefined,
+	);
+	const parts = useQuery({
+		queryKey: ["parts"],
+		queryFn: () =>
+			axios
+				.get(`${process.env.REACT_APP_BE_HOST}parts/`)
+				.then((res) => res.data),
+		enabled: partID === undefined,
+	});
+
 	const suppliers = useQuery({
-		queryKey: ["suppliers"],
+		queryKey: ["newSupplierForm"],
 		queryFn: () =>
 			axios
 				.get(`${process.env.REACT_APP_BE_HOST}company/suppliers/`)
@@ -45,6 +61,26 @@ export const NewSupplierPartForm = ({
 				onSubmit={(e) => e.preventDefault()}
 				noValidate
 			>
+				{id === undefined && (
+					<div className="w-full flex gap-2">
+						<div className="form-control w-full">
+							<div className="label">
+								<span className="label-text">Select Part *</span>
+							</div>
+							<Select
+								id="part"
+								methods={methods}
+								setter={setPartID}
+								isSearchable
+								options={parts.data?.map((val: APIGetPart) => ({
+									value: val.pk,
+									label: val.name,
+								}))}
+								errormsg="Select the part"
+							/>
+						</div>
+					</div>
+				)}
 				<div className="w-full flex gap-2">
 					<div className="form-control w-1/2">
 						<div className="label">
@@ -63,23 +99,14 @@ export const NewSupplierPartForm = ({
 						<div className="label">
 							<span className="label-text">Select supplier *</span>
 						</div>
-						<Controller
-							control={methods.control}
-							defaultValue={[]}
-							name="supplier"
-							rules={{ required: true }}
-							render={({ field }) => {
-								return (
-									<Select
-										id={field.name}
-										data={suppliers.data?.map((val: APISupplierDetail) => ({
-											value: val.pk,
-											label: val.name,
-										}))}
-										errormsg="Select the supplier."
-									/>
-								);
-							}}
+						<Select
+							id="newSP"
+							methods={methods}
+							options={suppliers.data?.map((val: APISupplierDetail) => ({
+								value: val.pk,
+								label: val.name,
+							}))}
+							errormsg="Select the supplier."
 						/>
 					</div>
 				</div>

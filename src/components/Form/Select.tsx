@@ -1,23 +1,21 @@
-import { useFormContext } from "react-hook-form";
-import { ActionMeta, ClassNamesConfig } from "react-select";
+import { Controller, UseFormReturn, useFormContext } from "react-hook-form";
+import { ClassNamesConfig } from "react-select";
 import AsyncSelect from "react-select/async";
 
+type Option = {
+	value: number;
+	label: string;
+};
 type InputProps = {
 	id: string;
-	data?: {
-		value: number;
-		label: string;
-	}[];
+	methods: UseFormReturn;
+	setter?: React.Dispatch<React.SetStateAction<number | undefined>>;
+	options?: Option[];
 	errormsg?: string;
 	autoFocus?: boolean;
 	isDisabled?: boolean;
 	isMulti?: boolean;
 	isSearchable?: boolean;
-	onChange?: (newValue: unknown, actionMeta: ActionMeta<unknown>) => void;
-};
-type dataOptions = {
-	value: number;
-	label: string;
 };
 
 const SelectClassNames: ClassNamesConfig = {
@@ -34,50 +32,66 @@ const SelectClassNames: ClassNamesConfig = {
 
 export const Select = ({
 	id,
-	data,
+	methods,
+	setter,
+	options,
 	errormsg = "",
 	autoFocus = false,
 	isDisabled = false,
 	isMulti = false,
 	isSearchable = false,
-	onChange,
 }: InputProps) => {
 	const {
 		formState: { errors },
 	} = useFormContext();
 
 	const filterData = (inputValue: string) => {
-		return data!.filter((i) =>
+		return options!.filter((i) =>
 			i.label.toLowerCase().includes(inputValue.toLowerCase()),
-		) as dataOptions[];
+		) as Option[];
 	};
 
 	const promiseOptions = (inputValue: string) =>
-		new Promise<dataOptions[]>((resolve) => {
+		new Promise<Option[]>((resolve) => {
 			setTimeout(() => {
 				resolve(filterData(inputValue));
 			}, 1000);
 		});
 
 	return (
-		<>
-			<AsyncSelect
-				classNames={SelectClassNames}
-				cacheOptions
-				unstyled
-				defaultOptions={data}
-				loadOptions={promiseOptions}
-				autoFocus={autoFocus}
-				isDisabled={isDisabled}
-				isMulti={isMulti}
-				isSearchable={isSearchable}
-				onChange={onChange}
-				placeholder={isSearchable ? "Search..." : "Select..."}
-			/>
-			{Object.keys(errors).length !== 0 && (
-				<>{errors[id] && <InputError message={errormsg} />}</>
-			)}
-		</>
+		<Controller
+			control={methods.control}
+			defaultValue={[]}
+			name={id}
+			rules={{ required: true }}
+			render={({ field }) => {
+				return (
+					<>
+						<AsyncSelect
+							{...field}
+							id={field.name}
+							classNames={SelectClassNames}
+							cacheOptions
+							unstyled
+							defaultOptions={options}
+							loadOptions={promiseOptions}
+							autoFocus={autoFocus}
+							isDisabled={isDisabled}
+							isMulti={isMulti}
+							isSearchable={isSearchable}
+							onChange={(e: any) => {
+								if (setter) setter(parseInt(e.value));
+								return field.onChange(e);
+							}}
+							placeholder={isSearchable ? "Search..." : "Select..."}
+						/>
+						{Object.keys(errors).length !== 0 && (
+							<>{errors[id] && <InputError message={errormsg} />}</>
+						)}
+					</>
+				);
+			}}
+		/>
 	);
 };
 

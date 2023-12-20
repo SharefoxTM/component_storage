@@ -13,23 +13,23 @@ export const MainContent = () => {
 	const param = useParams();
 	if (!param.partID) throw new Error("No part id specified!");
 
-	const { isPending, isFetching, error, data } = useQuery({
-		queryKey: [param.partID],
+	const part = useQuery({
+		queryKey: [`partView ${param.partID}`],
 		queryFn: () =>
 			axios
 				.get(`${process.env.REACT_APP_BE_HOST}parts/${param.partID}`)
 				.then((res) => res.data),
 	});
-	if (error) return <p>An error has occurred: {error.message}</p>;
-	const isLoading = isFetching || isPending;
-	const part: APIGetPart = data;
+	if (part.error) return <p>An error has occurred: {part.error.message}</p>;
+	const isLoading = part.isFetching || part.isPending;
+	const partData: APIGetPart = part.data;
 	return (
 		<>
 			<Card.CardContainer>
 				<Card.CardTitle>
 					{!isLoading ? (
 						<div className="text-white text-2xl md:text-4xl font-bold mb-2 align-middle">
-							{part.name}
+							{partData.name}
 						</div>
 					) : (
 						<div className="skeleton my-2 h-10 w-52 align-middle" />
@@ -40,7 +40,7 @@ export const MainContent = () => {
 					<div className="basis-5/12">
 						{!isLoading ? (
 							<Thumbnail
-								src={part.image}
+								src={partData.image}
 								size="w-28"
 							/>
 						) : (
@@ -55,9 +55,9 @@ export const MainContent = () => {
 
 						{!isLoading ? (
 							<>
-								<PartBadges part={part} />
+								<PartBadges part={partData} />
 								<p className="text-white">Description:</p>
-								<p>{part.description}</p>
+								<p>{partData.description}</p>
 							</>
 						) : (
 							<>
@@ -72,14 +72,14 @@ export const MainContent = () => {
 					<div className="stats stats-vertical shadow basis-5/12 overflow-clip">
 						<StatView title="Available stock">
 							{!isLoading ? (
-								part.unallocated_stock
+								partData.unallocated_stock
 							) : (
 								<p className="skeleton h-10 w-full"></p>
 							)}
 						</StatView>
 						<StatView title="Total stock">
 							{!isLoading ? (
-								part.total_in_stock
+								partData.total_in_stock
 							) : (
 								<p className="skeleton h-10 w-full"></p>
 							)}
@@ -87,8 +87,8 @@ export const MainContent = () => {
 						<StatView title="Allocated stock">
 							{!isLoading ? (
 								<Progressbar
-									value={part.allocated_to_build_orders}
-									max={part.required_for_build_orders}
+									value={partData.allocated_to_build_orders}
+									max={partData.required_for_build_orders}
 								/>
 							) : (
 								<div className="skeleton h-10 w-full rounded-full position-relative"></div>

@@ -2,6 +2,7 @@ import axios from "axios";
 import { Button } from "../../components/Button";
 import Card from "../../components/Card/Card";
 import { PutReelModal } from "../../components/Modals/PutReelModal";
+import { LocationList } from "../../components/Storage/LocationList";
 
 const handleModeClick = (e: React.MouseEvent<HTMLElement>) => {
 	const data = JSON.stringify({
@@ -41,49 +42,59 @@ export const Storage = () => {
 							</div>
 						</Card.CardTitle>
 						<Card.CardBody>
-							<div className="flex flex-col w-full md:flex-shrink-0 md:flex-row">
-								<div className="basis-1/2 md:shrink-0 gap-2 border-e-2">
-									<h1 className="text-white text-lg font-bold">Mode:</h1>
-									<div className="flex w-full gap-5">
-										<Button
-											onClick={handleModeClick}
-											id="0"
-										>
-											Normal
-										</Button>
-										<Button
-											onClick={handleModeClick}
-											id="1"
-										>
-											Vegas
-										</Button>
-										<Button
-											onClick={handleModeClick}
-											id="2"
-										>
-											Knight Rider
-										</Button>
+							<div className="flex flex-col w-full">
+								<div className="flex flex-col w-full md:flex-shrink-0 md:flex-row">
+									<div className="basis-1/2 md:shrink-0 gap-2 border-e-2">
+										<h1 className="text-white text-lg font-bold">Mode:</h1>
+										<div className="flex w-full gap-5">
+											<Button
+												onClick={handleModeClick}
+												id="0"
+											>
+												Normal
+											</Button>
+											<Button
+												onClick={handleModeClick}
+												id="1"
+											>
+												Vegas
+											</Button>
+											<Button
+												onClick={handleModeClick}
+												id="2"
+											>
+												Knight Rider
+											</Button>
+										</div>
+									</div>
+									<div className="basis-1/2 md:shrink-0 gap-2 border-s-2 pl-5">
+										<h1 className="text-white text-lg font-bold">Controls:</h1>
+										<div className="flex w-full gap-5">
+											<Button onClick={getReel}>Get reel</Button>
+											<Button
+												onClick={() => {
+													(
+														document.getElementById(
+															"putReelModal",
+														)! as HTMLDialogElement
+													).showModal();
+												}}
+											>
+												Put reel
+											</Button>
+										</div>
 									</div>
 								</div>
-								<div className="basis-1/2 md:shrink-0 gap-2 border-s-2 pl-5">
-									<h1 className="text-white text-lg font-bold">Controls:</h1>
-									<div className="flex w-full gap-5">
-										<Button onClick={getReel}>Get reel</Button>
-										<Button
-											onClick={() => {
-												(
-													document.getElementById(
-														"putReelModal",
-													)! as HTMLDialogElement
-												).showModal();
-											}}
-										>
-											Put reel
-										</Button>
+								<div className="flex flex-col w-full md:flex-shrink-0 md:flex-row mt-2">
+									<div className="md:w-full md:shrink-0 gap-2">
+										<h1 className="text-white text-lg font-bold">Locations:</h1>
+										<div className="flex w-full gap-5">
+											<LocationList />
+										</div>
 									</div>
 								</div>
-								<PutReelModal />
 							</div>
+							<PutReelModal />
 						</Card.CardBody>
 					</Card.CardContainer>
 				</div>
