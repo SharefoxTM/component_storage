@@ -6,7 +6,7 @@ export const Thumbnail = ({ src, size }: { src: string; size?: string }) => {
 				{src !== null && (
 					<img
 						className="h-full w-full object-contain"
-						src={`${process.env.REACT_APP_BE_HOST}parts${src}`}
+						src={`${process.env.REACT_APP_BE_HOST}file${src}`}
 						alt="thumbnail for part"
 						loading="lazy"
 					/>
@@ -14,7 +14,7 @@ export const Thumbnail = ({ src, size }: { src: string; size?: string }) => {
 				{src === null && (
 					<img
 						className="h-full w-full object-contain"
-						src={`${process.env.REACT_APP_BE_HOST}parts/static/img/blank_image.thumbnail.png`}
+						src={`${process.env.REACT_APP_BE_HOST}file/static/img/blank_image.thumbnail.png`}
 						alt="thumbnail for part"
 						loading="lazy"
 					/>
