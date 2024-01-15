@@ -30,9 +30,7 @@ export const PutReelModal = () => {
 	const methodsReturn = useForm();
 
 	const onSubmitNew = methodsNew.handleSubmit((data) => {
-		console.log(data);
 		if (param.partID !== undefined) data.part = { value: param.partID };
-
 		postNewReel(data);
 	});
 	const onSubmitReturn = methodsReturn.handleSubmit((data) => {

@@ -6,6 +6,7 @@ import axios from "axios";
 import { APISupplierDetail } from "../../models/APISupplierDetail.model";
 import { useState } from "react";
 import { APIGetPart } from "../../models/APIGetPart.model";
+import { Button } from "../Button";
 
 const enterToTab = (e: React.KeyboardEvent) => {
 	if (
@@ -66,6 +67,21 @@ export const NewSupplierPartForm = ({
 						<div className="form-control w-full">
 							<div className="label">
 								<span className="label-text">Select Part *</span>
+								<Button
+									variant="success"
+									size="xs"
+									negative
+									className="ml-2 overflow-hidden"
+									onClick={() => {
+										(
+											document.getElementById(
+												"newPartModal",
+											)! as HTMLDialogElement
+										).showModal();
+									}}
+								>
+									+
+								</Button>
 							</div>
 							<Select
 								id="part"
@@ -98,6 +114,21 @@ export const NewSupplierPartForm = ({
 					<div className="form-control w-1/2">
 						<div className="label">
 							<span className="label-text">Select supplier *</span>
+							<Button
+								variant="success"
+								size="xs"
+								negative
+								className="ml-2 overflow-hidden"
+								onClick={() => {
+									(
+										document.getElementById(
+											"newSupplierModal",
+										)! as HTMLDialogElement
+									).showModal();
+								}}
+							>
+								+
+							</Button>
 						</div>
 						<Select
 							id="newSP"

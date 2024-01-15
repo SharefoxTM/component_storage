@@ -66,7 +66,6 @@ export const NewReelForm = ({
 				.then((res) => res.data),
 		enabled: partID !== undefined,
 	});
-	console.log(parts.data);
 	return (
 		<FormProvider {...methods}>
 			<form

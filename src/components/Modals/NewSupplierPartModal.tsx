@@ -4,8 +4,14 @@ import { Button } from "../Button";
 import { NewSupplierPartForm } from "../Form/NewSupplierPartForm";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { NewPartModal } from "./NewPartModal";
 
 const postData = (data: FieldValues) => {
+	data = {
+		part: parseInt(data.part),
+		supplier: data.newSP.value,
+		SKU: data.SKU,
+	};
 	axios
 		.post(`${process.env.REACT_APP_BE_HOST}company/parts/`, data, {
 			headers: {
@@ -13,18 +19,20 @@ const postData = (data: FieldValues) => {
 			},
 		})
 		.then((res) => {
-			(
-				document.getElementById("newSupplierPartModal")! as HTMLDialogElement
-			).close();
-			const selector = document.getElementById(
-				"newReelSelectSP",
-			)! as HTMLSelectElement;
-			console.log(res.data);
-			const option = document.createElement("option");
-			option.value = res.data.pk;
-			option.text = res.data.SKU;
-			selector.appendChild(option);
-			selector.value = option.value;
+			if (res.status === 200) {
+				(
+					document.getElementById("newSupplierPartModal")! as HTMLDialogElement
+				).close();
+				const selector = document.getElementById(
+					"newReelSelectSP",
+				)! as HTMLSelectElement;
+
+				const option = document.createElement("option");
+				option.value = res.data.pk;
+				option.text = res.data.SKU;
+				selector.appendChild(option);
+				selector.value = option.value;
+			}
 		})
 		.catch((r) => {
 			console.log(r.message);
@@ -70,6 +78,7 @@ export const NewSupplierPartModal = () => {
 					<Button onClick={onCancel}>Cancel</Button>
 				</form>
 			</div>
+			<NewPartModal />
 		</Modal>
 	);
 };

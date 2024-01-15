@@ -7,6 +7,8 @@ import { createURL } from "../InvenTree/apiCalls";
 import ReactPaginate from "react-paginate";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { Button } from "../Button";
+import { NewPartModal } from "../Modals/NewPartModal";
 
 type PartItemsProps = {
 	items: PartsItems;
@@ -100,10 +102,25 @@ export const PaginatedItems = ({
 					<h5 className="text-xl font-bold pl-2 leading-none text-gray-900 dark:text-white">
 						{categoryName}
 					</h5>
-					<PaginationCountSelector
-						partCount={itemsPerPage}
-						setPartCount={setItemsPerPage}
-					/>
+					<div className="flex flex-row gap-5 items-center">
+						<Button
+							variant="success"
+							size="sm"
+							negative
+							className="overflow-hidden align-middle"
+							onClick={() => {
+								(
+									document.getElementById("newPartModal")! as HTMLDialogElement
+								).showModal();
+							}}
+						>
+							New part
+						</Button>
+						<PaginationCountSelector
+							partCount={itemsPerPage}
+							setPartCount={setItemsPerPage}
+						/>
+					</div>
 				</div>
 				<div className="flow-root">
 					<ul className="divide-y sm:mx-2 sm:px-1 divide-gray-200 dark:divide-gray-700">
@@ -143,6 +160,7 @@ export const PaginatedItems = ({
 					/>
 				)}
 			</div>
+			<NewPartModal />
 		</>
 	);
 };
