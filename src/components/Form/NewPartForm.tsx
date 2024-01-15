@@ -7,6 +7,7 @@ import { CategoryItems } from "../../models/CategoryItems.models";
 import { ChangeEvent, useState } from "react";
 import { Checkbox } from "./Checkbox";
 import { useEffectOnce } from "usehooks-ts";
+import { Textarea } from "./Textarea";
 
 export const NewPartForm = ({ methods }: { methods: UseFormReturn }) => {
 	const categories = useQuery({
@@ -104,6 +105,17 @@ export const NewPartForm = ({ methods }: { methods: UseFormReturn }) => {
 							id="min_stock"
 							placeholder="Minimal stock"
 							type="number"
+						/>
+					</div>
+				</div>
+				<div className="w-full flex">
+					<div className="form-control w-full">
+						<div className="label">
+							<span className="label-text">Description</span>
+						</div>
+						<Textarea
+							id="description"
+							placeholder="Description for this item"
 						/>
 					</div>
 				</div>
