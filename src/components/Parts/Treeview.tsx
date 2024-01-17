@@ -2,6 +2,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { CategoryTree } from "../../models/CategoryTree.model";
 import { Link } from "react-router-dom";
+import { Button } from "../Button";
+import { NewCategoryModal } from "../Modals/NewCategoryModal";
 
 const renderTreeNodes = (nodes: CategoryTree) => {
 	return nodes?.map((node) => (
@@ -25,7 +27,7 @@ const renderTreeNodes = (nodes: CategoryTree) => {
 };
 
 export const TreeView = () => {
-	const { isLoading, data, error } = useQuery({
+	const { isLoading, data, error, refetch } = useQuery({
 		queryKey: ["categories", "categories/tree/"],
 		queryFn: ({ signal }) =>
 			fetch(`${process.env.REACT_APP_BE_HOST}categories/tree/`, {
@@ -39,24 +41,47 @@ export const TreeView = () => {
 
 	if (isLoading)
 		return (
-			<ul className="menu bg-base-200 w-56 rounded-box">
-				<li>
-					<span className="loading loading-spinner loading-lg"></span>
-				</li>
-			</ul>
+			<div className="mt-2 mx-2">
+				<ul className="menu bg-base-200 w-56 rounded-box">
+					<li>
+						<span className="loading loading-spinner loading-lg"></span>
+					</li>
+				</ul>
+			</div>
 		);
+
 	let totalPartCount = 0;
 	categories?.forEach((e) => {
 		totalPartCount += e.part_count;
 	});
 	return (
-		<div className="mt-2 mx-2">
-			<ul className="menu bg-base-200 w-56 rounded-box">
-				<li>
-					<Link to={`/parts/`}>All ({totalPartCount})</Link>
-					<ul>{renderTreeNodes(categories)}</ul>
-				</li>
-			</ul>
-		</div>
+		<>
+			<div className="mt-2 mx-2">
+				<ul className="menu bg-base-200 w-56 rounded-box">
+					<li>
+						<Link to={`/parts/`}>All ({totalPartCount})</Link>
+						<ul>{renderTreeNodes(categories)}</ul>
+					</li>
+					<li className="mt-2">
+						<Button
+							variant="success"
+							size="sm"
+							negative
+							className="ml-2 overflow-hidden"
+							onClick={() => {
+								(
+									document.getElementById(
+										"newCategoryModal",
+									)! as HTMLDialogElement
+								).showModal();
+							}}
+						>
+							New category
+						</Button>
+					</li>
+				</ul>
+			</div>
+			<NewCategoryModal updater={refetch} />
+		</>
 	);
 };
