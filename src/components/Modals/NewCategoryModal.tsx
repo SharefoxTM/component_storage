@@ -11,10 +11,12 @@ const postData = (data: FieldValues, refetch: () => void) => {
 			},
 		})
 		.then((res) => {
-			(
-				document.getElementById("newCategoryModal")! as HTMLDialogElement
-			).close();
-			refetch();
+			if (res.status === 200) {
+				(
+					document.getElementById("newCategoryModal")! as HTMLDialogElement
+				).close();
+				refetch();
+			}
 		})
 		.catch((r) => {
 			console.log(r.message);
@@ -33,7 +35,6 @@ export const NewCategoryModal = ({ updater }: NewCategoryModalProps) => {
 	const onSubmit = newCategoryMethods.handleSubmit((data) => {
 		if (data.parent.value === undefined) data.parent = null;
 		else data.parent = data.parent.value;
-		console.log(data);
 		postData(data, updater);
 	});
 
