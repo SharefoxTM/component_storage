@@ -16,6 +16,8 @@ type InputProps = {
 	isDisabled?: boolean;
 	isMulti?: boolean;
 	isSearchable?: boolean;
+	required?: boolean;
+	placeholder?: string;
 };
 
 const SelectClassNames: ClassNamesConfig = {
@@ -40,6 +42,8 @@ export const Select = ({
 	isDisabled = false,
 	isMulti = false,
 	isSearchable = false,
+	required = true,
+	placeholder = "Select...",
 }: InputProps) => {
 	const {
 		formState: { errors },
@@ -63,7 +67,7 @@ export const Select = ({
 			control={methods.control}
 			defaultValue={[]}
 			name={id}
-			rules={{ required: true }}
+			rules={{ required: required }}
 			render={({ field }) => {
 				return (
 					<>
@@ -83,7 +87,7 @@ export const Select = ({
 								if (setter) setter(parseInt(e.value));
 								return field.onChange(e);
 							}}
-							placeholder={isSearchable ? "Search..." : "Select..."}
+							placeholder={isSearchable ? "Search..." : placeholder}
 						/>
 						{Object.keys(errors).length !== 0 && (
 							<>{errors[id] && <InputError message={errormsg} />}</>
