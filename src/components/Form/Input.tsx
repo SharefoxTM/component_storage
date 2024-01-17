@@ -32,7 +32,7 @@ export const Input = ({
 				})}
 				type={type}
 				placeholder={placeholder}
-				className="input input-bordered w-full max-w-xs"
+				className="input input-bordered w-full"
 			/>
 			{Object.keys(errors).length !== 0 && (
 				<>{errors[id] && <InputError message={errormsg} />}</>
