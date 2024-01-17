@@ -11,7 +11,7 @@ const postData = (data: FieldValues, refetch: () => void) => {
 			},
 		})
 		.then((res) => {
-			if (res.status === 200) {
+			if (res.status === 201) {
 				(
 					document.getElementById("newCategoryModal")! as HTMLDialogElement
 				).close();
