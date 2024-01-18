@@ -4,9 +4,10 @@ import { Select } from "./Select";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { APISupplierDetail } from "../../models/APISupplierDetail.model";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { APIGetPart } from "../../models/APIGetPart.model";
 import { Button } from "../Button";
+import { Option } from "../../models/Option.model";
 
 const enterToTab = (e: React.KeyboardEvent) => {
 	if (
@@ -35,6 +36,7 @@ export const NewSupplierPartForm = ({
 	id?: string;
 	methods: UseFormReturn;
 }) => {
+	const [partOption, setPartOption] = useState<Option>();
 	const [partID, setPartID] = useState<number | undefined>(
 		id !== undefined ? parseInt(id) : undefined,
 	);
@@ -54,6 +56,10 @@ export const NewSupplierPartForm = ({
 				.get(`${process.env.REACT_APP_BE_HOST}company/suppliers/`)
 				.then((res) => res.data),
 	});
+
+	useEffect(() => {
+		setPartID(partOption?.value as number);
+	}, [partOption]);
 	return (
 		<FormProvider {...methods}>
 			<form
@@ -75,7 +81,7 @@ export const NewSupplierPartForm = ({
 									onClick={() => {
 										(
 											document.getElementById(
-												"newPartModal",
+												"partNewEditModal",
 											)! as HTMLDialogElement
 										).showModal();
 									}}
@@ -86,7 +92,7 @@ export const NewSupplierPartForm = ({
 							<Select
 								id="part"
 								methods={methods}
-								setter={setPartID}
+								setter={setPartOption}
 								isSearchable
 								options={parts.data?.map((val: APIGetPart) => ({
 									value: val.pk,

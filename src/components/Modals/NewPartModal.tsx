@@ -55,8 +55,8 @@ export const NewPartModal = () => {
 		).checked;
 
 		data.category = data.category.value;
-		data.min_stock =
-			(document.getElementById("min_stock") as HTMLInputElement).value || 0;
+		data.minimum_stock =
+			(document.getElementById("minimum_stock") as HTMLInputElement).value || 0;
 
 		postData(data);
 	});

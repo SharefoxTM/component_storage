@@ -102,7 +102,7 @@ export const NewPartForm = ({ methods }: { methods: UseFormReturn }) => {
 							<span className="label-text">Minimal stock</span>
 						</div>
 						<Input
-							id="min_stock"
+							id="minimum_stock"
 							placeholder="Minimal stock"
 							type="number"
 						/>

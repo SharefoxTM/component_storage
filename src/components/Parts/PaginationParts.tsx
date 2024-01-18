@@ -8,7 +8,7 @@ import ReactPaginate from "react-paginate";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { Button } from "../Button";
-import { NewPartModal } from "../Modals/NewPartModal";
+import { PartNewEditModal } from "../Modals/PartNewEditModal";
 
 type PartItemsProps = {
 	items: PartsItems;
@@ -69,7 +69,7 @@ export const PaginatedItems = ({
 		parseInt(localStorage.getItem("paginationQty") || "25"),
 	);
 
-	const { isPending, error, data, isFetching } = useQuery({
+	const { isPending, error, data, isFetching, refetch } = useQuery({
 		queryKey: [categoryID, itemsPerPage, currentPage],
 		queryFn: () =>
 			axios
@@ -110,7 +110,9 @@ export const PaginatedItems = ({
 							className="overflow-hidden align-middle"
 							onClick={() => {
 								(
-									document.getElementById("newPartModal")! as HTMLDialogElement
+									document.getElementById(
+										"partNewEditModal",
+									)! as HTMLDialogElement
 								).showModal();
 							}}
 						>
@@ -160,7 +162,7 @@ export const PaginatedItems = ({
 					/>
 				)}
 			</div>
-			<NewPartModal />
+			<PartNewEditModal refetch={refetch} />
 		</>
 	);
 };

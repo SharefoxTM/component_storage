@@ -1,15 +1,12 @@
 import { Controller, UseFormReturn, useFormContext } from "react-hook-form";
 import { ClassNamesConfig } from "react-select";
 import AsyncSelect from "react-select/async";
+import { Option } from "../../models/Option.model";
 
-type Option = {
-	value: number;
-	label: string;
-};
 type InputProps = {
 	id: string;
 	methods: UseFormReturn;
-	setter?: React.Dispatch<React.SetStateAction<number | undefined>>;
+	setter?: React.Dispatch<React.SetStateAction<Option | undefined>>;
 	options?: Option[];
 	errormsg?: string;
 	autoFocus?: boolean;
@@ -18,6 +15,7 @@ type InputProps = {
 	isSearchable?: boolean;
 	required?: boolean;
 	placeholder?: string;
+	value?: { value: number | string; label: string };
 };
 
 const SelectClassNames: ClassNamesConfig = {
@@ -44,6 +42,7 @@ export const Select = ({
 	isSearchable = false,
 	required = true,
 	placeholder = "Select...",
+	value,
 }: InputProps) => {
 	const {
 		formState: { errors },
@@ -84,10 +83,11 @@ export const Select = ({
 							isMulti={isMulti}
 							isSearchable={isSearchable}
 							onChange={(e: any) => {
-								if (setter) setter(parseInt(e.value));
+								if (setter) setter(e);
 								return field.onChange(e);
 							}}
 							placeholder={isSearchable ? "Search..." : placeholder}
+							value={value}
 						/>
 						{Object.keys(errors).length !== 0 && (
 							<>{errors[id] && <InputError message={errormsg} />}</>

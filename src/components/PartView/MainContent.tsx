@@ -8,6 +8,7 @@ import { APIGetPart } from "../../models/APIGetPart.model";
 import { Progressbar } from "./ProgressBar";
 import { PartBadges } from "./PartBadges";
 import Card from "../Card/Card";
+import { PartNewEditModal } from "../Modals/PartNewEditModal";
 
 export const MainContent = () => {
 	const param = useParams();
@@ -35,6 +36,10 @@ export const MainContent = () => {
 						<div className="skeleton my-2 h-10 w-52 align-middle" />
 					)}
 					<DropDownSettings />
+					<PartNewEditModal
+						part={part}
+						refetch={part.refetch}
+					/>
 				</Card.CardTitle>
 				<Card.CardBody>
 					<div className="basis-5/12">

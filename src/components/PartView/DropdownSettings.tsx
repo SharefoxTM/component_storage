@@ -1,6 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
 import { useRef, useEffect } from "react";
+import { Button } from "../Button";
 
 export const DropDownSettings = () => {
 	const ref = useOutsideClick(() => {
@@ -24,8 +25,29 @@ export const DropDownSettings = () => {
 						tabIndex={0}
 						className="dropdown-content z-[1] menu p-2 shadow bg-gray-900 rounded-box w-20 border-1"
 					>
-						<li>Edit</li>
-						<li>Delete</li>
+						<li>
+							<Button
+								variant="ghost"
+								size="sm"
+								onClick={() => {
+									(
+										document.getElementById(
+											"partNewEditModal",
+										)! as HTMLDialogElement
+									).showModal();
+								}}
+							>
+								Edit
+							</Button>
+						</li>
+						<li>
+							<Button
+								variant="ghost"
+								size="sm"
+							>
+								Delete
+							</Button>
+						</li>
 					</ul>
 				</details>
 			</div>

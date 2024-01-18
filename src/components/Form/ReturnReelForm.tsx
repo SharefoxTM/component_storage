@@ -5,8 +5,9 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { APILocationDetail } from "../../models/APILocationDetail.model";
 import { APIGetPart } from "../../models/APIGetPart.model";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { APISupplierPart } from "../../models/APISupplierPart.model";
+import { Option } from "../../models/Option.model";
 
 const enterToTab = (e: React.KeyboardEvent) => {
 	if (e.key === "Enter" && !e.getModifierState("Shift")) {
@@ -39,6 +40,7 @@ export const ReturnReelForm = ({
 	id?: string;
 	methods: UseFormReturn;
 }) => {
+	const [partOption, setPartOption] = useState<Option>();
 	const [partID, setPartID] = useState<number | undefined>(
 		id !== undefined ? parseInt(id) : undefined,
 	);
@@ -66,6 +68,10 @@ export const ReturnReelForm = ({
 				.then((res) => res.data),
 	});
 
+	useEffect(() => {
+		setPartID(partOption?.value as number);
+	}, [partOption]);
+
 	return (
 		<FormProvider {...methods}>
 			<form
@@ -83,7 +89,7 @@ export const ReturnReelForm = ({
 							<Select
 								id="part"
 								methods={methods}
-								setter={setPartID}
+								setter={setPartOption}
 								isSearchable
 								options={parts.data?.map((val: APIGetPart) => ({
 									value: val.pk,

@@ -29,7 +29,7 @@ export const Textarea = ({
 					},
 				})}
 				placeholder={placeholder}
-				className="textarea textarea-bordered w-full"
+				className="textarea textarea-bordered w-full text-white"
 			/>
 			{Object.keys(errors).length !== 0 && (
 				<>{errors[id] && <InputError message={errormsg} />}</>

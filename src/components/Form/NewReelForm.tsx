@@ -6,8 +6,9 @@ import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "../Button";
 import { APIGetPart } from "../../models/APIGetPart.model";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { APISupplierPart } from "../../models/APISupplierPart.model";
+import { Option } from "../../models/Option.model";
 
 const enterToTab = (e: React.KeyboardEvent) => {
 	if (e.key === "Enter" && !e.getModifierState("Shift")) {
@@ -39,9 +40,11 @@ export const NewReelForm = ({
 	id?: string;
 	methods: UseFormReturn;
 }) => {
+	const [partOption, setPartOption] = useState<Option>();
 	const [partID, setPartID] = useState<number | undefined>(
 		id !== undefined ? parseInt(id) : undefined,
 	);
+
 	const parts = useQuery({
 		queryKey: ["parts"],
 		queryFn: () =>
@@ -58,6 +61,7 @@ export const NewReelForm = ({
 				.get(`${process.env.REACT_APP_BE_HOST}location/IPs`)
 				.then((res) => res.data),
 	});
+
 	const supplierPart = useQuery({
 		queryKey: ["sp", partID],
 		queryFn: () =>
@@ -66,6 +70,11 @@ export const NewReelForm = ({
 				.then((res) => res.data),
 		enabled: partID !== undefined,
 	});
+
+	useEffect(() => {
+		setPartID(partOption?.value as number);
+	}, [partOption]);
+
 	return (
 		<FormProvider {...methods}>
 			<form
@@ -83,7 +92,7 @@ export const NewReelForm = ({
 							<Select
 								id="part"
 								methods={methods}
-								setter={setPartID}
+								setter={setPartOption}
 								isSearchable
 								options={parts.data?.map((val: APIGetPart) => ({
 									value: val.pk,
