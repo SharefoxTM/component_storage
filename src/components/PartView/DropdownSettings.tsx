@@ -44,6 +44,13 @@ export const DropDownSettings = () => {
 							<Button
 								variant="ghost"
 								size="sm"
+								onClick={() => {
+									(
+										document.getElementById(
+											"deleterModal",
+										)! as HTMLDialogElement
+									).showModal();
+								}}
 							>
 								Delete
 							</Button>

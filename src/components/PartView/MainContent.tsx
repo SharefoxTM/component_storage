@@ -9,6 +9,7 @@ import { Progressbar } from "./ProgressBar";
 import { PartBadges } from "./PartBadges";
 import Card from "../Card/Card";
 import { PartNewEditModal } from "../Modals/PartNewEditModal";
+import { DeleterModal } from "../Modals/DeleterModal";
 
 export const MainContent = () => {
 	const param = useParams();
@@ -39,6 +40,10 @@ export const MainContent = () => {
 					<PartNewEditModal
 						part={part}
 						refetch={part.refetch}
+					/>
+					<DeleterModal
+						item={part.data}
+						type="parts"
 					/>
 				</Card.CardTitle>
 				<Card.CardBody>
