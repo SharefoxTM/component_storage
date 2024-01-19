@@ -133,7 +133,10 @@ export const PartNewEditModal = ({
 			</form>
 			{part === undefined && (
 				<>
-					<PartNewEditForm methods={method} />
+					<PartNewEditForm
+						methods={method}
+						setter={setSelectedCategory}
+					/>
 				</>
 			)}
 			{part !== undefined && (

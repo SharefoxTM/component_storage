@@ -2,11 +2,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
 import { useRef, useEffect } from "react";
 import { Button } from "../Button";
+import { deleteItem } from "../../utilities/utils";
+import { useParams } from "react-router-dom";
 
 export const DropDownSettings = () => {
 	const ref = useOutsideClick(() => {
 		document.getElementById("dropdownPartSettings")!.removeAttribute("open");
 	});
+
+	const param = useParams();
 
 	return (
 		<>
@@ -45,11 +49,7 @@ export const DropDownSettings = () => {
 								variant="ghost"
 								size="sm"
 								onClick={() => {
-									(
-										document.getElementById(
-											"deleterModal",
-										)! as HTMLDialogElement
-									).showModal();
+									deleteItem(param.partID!, "parts");
 								}}
 							>
 								Delete

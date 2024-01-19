@@ -4,7 +4,7 @@ import { Button } from "../Button";
 import { NewSupplierPartForm } from "../Form/NewSupplierPartForm";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import { NewPartModal } from "./NewPartModal";
+import { PartNewEditModal } from "./PartNewEditModal";
 
 const postData = (data: FieldValues) => {
 	data = {
@@ -78,7 +78,7 @@ export const NewSupplierPartModal = () => {
 					<Button onClick={onCancel}>Cancel</Button>
 				</form>
 			</div>
-			<NewPartModal />
+			<PartNewEditModal refetch={() => {}} />
 		</Modal>
 	);
 };
