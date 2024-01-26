@@ -1,4 +1,5 @@
 import { useFormContext } from "react-hook-form";
+import { AutoCompleteProps } from "../../models/AutoComplete.model";
 
 type InputProps = {
 	id: string;
@@ -6,10 +7,12 @@ type InputProps = {
 	placeholder: string;
 	required?: boolean;
 	errormsg?: string;
+	autoComplete?: AutoCompleteProps;
 };
 
 export const Input = ({
 	id,
+	autoComplete = "off",
 	type,
 	placeholder,
 	required = false,
@@ -23,6 +26,7 @@ export const Input = ({
 		<>
 			<input
 				required
+				autoComplete={autoComplete}
 				id={id}
 				{...register(id, {
 					required: {

@@ -1,10 +1,12 @@
 import { useFormContext } from "react-hook-form";
+import { AutoCompleteProps } from "../../models/AutoComplete.model";
 
 type InputProps = {
 	id: string;
 	placeholder: string;
 	required?: boolean;
 	errormsg?: string;
+	autoComplete?: AutoCompleteProps;
 };
 
 export const Textarea = ({
@@ -12,6 +14,7 @@ export const Textarea = ({
 	placeholder,
 	required = false,
 	errormsg = "",
+	autoComplete = "off",
 }: InputProps) => {
 	const {
 		register,
@@ -29,6 +32,7 @@ export const Textarea = ({
 					},
 				})}
 				placeholder={placeholder}
+				autoComplete={autoComplete}
 				className="textarea textarea-bordered w-full text-white"
 			/>
 			{Object.keys(errors).length !== 0 && (
