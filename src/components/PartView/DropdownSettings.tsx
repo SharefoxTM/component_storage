@@ -3,9 +3,14 @@ import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
 import { useRef, useEffect } from "react";
 import { Button } from "../Button";
 import { deleteItem } from "../../utilities/utils";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 export const DropDownSettings = () => {
+	const nav = useNavigate();
+	const submitDelete = async () => {
+		const status: number = await deleteItem(param.partID!, "parts");
+		if (status === 204) nav("/parts");
+	};
 	const ref = useOutsideClick(() => {
 		document.getElementById("dropdownPartSettings")!.removeAttribute("open");
 	});
@@ -49,7 +54,7 @@ export const DropDownSettings = () => {
 								variant="ghost"
 								size="sm"
 								onClick={() => {
-									deleteItem(param.partID!, "parts");
+									submitDelete();
 								}}
 							>
 								Delete

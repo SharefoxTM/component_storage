@@ -1,24 +1,36 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
-import { redirect } from "react-router-dom";
-export const deleteItem = (
-	pk: string,
-	type: "categories" | "parts" | "storage" | "location" | "company" | "file",
-) => {
+import { APIGetPart } from "../models/APIGetPart.model";
+import { toast } from "react-toastify";
+
+const isActive = (pk: string) => {
 	axios
-		.delete(`${process.env.REACT_APP_BE_HOST}${type}/${pk}`, {
-			headers: {
-				"Content-Type": "application/json",
-			},
-		})
-		.then((res: AxiosResponse) => {
-			if (res.status === 204) {
-				if (type === "parts") redirect("/parts");
+		.get(`${process.env.REACT_APP_BE_HOST}parts/${pk}`)
+		.then((res: AxiosResponse<APIGetPart>) => {
+			if (res.data.active) {
+				toast.error("Part is still active");
 			}
 		})
 		.catch((error: AxiosError) => {
-			const e = error.response;
-			if (type === "parts") {
-				if (e?.status === 405) console.log("Is part still active?");
-			}
+			toast.error(error.message);
 		});
+};
+
+export const deleteItem = async (
+	pk: string,
+	type: "categories" | "parts" | "storage" | "location" | "company" | "file",
+): Promise<number> => {
+	const status: number =
+		(await axios
+			.delete(`${process.env.REACT_APP_BE_HOST}${type}/${pk}`)
+			.then((res: AxiosResponse) => {
+				return res.status;
+			})
+			.catch((error: AxiosError) => {
+				const e = error.response;
+				if (type === "parts") {
+					if (e?.status === 405) isActive(pk);
+				}
+				return e?.status;
+			})) || 500;
+	return status;
 };
