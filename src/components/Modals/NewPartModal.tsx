@@ -3,6 +3,8 @@ import { Modal } from "./Modal";
 import { Button } from "../Button";
 import { NewPartForm } from "../Form/NewPartForm";
 import axios from "axios";
+import { Checkbox } from "../Form/Checkbox";
+import { useState } from "react";
 
 const postData = (data: FieldValues) => {
 	axios
@@ -60,6 +62,11 @@ export const NewPartModal = () => {
 
 		postData(data);
 	});
+	const [moreParts, setMoreParts] = useState(false);
+
+	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		setMoreParts(event.target.checked);
+	};
 
 	return (
 		<Modal
@@ -78,6 +85,12 @@ export const NewPartModal = () => {
 			</form>
 			<NewPartForm methods={newPartMethods} />
 			<div className="modal-action">
+				<Checkbox
+					handleChange={handleChange}
+					id="moreParts"
+					label="Create more parts?"
+					checked={moreParts}
+				/>
 				<Button
 					variant="success"
 					onClick={onSubmit}

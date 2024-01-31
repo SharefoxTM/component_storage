@@ -124,7 +124,7 @@ export const PartNewEditForm = ({
 
 	useEffect(() => {
 		if (setter !== undefined) setter(selectedCategory);
-	}, [selectedCategory, setter]);
+	}, [selectedCategory, setter, methods]);
 
 	return (
 		<FormProvider {...methods}>
