@@ -2,7 +2,7 @@ import { FormProvider, UseFormReturn } from "react-hook-form";
 import { Input } from "./Input";
 import { Select } from "./Select";
 import { APILocationDetail } from "../../models/APILocationDetail.model";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "../Button";
 import { APIGetPart } from "../../models/APIGetPart.model";
@@ -50,8 +50,17 @@ export const NewReelForm = ({
 		queryFn: () =>
 			axios
 				.get(`${process.env.REACT_APP_BE_HOST}parts/`)
-				.then((res) => res.data),
+				.then((res: AxiosResponse) => res.data),
 		enabled: partID === undefined,
+	});
+
+	const supplierPart = useQuery({
+		queryKey: [`supplierpart/${partID}`],
+		queryFn: () =>
+			axios
+				.get(`${process.env.REACT_APP_BE_HOST}company/parts/?part=${partID}`)
+				.then((res: AxiosResponse) => res.data),
+		enabled: partID !== undefined,
 	});
 
 	const ip = useQuery({
@@ -59,21 +68,12 @@ export const NewReelForm = ({
 		queryFn: () =>
 			axios
 				.get(`${process.env.REACT_APP_BE_HOST}location/IPs`)
-				.then((res) => res.data),
-	});
-
-	const supplierPart = useQuery({
-		queryKey: ["sp", partID],
-		queryFn: () =>
-			axios
-				.get(`${process.env.REACT_APP_BE_HOST}company/parts/?part=${partID}`)
-				.then((res) => res.data),
-		enabled: partID !== undefined,
+				.then((res: AxiosResponse) => res.data),
 	});
 
 	useEffect(() => {
-		setPartID(partOption?.value as number);
-	}, [partOption]);
+		if (id === undefined) setPartID(partOption?.value as number);
+	}, [id, partOption]);
 
 	return (
 		<FormProvider {...methods}>
