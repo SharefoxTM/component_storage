@@ -26,12 +26,20 @@ export const PartControls = () => {
 				</Card.CardTitle>
 				<Card.CardBody>
 					<div className="flex flex-col gap-3 justify-center w-full">
-						<Button
-							id={param.partID}
-							onClick={getReel}
-						>
-							Get reel
-						</Button>
+						<div className="w-full flex flex-shrink-0 justify-between">
+							<Button
+								id={`${param.partID}_Moving`}
+								onClick={getReel}
+							>
+								Get reel for self
+							</Button>
+							<Button
+								id={`${param.partID}_PNP`}
+								onClick={getReel}
+							>
+								Get reel for PNP
+							</Button>
+						</div>
 						<Button
 							onClick={() => {
 								(
