@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { APILocationDetail } from "../../models/APILocationDetail.model";
 import { Button } from "../Button";
+import { StorageNewEditModal } from "../Modals/StorageNewEditModal";
 
 export const LocationList = () => {
 	const loc = useQuery({
@@ -13,7 +14,7 @@ export const LocationList = () => {
 	});
 	return (
 		<>
-			<ul className="w-full">
+			<ul className="w-full space-y-2">
 				{loc.data?.map((ip: APILocationDetail, key: number) => (
 					<li
 						id={ip.pk.toString()}
@@ -44,7 +45,7 @@ export const LocationList = () => {
 										.post(
 											`${process.env.REACT_APP_BE_HOST}storage/mode/`,
 											JSON.stringify({
-												mode: "0",
+												mode: "NORMAL",
 												ip: ip.name,
 											}),
 											{
@@ -69,7 +70,7 @@ export const LocationList = () => {
 										.post(
 											`${process.env.REACT_APP_BE_HOST}storage/mode/`,
 											JSON.stringify({
-												mode: "1",
+												mode: "VEGAS",
 												ip: ip.name,
 											}),
 											{
@@ -94,7 +95,7 @@ export const LocationList = () => {
 										.post(
 											`${process.env.REACT_APP_BE_HOST}storage/mode/`,
 											JSON.stringify({
-												mode: "2",
+												mode: "KR",
 												ip: ip.name,
 											}),
 											{
@@ -115,6 +116,7 @@ export const LocationList = () => {
 					</li>
 				))}
 			</ul>
+			<StorageNewEditModal refetch={loc.refetch} />
 		</>
 	);
 };

@@ -23,6 +23,23 @@ export const Storage = () => {
 							<div className="text-white text-2xl md:text-4xl font-bold mb-2 align-middle">
 								Storage Controls
 							</div>
+							<div className="flex flex-row gap-5 items-center me-3">
+								<Button
+									variant="success"
+									size="sm"
+									negative
+									className="overflow-hidden align-middle"
+									onClick={() => {
+										(
+											document.getElementById(
+												"storageNewEditModal",
+											)! as HTMLDialogElement
+										).showModal();
+									}}
+								>
+									New storage
+								</Button>
+							</div>
 						</Card.CardTitle>
 						<Card.CardBody>
 							<div className="flex flex-col w-full">
