@@ -190,17 +190,17 @@ export const PartNewEditForm = ({
 						</div>
 						<div className="w-full flex flex-wrap gap-2">
 							{checkboxes.map((item, key) => (
-								<>
-									<div className="form-control w-1/4">
-										<Checkbox
-											key={key}
-											id={item.id}
-											label={item.label}
-											checked={checkedItems.get(item.id)}
-											handleChange={handleChange}
-										/>
-									</div>
-								</>
+								<div
+									className="form-control w-1/4"
+									key={key}
+								>
+									<Checkbox
+										id={item.id}
+										label={item.label}
+										checked={checkedItems.get(item.id)}
+										handleChange={handleChange}
+									/>
+								</div>
 							))}
 						</div>
 					</>

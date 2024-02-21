@@ -5,7 +5,7 @@ import { Button } from "../Button";
 import { StorageNewEditModal } from "../Modals/StorageNewEditModal";
 
 export const LocationList = () => {
-	const loc = useQuery({
+	const locations = useQuery({
 		queryKey: ["locationTable"],
 		queryFn: () =>
 			axios
@@ -14,22 +14,22 @@ export const LocationList = () => {
 	});
 	return (
 		<>
-			<ul className="w-full space-y-2">
-				{loc.data?.map((ip: APILocationDetail, key: number) => (
+			<ul className="w-full divide-y divide-gray-200 dark:divide-gray-700">
+				{locations.data?.map((location: APILocationDetail, key: number) => (
 					<li
-						id={ip.pk.toString()}
-						className="w-full"
+						id={location.pk.toString()}
+						className="w-full ps-2 py-3"
 						key={key}
 					>
 						<div className="flex w-full flex-row gap-2">
-							<p className="me-auto">{ip.name}</p>
+							<p className="me-auto">{location.name}</p>
 							<Button
 								size="xs"
 								variant="info"
 								onClick={(e) =>
 									axios
 										.post(`${process.env.REACT_APP_BE_HOST}storage/init/`, {
-											pk: ip.pk,
+											pk: location.pk,
 										})
 										.then((data) => data)
 										.catch((error) => console.log(error))
@@ -46,7 +46,7 @@ export const LocationList = () => {
 											`${process.env.REACT_APP_BE_HOST}storage/mode/`,
 											JSON.stringify({
 												mode: "NORMAL",
-												ip: ip.name,
+												ip: location.name,
 											}),
 											{
 												headers: {
@@ -71,7 +71,7 @@ export const LocationList = () => {
 											`${process.env.REACT_APP_BE_HOST}storage/mode/`,
 											JSON.stringify({
 												mode: "VEGAS",
-												ip: ip.name,
+												ip: location.name,
 											}),
 											{
 												headers: {
@@ -96,7 +96,7 @@ export const LocationList = () => {
 											`${process.env.REACT_APP_BE_HOST}storage/mode/`,
 											JSON.stringify({
 												mode: "KR",
-												ip: ip.name,
+												ip: location.name,
 											}),
 											{
 												headers: {
@@ -116,7 +116,7 @@ export const LocationList = () => {
 					</li>
 				))}
 			</ul>
-			<StorageNewEditModal refetch={loc.refetch} />
+			<StorageNewEditModal refetch={locations.refetch} />
 		</>
 	);
 };
