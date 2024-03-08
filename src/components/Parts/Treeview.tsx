@@ -27,7 +27,7 @@ const renderTreeNodes = (nodes: CategoryTree) => {
 };
 
 export const TreeView = () => {
-	const { isLoading, data, error, refetch } = useQuery({
+	const { isLoading, data, error } = useQuery({
 		queryKey: ["categories", "categories/tree/"],
 		queryFn: ({ signal }) =>
 			fetch(`${process.env.REACT_APP_BE_HOST}categories/tree/`, {
@@ -81,7 +81,7 @@ export const TreeView = () => {
 					</li>
 				</ul>
 			</div>
-			<NewCategoryModal updater={refetch} />
+			<NewCategoryModal />
 		</>
 	);
 };

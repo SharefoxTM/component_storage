@@ -3,7 +3,11 @@ import { Modal } from "./Modal";
 import { Button } from "../Button";
 import axios, { AxiosResponse } from "axios";
 import { PartNewEditForm } from "../Form/PartNewEditForm";
-import { UseQueryResult } from "@tanstack/react-query";
+import {
+	QueryClient,
+	UseQueryResult,
+	useQueryClient,
+} from "@tanstack/react-query";
 import { useState } from "react";
 import { Option } from "../../models/Option.model";
 import { Checkbox } from "../Form/Checkbox";
@@ -27,7 +31,7 @@ const sendData = (
 	data: FieldValues,
 	formReturn: UseFormReturn,
 	method: "post" | "update",
-	refetch: () => void,
+	queryClient: QueryClient,
 	moreParts: boolean,
 	nav: NavigateFunction,
 	pk?: string,
@@ -64,7 +68,7 @@ const sendData = (
 				(
 					document.getElementById("partNewEditModal")! as HTMLDialogElement
 				).close();
-				refetch();
+				queryClient.refetchQueries({ queryKey: [`partView ${pk}`] });
 			})
 			.catch((r) => {
 				console.log(r.message);
@@ -90,16 +94,15 @@ type DataProps = {
 
 export const PartNewEditModal = ({
 	part,
-	refetch,
 }: {
 	part?: UseQueryResult<DataProps, any>;
-	refetch: () => void;
 }) => {
 	const [moreParts, setMoreParts] = useState(false);
 	const [selectedCategory, setSelectedCategory] = useState<Option>();
 
 	const method = useForm();
 	const nav = useNavigate();
+	const queryClient = useQueryClient();
 
 	const onSubmit = method.handleSubmit((data) => {
 		data.active = (
@@ -132,9 +135,20 @@ export const PartNewEditModal = ({
 			parseInt(
 				(document.getElementById("minimum_stock") as HTMLInputElement).value,
 			) || 0;
+
 		let methodREST: "post" | "update" = "post";
 		if (part !== undefined) methodREST = "update";
-		sendData(data, method, methodREST, refetch, moreParts, nav, part?.data?.pk);
+
+		sendData(
+			data,
+			method,
+			methodREST,
+			queryClient,
+			moreParts,
+			nav,
+			part?.data?.pk,
+		);
+
 		if (moreParts) {
 			setSelectedCategory(selectedCategory);
 		}
@@ -143,6 +157,7 @@ export const PartNewEditModal = ({
 	const onCancel = () => {
 		method.reset();
 		setSelectedCategory({ value: "undefined", label: "Select..." });
+		queryClient.refetchQueries();
 	};
 
 	return (

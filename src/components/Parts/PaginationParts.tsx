@@ -69,7 +69,7 @@ export const PaginatedItems = ({
 		parseInt(localStorage.getItem("paginationQty") || "25"),
 	);
 
-	const { isPending, error, data, isFetching, refetch } = useQuery({
+	const { isPending, error, data, isFetching } = useQuery({
 		queryKey: [categoryID, itemsPerPage, currentPage],
 		queryFn: () =>
 			axios
@@ -162,7 +162,7 @@ export const PaginatedItems = ({
 					/>
 				)}
 			</div>
-			<PartNewEditModal refetch={refetch} />
+			<PartNewEditModal />
 		</>
 	);
 };

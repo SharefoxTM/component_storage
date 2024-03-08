@@ -5,8 +5,13 @@ import { NewSupplierPartForm } from "../Form/NewSupplierPartForm";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { PartNewEditModal } from "./PartNewEditModal";
+import { QueryClient, useQueryClient } from "@tanstack/react-query";
 
-const postData = (data: FieldValues) => {
+const postData = (
+	data: FieldValues,
+	queryClient: QueryClient,
+	partID: string,
+) => {
 	data = {
 		part: parseInt(data.part),
 		supplier: data.newSP.value,
@@ -23,15 +28,7 @@ const postData = (data: FieldValues) => {
 				(
 					document.getElementById("newSupplierPartModal")! as HTMLDialogElement
 				).close();
-				const selector = document.getElementById(
-					"newReelSelectSP",
-				)! as HTMLSelectElement;
-
-				const option = document.createElement("option");
-				option.value = res.data.pk;
-				option.text = res.data.SKU;
-				selector.appendChild(option);
-				selector.value = option.value;
+				queryClient.refetchQueries({ queryKey: [`supplierpart/${partID}`] });
 			}
 		})
 		.catch((r) => {
@@ -40,6 +37,7 @@ const postData = (data: FieldValues) => {
 };
 
 export const NewSupplierPartModal = () => {
+	const queryClient = useQueryClient();
 	const methods = useForm();
 	const params = useParams();
 
@@ -48,7 +46,7 @@ export const NewSupplierPartModal = () => {
 	};
 	const onSubmit = methods.handleSubmit((data) => {
 		data.part = params.partID;
-		postData(data);
+		postData(data, queryClient, params.partID!);
 	});
 
 	return (
@@ -78,7 +76,7 @@ export const NewSupplierPartModal = () => {
 					<Button onClick={onCancel}>Cancel</Button>
 				</form>
 			</div>
-			<PartNewEditModal refetch={() => {}} />
+			<PartNewEditModal />
 		</Modal>
 	);
 };

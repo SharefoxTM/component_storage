@@ -3,7 +3,8 @@ import { Modal } from "./Modal";
 import { Button } from "../Button";
 import axios from "axios";
 import { NewCategoryForm } from "../Form/NewCategoryForm";
-const postData = (data: FieldValues, refetch: () => void) => {
+import { QueryClient, useQueryClient } from "@tanstack/react-query";
+const postData = (data: FieldValues, queryClient: QueryClient) => {
 	axios
 		.post(`${process.env.REACT_APP_BE_HOST}categories/`, data, {
 			headers: {
@@ -15,18 +16,19 @@ const postData = (data: FieldValues, refetch: () => void) => {
 				(
 					document.getElementById("newCategoryModal")! as HTMLDialogElement
 				).close();
-				refetch();
+				queryClient.refetchQueries({
+					queryKey: ["categories", "categories/tree/"],
+				});
 			}
 		})
 		.catch((r) => {
 			console.log(r.message);
 		});
 };
-type NewCategoryModalProps = {
-	updater: () => void;
-};
-export const NewCategoryModal = ({ updater }: NewCategoryModalProps) => {
+
+export const NewCategoryModal = () => {
 	const newCategoryMethods = useForm();
+	const queryClient = useQueryClient();
 
 	const onCancel = () => {
 		newCategoryMethods.reset();
@@ -35,7 +37,7 @@ export const NewCategoryModal = ({ updater }: NewCategoryModalProps) => {
 	const onSubmit = newCategoryMethods.handleSubmit((data) => {
 		if (data.parent.value === undefined) data.parent = null;
 		else data.parent = data.parent.value;
-		postData(data, updater);
+		postData(data, queryClient);
 	});
 
 	return (

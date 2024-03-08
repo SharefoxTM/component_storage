@@ -36,10 +36,7 @@ export const MainContent = () => {
 						<div className="skeleton my-2 h-10 w-52 align-middle" />
 					)}
 					<DropDownSettings />
-					<PartNewEditModal
-						part={part}
-						refetch={part.refetch}
-					/>
+					<PartNewEditModal part={part} />
 				</Card.CardTitle>
 				<Card.CardBody>
 					<div className="basis-5/12">
