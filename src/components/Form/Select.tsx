@@ -73,6 +73,7 @@ export const Select = ({
 						<AsyncSelect
 							{...field}
 							id={field.name}
+							className="text-base"
 							classNames={SelectClassNames}
 							cacheOptions
 							unstyled

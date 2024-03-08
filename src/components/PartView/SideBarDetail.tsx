@@ -9,6 +9,8 @@ import { APIBuildOrder } from "../../models/APIBuildOrder.model";
 import { Progressbar } from "./ProgressBar";
 import { APIUsedIn } from "../../models/APIUsedIn.model";
 import { Thumbnail } from "../Thumbnail";
+import { Button } from "../Button";
+import { ParameterModal } from "../Modals/ParameterModal";
 
 const SideDetailTableHeader = ({ topic }: { topic: string }) => {
 	switch (topic) {
@@ -381,12 +383,32 @@ const GetSideDetailContent = ({ topic }: { topic: string }) => {
 };
 
 export const PartViewSideDetail = ({ topic }: { topic: string }) => {
+	const part = parseInt(useParams().partID!);
 	return (
 		<>
 			<Card.CardContainer>
 				<Card.CardTitle>
-					<div className="text-white text-2xl md:text-4xl font-bold mb-2 align-middle">
-						{topic}
+					<div className="text-white text-2xl md:text-4xl font-bold mb-2 align-middle items-end flex flex-shrink-0 flex-row justify-between w-full">
+						<div>{topic}</div>
+						{topic === "Parameters" && (
+							<>
+								<Button
+									size="sm"
+									variant="success"
+									onClick={() => {
+										(
+											document.getElementById(
+												"parameterModal",
+											)! as HTMLDialogElement
+										).showModal();
+									}}
+									className="me-2"
+								>
+									New Parameter
+								</Button>
+								<ParameterModal part={part} />
+							</>
+						)}
 					</div>
 				</Card.CardTitle>
 				<Card.CardBody>

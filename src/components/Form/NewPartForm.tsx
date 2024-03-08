@@ -3,7 +3,7 @@ import { Input } from "./Input";
 import { Select } from "./Select";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { CategoryItems } from "../../models/CategoryItems.models";
+import { CategoryItems } from "../../models/CategoryItems.model";
 import { ChangeEvent, useState } from "react";
 import { Checkbox } from "./Checkbox";
 import { useEffectOnce } from "usehooks-ts";
