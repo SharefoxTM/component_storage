@@ -1,112 +1,33 @@
 import { FormProvider, UseFormReturn } from "react-hook-form";
 import { Input } from "./Input";
-import { Select } from "./Select";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import { APILocationDetail } from "../../models/APILocationDetail.model";
-import { APIGetPart } from "../../models/APIGetPart.model";
-import { useEffect, useState } from "react";
-import { APISupplierPart } from "../../models/APISupplierPart.model";
-import { Option } from "../../models/Option.model";
+import { Select } from "./Select";
 
-const enterToTab = (e: React.KeyboardEvent) => {
-	if (e.key === "Enter" && !e.getModifierState("Shift")) {
-		switch ((e.target as HTMLElement).id) {
-			case "returnReelSelectIP":
-				document.getElementById("returnReelSelectWidth")?.focus();
-				break;
-			case "returnReelSelectWidth":
-				document.getElementById("returnReelSelectSP")?.focus();
-				break;
-			case "returnReelSelectSP":
-				document.getElementById("returnReelQty")?.focus();
-				break;
-			case "returnReelQty":
-				document.getElementById("returnReelSelectIP")?.focus();
-				break;
-
-			default:
-				console.log(["This is awkward", (e.target as HTMLElement).id]);
-				break;
-		}
-	}
-	e.preventDefault();
-};
-
-export const ReturnReelForm = ({
-	id,
-	methods,
-}: {
-	id?: string;
-	methods: UseFormReturn;
-}) => {
-	const [partOption, setPartOption] = useState<Option>();
-	const [partID, setPartID] = useState<number | undefined>(
-		id !== undefined ? parseInt(id) : undefined,
-	);
-	const parts = useQuery({
-		queryKey: ["parts"],
-		queryFn: () =>
-			axios
-				.get(`${process.env.REACT_APP_BE_HOST}parts/`)
-				.then((res) => res.data),
-		enabled: partID === undefined,
-	});
-	const stock = useQuery({
-		queryKey: [`returnReel ${partID}`],
-		queryFn: () =>
-			axios
-				.get(`${process.env.REACT_APP_BE_HOST}storage/moving/${partID}`)
-				.then((res) => res.data),
-		enabled: partID !== undefined,
-	});
+export const ReturnReelForm = ({ methods }: { methods: UseFormReturn }) => {
 	const ip = useQuery({
 		queryKey: ["ip"],
 		queryFn: () =>
 			axios
 				.get(`${process.env.REACT_APP_BE_HOST}location/IPs`)
-				.then((res) => res.data),
+				.then((res: AxiosResponse) => res.data),
 	});
-
-	useEffect(() => {
-		setPartID(partOption?.value as number);
-	}, [partOption]);
 
 	return (
 		<FormProvider {...methods}>
 			<form
 				id="returnReelForm"
 				onSubmit={(e) => e.preventDefault()}
-				onKeyUp={enterToTab}
 				noValidate
 			>
-				{id === undefined && (
-					<div className="w-full flex gap-2">
-						<div className="form-control w-full">
-							<div className="label">
-								<span className="label-text">Select Part *</span>
-							</div>
-							<Select
-								id="part"
-								methods={methods}
-								setter={setPartOption}
-								isSearchable
-								options={parts.data?.map((val: APIGetPart) => ({
-									value: val.pk,
-									label: val.name,
-								}))}
-								errormsg="Select the part"
-							/>
-						</div>
-					</div>
-				)}
 				<div className="w-full flex gap-2">
 					<div className="form-control w-8/12">
 						<div className="label">
 							<span className="label-text">Select IP *</span>
 						</div>
 						<Select
-							id="returnReelSelectIP"
+							id="IP"
 							methods={methods}
 							options={ip.data?.map((val: APILocationDetail) => ({
 								value: val.pk,
@@ -120,7 +41,7 @@ export const ReturnReelForm = ({
 							<span className="label-text">Select Width *</span>
 						</div>
 						<Select
-							id="returnReelSelectWidth"
+							id="Width"
 							methods={methods}
 							options={[
 								{ value: 1, label: "1" },
@@ -132,33 +53,17 @@ export const ReturnReelForm = ({
 						/>
 					</div>
 				</div>
-				<div className="w-full flex gap-2">
-					<div className="form-control w-1/2">
-						<div className="label">
-							<span className="label-text">Select Supplier Part *</span>
-						</div>
-						<Select
-							id="returnReelSelectSP"
-							methods={methods}
-							options={stock.data?.map((val: APISupplierPart) => ({
-								value: val.pk,
-								label: val.SKU,
-							}))}
-							errormsg="Select a supplier part"
-						/>
+				<div className="form-control w-full">
+					<div className="label">
+						<span className="label-text">Scan QR-Code *</span>
 					</div>
-					<div className="form-control w-1/2">
-						<div className="label">
-							<span className="label-text">Quantity *</span>
-						</div>
-						<Input
-							id="returnReelQty"
-							type="number"
-							placeholder="0"
-							required
-							errormsg="Please enter a quantity."
-						/>
-					</div>
+					<Input
+						id="QR"
+						type="text"
+						placeholder="QR-Code"
+						required
+						errormsg="Please scan the QR-code"
+					/>
 				</div>
 			</form>
 		</FormProvider>

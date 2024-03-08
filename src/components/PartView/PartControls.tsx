@@ -3,6 +3,7 @@ import Card from "../Card/Card";
 import axios from "axios";
 import { Button } from "../Button";
 import { PutReelModal } from "../Modals/PutReelModal";
+import { ReturnReelModal } from "../Modals/ReturnReelModal";
 
 const getReel = (e: React.MouseEvent<HTMLElement>) => {
 	axios
@@ -26,30 +27,49 @@ export const PartControls = () => {
 				</Card.CardTitle>
 				<Card.CardBody>
 					<div className="flex flex-col gap-3 justify-center w-full">
-						<div className="w-full flex flex-shrink-0 justify-between">
+						<div className="w-full flex flex-col space-y-2 flex-shrink-0">
 							<Button
 								id={`${param.partID}_Moving`}
 								onClick={getReel}
+								className="text-white"
 							>
 								Get reel for self
 							</Button>
 							<Button
 								id={`${param.partID}_PNP`}
 								onClick={getReel}
+								className="text-white"
 							>
 								Get reel for PNP
 							</Button>
+							<div className="h-9"></div>
+							<Button
+								onClick={() => {
+									(
+										document.getElementById(
+											"putReelModal",
+										)! as HTMLDialogElement
+									).showModal();
+								}}
+								className="text-white"
+							>
+								Put reel
+							</Button>
+							<Button
+								onClick={() => {
+									(
+										document.getElementById(
+											"returnReelModal",
+										)! as HTMLDialogElement
+									).showModal();
+								}}
+								className="text-white"
+							>
+								Return reel
+							</Button>
 						</div>
-						<Button
-							onClick={() => {
-								(
-									document.getElementById("putReelModal")! as HTMLDialogElement
-								).showModal();
-							}}
-						>
-							Put reel
-						</Button>
 						<PutReelModal />
+						<ReturnReelModal />
 					</div>
 				</Card.CardBody>
 			</Card.CardContainer>

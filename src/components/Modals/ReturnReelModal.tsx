@@ -1,40 +1,37 @@
 import { FieldValues, useForm } from "react-hook-form";
-import { useParams } from "react-router-dom";
 import { Modal } from "./Modal";
-import { NewReelForm } from "../Form/NewReelForm";
 import { Button } from "../Button";
 import axios from "axios";
-import { NewSupplierPartModal } from "./NewSupplierPartModal";
+import { ReturnReelForm } from "../Form/ReturnReelForm";
 
 const postReel = async (data: FieldValues) => {
 	data = {
-		part: data.part.value,
-		ip: data.newReelSelectIP.label,
-		width: data.newReelSelectWidth.value,
-		sp: data.newReelSelectSP.value,
-		qty: data.newReelQty,
+		ip: data.IP.label,
+		width: data.Width.value,
+		qr: JSON.parse(data.QR).stockitem,
 	};
 	axios
-		.post(`${process.env.REACT_APP_BE_HOST}storage/`, data, {
+		.patch(`${process.env.REACT_APP_BE_HOST}storage/`, data, {
 			headers: {
 				"Content-Type": "application/json",
 			},
 		})
 		.then(() => {
-			(document.getElementById("putReelModal")! as HTMLDialogElement).close();
+			(
+				document.getElementById("returnReelModal")! as HTMLDialogElement
+			).close();
 		})
 		.catch((r) => {
 			console.log(r.message);
 		});
 };
 
-export const PutReelModal = () => {
-	const param = useParams();
+export const ReturnReelModal = () => {
 	const methods = useForm();
 
 	const onSubmit = methods.handleSubmit((data) => {
-		if (param.partID !== undefined) data.part = { value: param.partID };
 		postReel(data);
+		methods.reset();
 	});
 	const onCancel = () => {
 		methods.reset();
@@ -42,13 +39,10 @@ export const PutReelModal = () => {
 
 	return (
 		<Modal
-			id="putReelModal"
-			title="Put reel"
+			id="returnReelModal"
+			title="Return reel"
 		>
-			<NewReelForm
-				id={param.partID}
-				methods={methods}
-			/>
+			<ReturnReelForm methods={methods} />
 			<form method="dialog">
 				<Button
 					size="sm"
@@ -70,7 +64,6 @@ export const PutReelModal = () => {
 					<Button onClick={onCancel}>Cancel</Button>
 				</form>
 			</div>
-			<NewSupplierPartModal />
 		</Modal>
 	);
 };
