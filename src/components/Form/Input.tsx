@@ -35,6 +35,9 @@ export const Input = ({
 					},
 				})}
 				type={type}
+				onSubmit={(e) => {
+					e.preventDefault();
+				}}
 				placeholder={placeholder}
 				className="input input-bordered w-full text-white"
 			/>

@@ -33,6 +33,9 @@ export const Textarea = ({
 				})}
 				placeholder={placeholder}
 				autoComplete={autoComplete}
+				onSubmit={(e) => {
+					e.preventDefault();
+				}}
 				className="textarea textarea-bordered w-full text-white"
 			/>
 			{Object.keys(errors).length !== 0 && (
