@@ -43,6 +43,7 @@ export const Button = ({
 				[
 					"btn",
 					[`btn-${variant}`],
+					[variant === "primary" && `text-white`],
 					[
 						size === "responsive"
 							? `btn-xs sm:btn-sm md:btn-md lg:btn-lg`
