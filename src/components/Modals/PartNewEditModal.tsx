@@ -10,7 +10,7 @@ import {
 } from "@tanstack/react-query";
 import { useState } from "react";
 import { Option } from "../../models/Option.model";
-import { Checkbox } from "../Form/Checkbox";
+import { Checkbox } from "../Input/Checkbox";
 import { NavigateFunction, useNavigate } from "react-router-dom";
 
 const onContinue = (method: UseFormReturn) => {

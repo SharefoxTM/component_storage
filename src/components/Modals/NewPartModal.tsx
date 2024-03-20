@@ -3,7 +3,7 @@ import { Modal } from "./Modal";
 import { Button } from "../Button";
 import { NewPartForm } from "../Form/NewPartForm";
 import axios from "axios";
-import { Checkbox } from "../Form/Checkbox";
+import { Checkbox } from "../Input/Checkbox";
 import { useState } from "react";
 
 const postData = (data: FieldValues) => {

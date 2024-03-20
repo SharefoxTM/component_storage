@@ -4,7 +4,7 @@ import { Button } from "../Button";
 import axios, { AxiosResponse } from "axios";
 import { QueryClient, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { Checkbox } from "../Form/Checkbox";
+import { Checkbox } from "../Input/Checkbox";
 import { ParameterForm } from "../Form/ParameterForm";
 
 const onContinue = (method: UseFormReturn) => {

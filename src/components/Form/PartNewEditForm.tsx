@@ -1,13 +1,13 @@
 import { FormProvider, UseFormReturn } from "react-hook-form";
-import { Input } from "./Input";
-import { Select } from "./Select";
+import { Input } from "../Input/Input";
+import { Select } from "../Input/Select";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { CategoryItems } from "../../models/CategoryItems.model";
 import { ChangeEvent, useEffect, useState } from "react";
-import { Checkbox } from "./Checkbox";
+import { Checkbox } from "../Input/Checkbox";
 import { useEffectOnce } from "usehooks-ts";
-import { Textarea } from "./Textarea";
+import { Textarea } from "../Input/Textarea";
 import { Option } from "../../models/Option.model";
 
 type PartNewEditFormProps = {

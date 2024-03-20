@@ -1,6 +1,6 @@
 import { FormProvider, UseFormReturn } from "react-hook-form";
-import { Input } from "./Input";
-import { Select } from "./Select";
+import { Input } from "../Input/Input";
+import { Select } from "../Input/Select";
 import { APILocationDetail } from "../../models/APILocationDetail.model";
 import axios, { AxiosResponse } from "axios";
 import { useQuery } from "@tanstack/react-query";

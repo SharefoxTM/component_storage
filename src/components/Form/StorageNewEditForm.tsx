@@ -1,5 +1,5 @@
 import { FormProvider, UseFormReturn } from "react-hook-form";
-import { Input } from "./Input";
+import { Input } from "../Input/Input";
 
 type StorageNewEditFormProps = {
 	methods: UseFormReturn;

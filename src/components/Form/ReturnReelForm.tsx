@@ -1,9 +1,9 @@
 import { FormProvider, UseFormReturn } from "react-hook-form";
-import { Input } from "./Input";
+import { Input } from "../Input/Input";
 import { useQuery } from "@tanstack/react-query";
 import axios, { AxiosResponse } from "axios";
 import { APILocationDetail } from "../../models/APILocationDetail.model";
-import { Select } from "./Select";
+import { Select } from "../Input/Select";
 
 export const ReturnReelForm = ({ methods }: { methods: UseFormReturn }) => {
 	const ip = useQuery({

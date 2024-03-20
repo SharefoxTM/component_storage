@@ -1,11 +1,11 @@
 import { FormProvider, UseFormReturn } from "react-hook-form";
-import { Input } from "./Input";
-import { Select } from "./Select";
+import { Input } from "../Input/Input";
+import { Select } from "../Input/Select";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { CategoryItems } from "../../models/CategoryItems.model";
 import { ChangeEvent, useState } from "react";
-import { Checkbox } from "./Checkbox";
+import { Checkbox } from "../Input/Checkbox";
 
 export const NewCategoryForm = ({ methods }: { methods: UseFormReturn }) => {
 	const categories = useQuery({

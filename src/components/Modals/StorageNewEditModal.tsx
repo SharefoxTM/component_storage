@@ -4,7 +4,7 @@ import { Button } from "../Button";
 import axios, { AxiosResponse } from "axios";
 import { UseQueryResult } from "@tanstack/react-query";
 import { useState } from "react";
-import { Checkbox } from "../Form/Checkbox";
+import { Checkbox } from "../Input/Checkbox";
 import { NavigateFunction, useNavigate } from "react-router-dom";
 import { StorageNewEditForm } from "../Form/StorageNewEditForm";
 
