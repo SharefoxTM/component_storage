@@ -3,7 +3,6 @@ import { PartsItems } from "../../models/PartsItems.model";
 import { PaginationCountSelector } from "../../modules/Parts/Parts";
 import { Link } from "react-router-dom";
 import { Thumbnail } from "../Thumbnail";
-import { createURL } from "../InvenTree/apiCalls";
 import ReactPaginate from "react-paginate";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
@@ -73,13 +72,13 @@ export const PaginatedItems = ({
 		queryKey: [categoryID, itemsPerPage, currentPage],
 		queryFn: () =>
 			axios
-				.get(
-					createURL(`${process.env.REACT_APP_BE_HOST}parts/paginated/`, {
+				.get(`${process.env.REACT_APP_BE_HOST}parts/paginated/`, {
+					params: {
 						page: currentPage,
 						pageSize: itemsPerPage,
 						category: parseInt(categoryID),
-					}),
-				)
+					},
+				})
 				.then((res) => res.data),
 	});
 
@@ -94,7 +93,6 @@ export const PaginatedItems = ({
 	const parts: PartsItems = data?.data;
 	const totalPages: number = data?.totalPages;
 
-	if (error) return <p>An error has occurred: {error.message}</p>;
 	return (
 		<>
 			<div className="mt-2 bg-white border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700">
@@ -126,7 +124,9 @@ export const PaginatedItems = ({
 				</div>
 				<div className="flow-root">
 					<ul className="divide-y sm:mx-2 sm:px-1 divide-gray-200 dark:divide-gray-700">
-						{!isLoading ? (
+						{error ? (
+							<p>An error has occurred: {error.message}</p>
+						) : !isLoading ? (
 							<PartListItems items={parts!} />
 						) : (
 							<li>
