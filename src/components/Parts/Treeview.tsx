@@ -49,39 +49,50 @@ export const TreeView = () => {
 				</ul>
 			</div>
 		);
-
-	let totalPartCount = 0;
-	categories?.forEach((e) => {
-		totalPartCount += e.part_count;
-	});
-	return (
-		<>
+	try {
+		let totalPartCount = 0;
+		categories?.forEach((e) => {
+			totalPartCount += e.part_count;
+		});
+		return (
+			<>
+				<div className="mt-2 mx-2">
+					<ul className="menu bg-base-200 w-56 rounded-box">
+						<li>
+							<Link to={`/parts/`}>All ({totalPartCount})</Link>
+							<ul>{renderTreeNodes(categories)}</ul>
+						</li>
+						<li className="mt-2">
+							<Button
+								variant="success"
+								size="sm"
+								negative
+								className="ml-2 overflow-hidden"
+								onClick={() => {
+									(
+										document.getElementById(
+											"newCategoryModal",
+										)! as HTMLDialogElement
+									).showModal();
+								}}
+							>
+								New category
+							</Button>
+						</li>
+					</ul>
+				</div>
+				<NewCategoryModal />
+			</>
+		);
+	} catch {
+		return (
 			<div className="mt-2 mx-2">
 				<ul className="menu bg-base-200 w-56 rounded-box">
 					<li>
-						<Link to={`/parts/`}>All ({totalPartCount})</Link>
-						<ul>{renderTreeNodes(categories)}</ul>
-					</li>
-					<li className="mt-2">
-						<Button
-							variant="success"
-							size="sm"
-							negative
-							className="ml-2 overflow-hidden"
-							onClick={() => {
-								(
-									document.getElementById(
-										"newCategoryModal",
-									)! as HTMLDialogElement
-								).showModal();
-							}}
-						>
-							New category
-						</Button>
+						<p> Error 500: Can't reach server </p>
 					</li>
 				</ul>
 			</div>
-			<NewCategoryModal />
-		</>
-	);
+		);
+	}
 };
