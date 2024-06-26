@@ -1,19 +1,20 @@
 import classNames from "classnames";
 
+export type ButtonVariants =
+	| "primary"
+	| "secondary"
+	| "neutral"
+	| "accent"
+	| "ghost"
+	| "link"
+	| "info"
+	| "success"
+	| "warning"
+	| "error";
+
 type ButtonProps = {
 	size?: "sm" | "md" | "lg" | "xs" | "wide" | "block" | "responsive";
-	variant?:
-		| "primary"
-		| "secondary"
-		| "neutral"
-		| "accent"
-		| "ghost"
-		| "link"
-		| "info"
-		| "success"
-		| "warning"
-		| "error";
-
+	variant?: ButtonVariants;
 	negative?: boolean;
 	glass?: boolean;
 	onClick?: (e: React.MouseEvent<HTMLElement>) => void;
@@ -44,6 +45,7 @@ export const Button = ({
 					"btn",
 					[`btn-${variant}`],
 					[variant === "primary" && `text-white`],
+					[variant === "error" && `text-white`],
 					[
 						size === "responsive"
 							? `btn-xs sm:btn-sm md:btn-md lg:btn-lg`

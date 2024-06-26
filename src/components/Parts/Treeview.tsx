@@ -1,9 +1,11 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
-import { useQuery } from "@tanstack/react-query";
+import { QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
 import { CategoryTree } from "../../models/CategoryTree.model";
 import { Link } from "react-router-dom";
 import { Button } from "../Button";
-import { NewCategoryModal } from "../Modals/NewCategoryModal";
+import { Modal } from "../Modals/Modal";
+import { NewCategoryForm } from "../Form/NewCategoryForm";
+import { FieldValues, useForm } from "react-hook-form";
+import axios from "axios";
 
 const renderTreeNodes = (nodes: CategoryTree) => {
 	return nodes?.map((node) => (
@@ -26,6 +28,28 @@ const renderTreeNodes = (nodes: CategoryTree) => {
 	));
 };
 
+const postData = (data: FieldValues, queryClient: QueryClient) => {
+	axios
+		.post(`${process.env.REACT_APP_BE_HOST}categories/`, data, {
+			headers: {
+				"Content-Type": "application/json",
+			},
+		})
+		.then((res) => {
+			if (res.status === 201) {
+				(
+					document.getElementById("newCategoryModal")! as HTMLDialogElement
+				).close();
+				queryClient.refetchQueries({
+					queryKey: ["categories", "categories/tree/"],
+				});
+			}
+		})
+		.catch((r) => {
+			console.log(r.message);
+		});
+};
+
 export const TreeView = () => {
 	const { isLoading, data, error } = useQuery({
 		queryKey: ["categories", "categories/tree/"],
@@ -38,6 +62,18 @@ export const TreeView = () => {
 	});
 	if (error) throw new Error(error.message);
 	const categories: CategoryTree = data;
+	const newCategoryMethods = useForm();
+	const queryClient = useQueryClient();
+
+	const onCancel = () => {
+		newCategoryMethods.reset();
+	};
+
+	const onSubmit = newCategoryMethods.handleSubmit((data) => {
+		if (data.parent.value === undefined) data.parent = null;
+		else data.parent = data.parent.value;
+		postData(data, queryClient);
+	});
 
 	if (isLoading)
 		return (
@@ -81,7 +117,15 @@ export const TreeView = () => {
 						</li>
 					</ul>
 				</div>
-				<NewCategoryModal />
+				<Modal
+					id="newCategoryModal"
+					title="New category"
+					submitTitle="Submit"
+					onSubmit={onSubmit}
+					onCancel={onCancel}
+				>
+					<NewCategoryForm methods={newCategoryMethods} />
+				</Modal>
 			</>
 		);
 	} catch {

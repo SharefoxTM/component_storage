@@ -1,6 +1,6 @@
-import { useQuery } from "@tanstack/react-query";
+import { QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
 import Card from "../Card/Card";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import { Link, useParams } from "react-router-dom";
 import { APIPartParameter } from "../../models/APIPartParameter.model";
 import { APIPartStock } from "../../models/APIPartStock.model";
@@ -10,7 +10,10 @@ import { Progressbar } from "./ProgressBar";
 import { APIUsedIn } from "../../models/APIUsedIn.model";
 import { Thumbnail } from "../Thumbnail";
 import { Button } from "../Button";
-import { ParameterModal } from "../Modals/ParameterModal";
+import { Modal } from "../Modals/Modal";
+import { ParameterForm } from "../Form/ParameterForm";
+import { useState } from "react";
+import { FieldValues, UseFormReturn, useForm } from "react-hook-form";
 
 const SideDetailTableHeader = ({ topic }: { topic: string }) => {
 	switch (topic) {
@@ -382,8 +385,58 @@ const GetSideDetailContent = ({ topic }: { topic: string }) => {
 	);
 };
 
+const onContinue = (method: UseFormReturn) => {
+	method.resetField("value");
+};
+
+const sendData = (
+	data: FieldValues,
+	formReturn: UseFormReturn,
+	queryClient: QueryClient,
+	moreParameters: boolean,
+	part: number,
+) => {
+	data = {
+		part: part,
+		template: data.template.value,
+		data: data.data,
+	};
+	axios
+		.post(`${process.env.REACT_APP_BE_HOST}parts/parameter/`, data, {
+			headers: {
+				"Content-Type": "application/json",
+			},
+		})
+		.then((res: AxiosResponse) => {
+			if (!moreParameters) {
+				(
+					document.getElementById("parameterModal")! as HTMLDialogElement
+				).close();
+				queryClient.refetchQueries();
+			} else {
+				onContinue(formReturn);
+			}
+		})
+		.catch((r) => {
+			console.log(r.message);
+		});
+};
+
 export const PartViewSideDetail = ({ topic }: { topic: string }) => {
 	const part = parseInt(useParams().partID!);
+	const [moreParameters, setMoreParameters] = useState(false);
+
+	const method = useForm();
+	const queryClient = useQueryClient();
+
+	const onSubmit = method.handleSubmit((data) => {
+		sendData(data, method, queryClient, moreParameters, part);
+	});
+
+	const onCancel = () => {
+		method.reset();
+		queryClient.refetchQueries();
+	};
 	return (
 		<>
 			<Card.CardContainer>
@@ -406,7 +459,19 @@ export const PartViewSideDetail = ({ topic }: { topic: string }) => {
 								>
 									New Parameter
 								</Button>
-								<ParameterModal part={part} />
+
+								<Modal
+									id="parameterModal"
+									title="New parameter"
+									onSubmit={onSubmit}
+									onCancel={onCancel}
+									checkboxLabel="Create more parameters?"
+									checkboxSetter={setMoreParameters}
+									checkboxState={moreParameters}
+									submitTitle="Submit"
+								>
+									<ParameterForm methods={method} />
+								</Modal>
 							</>
 						)}
 					</div>

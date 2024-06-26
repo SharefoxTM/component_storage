@@ -1,9 +1,13 @@
 import axios from "axios";
 import { Button } from "../../components/Button";
 import Card from "../../components/Card/Card";
-import { PutReelModal } from "../../components/Modals/PutReelModal";
 import { LocationList } from "../../components/Storage/LocationList";
-import { PartImportModal } from "../../components/Modals/PartImportModal";
+import { Modal } from "../../components/Modals/Modal";
+import { FieldValues, useForm } from "react-hook-form";
+import { NewReelForm } from "../../components/Form/NewReelForm";
+import { useParams } from "react-router-dom";
+import { DropEvent } from "react-dropzone";
+import { PartImportForm } from "../../components/Form/PartImportForm";
 
 const getReel = (e: React.MouseEvent<HTMLElement>) => {
 	axios
@@ -14,7 +18,62 @@ const getReel = (e: React.MouseEvent<HTMLElement>) => {
 		});
 };
 
+const postReel = async (data: FieldValues) => {
+	data = {
+		part: data.part.value,
+		ip: data.newReelSelectIP.label,
+		width: data.newReelSelectWidth.value,
+		sp: data.newReelSelectSP.value,
+		qty: data.newReelQty,
+	};
+	axios
+		.post(`${process.env.REACT_APP_BE_HOST}storage/`, data, {
+			headers: {
+				"Content-Type": "application/json",
+			},
+		})
+		.then(() => {
+			(document.getElementById("putReelModal")! as HTMLDialogElement).close();
+		})
+		.catch((r) => {
+			console.log(r.message);
+		});
+};
+const postData = (files: File[], event: DropEvent) => {
+	let body = new FormData();
+	body.append("type", "Excel import");
+	body.append("category", "passives");
+	body.append("file", files[0]);
+
+	axios
+		.post(`${process.env.REACT_APP_BE_HOST}file/parts/`, body, {
+			headers: {
+				"Content-Type": "multipart/form-data",
+			},
+		})
+		.then((res) => {
+			if (res.status === 201) {
+				(
+					document.getElementById("partImportModal")! as HTMLDialogElement
+				).close();
+			}
+		})
+		.catch((r) => {
+			console.log(r.message);
+		});
+};
+
 export const Storage = () => {
+	const param = useParams();
+	const methods = useForm();
+
+	const onSubmit = methods.handleSubmit((data) => {
+		if (param.partID !== undefined) data.part = { value: param.partID };
+		postReel(data);
+	});
+	const onCancel = () => {
+		methods.reset();
+	};
 	return (
 		<>
 			<div className="flex flex-col w-full md:flex-shrink-0 md:flex-row justify-center">
@@ -89,8 +148,24 @@ export const Storage = () => {
 									</div>
 								</div>
 							</div>
-							<PutReelModal />
-							<PartImportModal />
+							<Modal
+								id="putReelModal"
+								title="Put reel"
+								onSubmit={onSubmit}
+								onCancel={onCancel}
+								submitTitle="Submit"
+							>
+								<NewReelForm
+									id={param.partID}
+									methods={methods}
+								/>
+							</Modal>
+							<Modal
+								id="partImportModal"
+								title="Import parts"
+							>
+								<PartImportForm onDrop={postData} />
+							</Modal>
 						</Card.CardBody>
 					</Card.CardContainer>
 				</div>

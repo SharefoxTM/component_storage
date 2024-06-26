@@ -2,8 +2,10 @@ import { useParams } from "react-router-dom";
 import Card from "../Card/Card";
 import axios from "axios";
 import { Button } from "../Button";
-import { PutReelModal } from "../Modals/PutReelModal";
-import { ReturnReelModal } from "../Modals/ReturnReelModal";
+import { Modal } from "../Modals/Modal";
+import { FieldValues, useForm } from "react-hook-form";
+import { NewReelForm } from "../Form/NewReelForm";
+import { ReturnReelForm } from "../Form/ReturnReelForm";
 
 const getReel = (e: React.MouseEvent<HTMLElement>) => {
 	axios
@@ -14,9 +16,50 @@ const getReel = (e: React.MouseEvent<HTMLElement>) => {
 		});
 };
 
+const postReel = async (data: FieldValues) => {
+	data = {
+		part: data.part.value,
+		ip: data.newReelSelectIP.label,
+		width: data.newReelSelectWidth.value,
+		sp: data.newReelSelectSP.value,
+		qty: data.newReelQty,
+	};
+	axios
+		.post(`${process.env.REACT_APP_BE_HOST}storage/`, data, {
+			headers: {
+				"Content-Type": "application/json",
+			},
+		})
+		.then(() => {
+			(document.getElementById("putReelModal")! as HTMLDialogElement).close();
+		})
+		.catch((r) => {
+			console.log(r.message);
+		});
+};
+
 export const PartControls = () => {
 	const param = useParams();
 	if (!param.partID) throw new Error("No part id specified!");
+	const paramPutReel = useParams();
+	const methods = useForm();
+
+	const onSubmit = methods.handleSubmit((data) => {
+		if (param.partID !== undefined) data.part = { value: param.partID };
+		postReel(data);
+	});
+	const onCancel = () => {
+		methods.reset();
+	};
+
+	const onSubmitReturnReel = methods.handleSubmit((data) => {
+		postReel(data);
+		methods.reset();
+	});
+	const onCancelReturnReel = () => {
+		methods.reset();
+	};
+
 	return (
 		<>
 			<Card.CardContainer>
@@ -68,8 +111,27 @@ export const PartControls = () => {
 								Return reel
 							</Button>
 						</div>
-						<PutReelModal />
-						<ReturnReelModal />
+						<Modal
+							id="putReelModal"
+							title="Put reel"
+							onSubmit={onSubmit}
+							onCancel={onCancel}
+							submitTitle="Submit"
+						>
+							<NewReelForm
+								id={paramPutReel.partID}
+								methods={methods}
+							/>
+						</Modal>
+						<Modal
+							id="returnReelModal"
+							title="Return reel"
+							onSubmit={onSubmitReturnReel}
+							onCancel={onCancelReturnReel}
+							submitTitle="Submit"
+						>
+							<ReturnReelForm methods={methods} />
+						</Modal>
 					</div>
 				</Card.CardBody>
 			</Card.CardContainer>

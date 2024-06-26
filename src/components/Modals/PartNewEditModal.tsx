@@ -1,6 +1,4 @@
 import { FieldValues, UseFormReturn, useForm } from "react-hook-form";
-import { Modal } from "./Modal";
-import { Button } from "../Button";
 import axios, { AxiosResponse } from "axios";
 import { PartNewEditForm } from "../Form/PartNewEditForm";
 import {
@@ -10,8 +8,8 @@ import {
 } from "@tanstack/react-query";
 import { useState } from "react";
 import { Option } from "../../models/Option.model";
-import { Checkbox } from "../Input/Checkbox";
 import { NavigateFunction, useNavigate } from "react-router-dom";
+import { Modal } from "./Modal";
 
 const onContinue = (method: UseFormReturn) => {
 	method.resetField("name");
@@ -164,17 +162,13 @@ export const PartNewEditModal = ({
 		<Modal
 			id="partNewEditModal"
 			title={(part !== undefined ? "Edit" : "New") + " part"}
+			checkboxLabel="Create more parts?"
+			checkboxSetter={setMoreParts}
+			checkboxState={moreParts}
+			onSubmit={onSubmit}
+			onCancel={onCancel}
+			submitTitle="Submit"
 		>
-			<form method="dialog">
-				<Button
-					size="sm"
-					variant="ghost"
-					className="btn-circle absolute right-3 top-3"
-					onClick={onCancel}
-				>
-					✕
-				</Button>
-			</form>
 			{part === undefined && (
 				<>
 					<PartNewEditForm
@@ -193,30 +187,6 @@ export const PartNewEditModal = ({
 					/>
 				</>
 			)}
-			<div className="modal-action">
-				<div className="flex flex-row gap-2 w-full items-end">
-					<div className="flex flex-col">
-						{part === undefined && (
-							<Checkbox
-								handleChange={(event) => setMoreParts(event.target.checked)}
-								id="moreParts"
-								label="Create more parts?"
-								checked={moreParts}
-							/>
-						)}
-					</div>
-					<div className="flex-grow"></div>
-					<Button
-						variant="success"
-						onClick={onSubmit}
-					>
-						Submit
-					</Button>
-					<form method="dialog">
-						<Button onClick={onCancel}>Cancel</Button>
-					</form>
-				</div>
-			</div>
 		</Modal>
 	);
 };

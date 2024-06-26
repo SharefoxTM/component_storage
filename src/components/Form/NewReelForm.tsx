@@ -1,14 +1,22 @@
-import { FormProvider, UseFormReturn } from "react-hook-form";
+import {
+	FieldValues,
+	FormProvider,
+	UseFormReturn,
+	useForm,
+} from "react-hook-form";
 import { Input } from "../Input/Input";
 import { Select } from "../Input/Select";
 import { APILocationDetail } from "../../models/APILocationDetail.model";
 import axios, { AxiosResponse } from "axios";
-import { useQuery } from "@tanstack/react-query";
+import { QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "../Button";
 import { APIGetPart } from "../../models/APIGetPart.model";
 import { useEffect, useState } from "react";
 import { APISupplierPart } from "../../models/APISupplierPart.model";
 import { Option } from "../../models/Option.model";
+import { useParams } from "react-router-dom";
+import { Modal } from "../Modals/Modal";
+import { NewSupplierPartForm } from "./NewSupplierPartForm";
 
 const enterToTab = (e: React.KeyboardEvent) => {
 	if (e.key === "Enter" && !e.getModifierState("Shift")) {
@@ -33,6 +41,35 @@ const enterToTab = (e: React.KeyboardEvent) => {
 	e.preventDefault();
 };
 
+const postData = (
+	data: FieldValues,
+	queryClient: QueryClient,
+	partID: string,
+) => {
+	data = {
+		part: parseInt(data.part),
+		supplier: data.newSP.value,
+		SKU: data.SKU,
+	};
+	axios
+		.post(`${process.env.REACT_APP_BE_HOST}company/parts/`, data, {
+			headers: {
+				"Content-Type": "application/json",
+			},
+		})
+		.then((res) => {
+			if (res.status === 200) {
+				(
+					document.getElementById("newSupplierPartModal")! as HTMLDialogElement
+				).close();
+				queryClient.refetchQueries({ queryKey: [`supplierpart/${partID}`] });
+			}
+		})
+		.catch((r) => {
+			console.log(r.message);
+		});
+};
+
 export const NewReelForm = ({
 	id,
 	methods,
@@ -40,6 +77,19 @@ export const NewReelForm = ({
 	id?: string;
 	methods: UseFormReturn;
 }) => {
+	const queryClient = useQueryClient();
+	const methodsSP = useForm();
+	const params = useParams();
+
+	const onSubmit = methods.handleSubmit((data) => {
+		data.part = params.partID;
+		postData(data, queryClient, params.partID!);
+	});
+
+	const onCancel = () => {
+		methods.reset();
+	};
+
 	const [partOption, setPartOption] = useState<Option>();
 	const [partID, setPartID] = useState<number | undefined>(
 		id !== undefined ? parseInt(id) : undefined,
@@ -179,6 +229,15 @@ export const NewReelForm = ({
 					</div>
 				</div>
 			</form>
+			<Modal
+				id="newSupplierPartModal"
+				title="New supplier part"
+				onCancel={onCancel}
+				onSubmit={onSubmit}
+				submitTitle="Submit"
+			>
+				<NewSupplierPartForm methods={methodsSP} />
+			</Modal>
 		</FormProvider>
 	);
 };
