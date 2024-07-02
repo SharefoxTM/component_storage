@@ -17,6 +17,7 @@ const getReel = (e: React.MouseEvent<HTMLElement>) => {
 };
 
 const postReel = async (data: FieldValues) => {
+	console.log("posting");
 	data = {
 		part: data.part.value,
 		ip: data.newReelSelectIP.label,
@@ -43,21 +44,23 @@ export const PartControls = () => {
 	if (!param.partID) throw new Error("No part id specified!");
 	const paramPutReel = useParams();
 	const methods = useForm();
+	const methodsReturnReel = useForm();
 
 	const onSubmit = methods.handleSubmit((data) => {
 		if (param.partID !== undefined) data.part = { value: param.partID };
 		postReel(data);
 	});
+
 	const onCancel = () => {
 		methods.reset();
 	};
 
-	const onSubmitReturnReel = methods.handleSubmit((data) => {
+	const onSubmitReturnReel = methodsReturnReel.handleSubmit((data) => {
 		postReel(data);
-		methods.reset();
+		methodsReturnReel.reset();
 	});
 	const onCancelReturnReel = () => {
-		methods.reset();
+		methodsReturnReel.reset();
 	};
 
 	return (
@@ -130,7 +133,7 @@ export const PartControls = () => {
 							onCancel={onCancelReturnReel}
 							submitTitle="Submit"
 						>
-							<ReturnReelForm methods={methods} />
+							<ReturnReelForm methods={methodsReturnReel} />
 						</Modal>
 					</div>
 				</Card.CardBody>
