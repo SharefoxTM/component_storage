@@ -1,3 +1,4 @@
+import React from "react";
 import { Button, ButtonVariants } from "../Button";
 import { Checkbox } from "../Input/Checkbox";
 
@@ -26,11 +27,12 @@ export const Modal = ({
 	checkboxSetter,
 	checkboxState,
 }: ModalProps) => {
-	const hasSubmit = submitTitle !== undefined;
+	const hasSubmit = submitTitle !== undefined && onSubmit !== undefined;
 	const hasCheckbox =
 		checkboxLabel !== undefined &&
 		checkboxSetter !== undefined &&
 		checkboxState !== undefined;
+
 	return (
 		<dialog
 			id={id}
