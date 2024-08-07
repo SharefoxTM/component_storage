@@ -9,8 +9,37 @@ import { Progressbar } from "./ProgressBar";
 import { PartBadges } from "./PartBadges";
 import Card from "../Card/Card";
 import { PartNewEditModal } from "../Modals/PartNewEditModal";
+import { Modal } from "../Modals/Modal";
+import { UploadImageForm } from "../Form/UploadImageForm";
+import { useForm } from "react-hook-form";
+import { DropEvent } from "react-dropzone";
+
+const postData = (files: File[], event: DropEvent) => {
+	let body = new FormData();
+	const id = (document.getElementById("pk") as HTMLInputElement).value;
+	body.append("image", files[0]);
+	axios
+		.put(`${process.env.REACT_APP_BE_HOST}parts/${id}/image/`, body, {
+			headers: {
+				"Content-Type": "multipart/form-data",
+			},
+		})
+		.then((res) => {
+			console.log(res);
+			if (res.status === 201) {
+				(
+					document.getElementById("uploadImageModal")! as HTMLDialogElement
+				).close();
+				window.location.reload();
+			}
+		})
+		.catch((r) => {
+			console.log(r.message);
+		});
+};
 
 export const MainContent = () => {
+	const method = useForm();
 	const param = useParams();
 	if (!param.partID) throw new Error("No part id specified!");
 
@@ -24,6 +53,7 @@ export const MainContent = () => {
 	if (part.error) return <p>An error has occurred: {part.error.message}</p>;
 	const isLoading = part.isFetching || part.isPending;
 	const partData: APIGetPart = part.data;
+
 	return (
 		<>
 			<Card.CardContainer>
@@ -41,10 +71,37 @@ export const MainContent = () => {
 				<Card.CardBody>
 					<div className="basis-5/12">
 						{!isLoading ? (
-							<Thumbnail
-								src={partData.image}
-								size="w-28"
-							/>
+							<>
+								<div
+									onClick={() => {
+										(
+											document.getElementById(
+												"uploadImageModal",
+											)! as HTMLDialogElement
+										).showModal();
+									}}
+								>
+									<Thumbnail
+										src={partData.image}
+										size="w-28"
+										isHoverable={true}
+									/>
+								</div>
+								<Modal
+									id="uploadImageModal"
+									title="Upload Image"
+								>
+									<input
+										type="hidden"
+										id="pk"
+										value={param.partID}
+									/>
+									<UploadImageForm
+										methods={method}
+										onDrop={postData}
+									/>
+								</Modal>
+							</>
 						) : (
 							<>
 								<div className="skeleton relative flex">
