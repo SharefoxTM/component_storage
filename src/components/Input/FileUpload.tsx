@@ -32,7 +32,6 @@ export const FileUpload = ({
 					id={id}
 					{...getInputProps()}
 				/>
-				<p>Or drop the files here ...</p>
 			</div>
 		</>
 	);

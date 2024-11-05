@@ -1,5 +1,3 @@
-import { faUpload } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 
 type ImageProps = {
@@ -11,6 +9,7 @@ type ThumbnailProps = {
 	src: ImageProps["src"];
 	size?: ImageProps["size"];
 	isHoverable?: boolean;
+	HoverElement?: JSX.Element;
 };
 
 const Image = ({ size, src }: ImageProps) => {
@@ -36,7 +35,12 @@ const Image = ({ size, src }: ImageProps) => {
 	);
 };
 
-export const Thumbnail = ({ src, size, isHoverable }: ThumbnailProps) => {
+export const Thumbnail = ({
+	src,
+	size,
+	isHoverable,
+	HoverElement,
+}: ThumbnailProps) => {
 	const sizeClass: string = (size || "w-24") + " rounded aspect-square";
 	const [isHovered, setHover] = useState(false);
 
@@ -52,11 +56,7 @@ export const Thumbnail = ({ src, size, isHoverable }: ThumbnailProps) => {
 						size={sizeClass}
 						src={src}
 					/>
-					{isHovered && (
-						<p className="absolute top-0 left-1 text-black">
-							<FontAwesomeIcon icon={faUpload} />
-						</p>
-					)}
+					{isHovered && HoverElement}
 				</div>
 			)) || (
 				<Image

@@ -13,13 +13,12 @@ import { Modal } from "../Modals/Modal";
 import { UploadImageForm } from "../Form/UploadImageForm";
 import { useForm } from "react-hook-form";
 import { DropEvent } from "react-dropzone";
+import { faUpload } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const postData = (files: File[], event: DropEvent) => {
-	let body = new FormData();
-	const id = (document.getElementById("pk") as HTMLInputElement).value;
-	body.append("image", files[0]);
+const postData = (id: any, data: FormData) => {
 	axios
-		.put(`${process.env.REACT_APP_BE_HOST}parts/${id}/image/`, body, {
+		.put(`${process.env.REACT_APP_BE_HOST}parts/${id}/image/`, data, {
 			headers: {
 				"Content-Type": "multipart/form-data",
 			},
@@ -36,6 +35,23 @@ const postData = (files: File[], event: DropEvent) => {
 		.catch((r) => {
 			console.log(r.message);
 		});
+};
+
+const createFormData = (files: File[], event?: DropEvent) => {
+	const body = new FormData();
+	const id = (document.getElementById("pk") as HTMLInputElement).value;
+	body.append("image", files[0]);
+	postData(id, body);
+};
+
+const changeData = async (image: string) => {
+	const imageInput = document.getElementById("image-input") as HTMLInputElement;
+	imageInput.value = image;
+	console.log(imageInput);
+	const body = new FormData();
+	const id = (document.getElementById("pk") as HTMLInputElement).value;
+	body.append("image", imageInput.value);
+	postData(id, body);
 };
 
 export const MainContent = () => {
@@ -85,20 +101,23 @@ export const MainContent = () => {
 										src={partData.image}
 										size="w-28"
 										isHoverable={true}
+										HoverElement={
+											<p className="absolute top-0 left-1 text-black">
+												<FontAwesomeIcon icon={faUpload} />
+											</p>
+										}
 									/>
 								</div>
 								<Modal
 									id="uploadImageModal"
 									title="Upload Image"
 								>
-									<input
-										type="hidden"
-										id="pk"
-										value={param.partID}
-									/>
 									<UploadImageForm
+										id={param.partID}
+										image={partData.image}
 										methods={method}
-										onDrop={postData}
+										onDrop={createFormData}
+										onClick={changeData}
 									/>
 								</Modal>
 							</>
