@@ -69,7 +69,7 @@ export const UploadImageForm = ({
 		queryKey: [currentPage],
 		queryFn: () =>
 			axios
-				.get(`${process.env.REACT_APP_BE_HOST}file/thumbs/`, {
+				.get(`${process.env.REACT_APP_API_URL}file/thumbs/`, {
 					params: {
 						page: currentPage,
 						pageSize: 12,

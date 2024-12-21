@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 
 const isActive = (pk: string) => {
 	axios
-		.get(`${process.env.REACT_APP_BE_HOST}parts/${pk}`)
+		.get(`${process.env.REACT_APP_API_URL}parts/${pk}`)
 		.then((res: AxiosResponse<APIGetPart>) => {
 			if (res.data.active) {
 				toast.error("Part is still active");
@@ -21,7 +21,7 @@ export const deleteItem = async (
 ): Promise<number> => {
 	const status: number =
 		(await axios
-			.delete(`${process.env.REACT_APP_BE_HOST}${type}/${pk}`)
+			.delete(`${process.env.REACT_APP_API_URL}${type}/${pk}`)
 			.then((res: AxiosResponse) => {
 				return res.status;
 			})

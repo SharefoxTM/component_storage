@@ -44,7 +44,7 @@ export const NewSupplierPartForm = ({
 		queryKey: ["parts"],
 		queryFn: () =>
 			axios
-				.get(`${process.env.REACT_APP_BE_HOST}parts/`)
+				.get(`${process.env.REACT_APP_API_URL}parts/`)
 				.then((res) => res.data),
 		enabled: partID === undefined,
 	});
@@ -53,7 +53,7 @@ export const NewSupplierPartForm = ({
 		queryKey: ["newSupplierForm"],
 		queryFn: () =>
 			axios
-				.get(`${process.env.REACT_APP_BE_HOST}company/suppliers/`)
+				.get(`${process.env.REACT_APP_API_URL}company/suppliers/`)
 				.then((res) => res.data),
 	});
 

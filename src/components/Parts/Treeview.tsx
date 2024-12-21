@@ -30,7 +30,7 @@ const renderTreeNodes = (nodes: CategoryTree) => {
 
 const postData = (data: FieldValues, queryClient: QueryClient) => {
 	axios
-		.post(`${process.env.REACT_APP_BE_HOST}categories/`, data, {
+		.post(`${process.env.REACT_APP_API_URL}categories/`, data, {
 			headers: {
 				"Content-Type": "application/json",
 			},
@@ -54,7 +54,7 @@ export const TreeView = () => {
 	const { isLoading, data, error } = useQuery({
 		queryKey: ["categories", "categories/tree/"],
 		queryFn: ({ signal }) =>
-			fetch(`${process.env.REACT_APP_BE_HOST}categories/tree/`, {
+			fetch(`${process.env.REACT_APP_API_URL}categories/tree/`, {
 				signal,
 			}).then((res) => {
 				return res.json();

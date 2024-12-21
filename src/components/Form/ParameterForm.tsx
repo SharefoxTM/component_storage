@@ -22,7 +22,7 @@ export const ParameterForm = ({
 		queryKey: ["parameterTemplates"],
 		queryFn: () =>
 			axios
-				.get(`${process.env.REACT_APP_BE_HOST}parts/parameter/template/`)
+				.get(`${process.env.REACT_APP_API_URL}parts/parameter/template/`)
 				.then((res) => res.data),
 	});
 

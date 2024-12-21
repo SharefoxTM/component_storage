@@ -52,7 +52,7 @@ const postData = (
 		SKU: data.SKU,
 	};
 	axios
-		.post(`${process.env.REACT_APP_BE_HOST}company/parts/`, data, {
+		.post(`${process.env.REACT_APP_API_URL}company/parts/`, data, {
 			headers: {
 				"Content-Type": "application/json",
 			},
@@ -99,7 +99,7 @@ export const NewReelForm = ({
 		queryKey: ["parts"],
 		queryFn: () =>
 			axios
-				.get(`${process.env.REACT_APP_BE_HOST}parts/`)
+				.get(`${process.env.REACT_APP_API_URL}parts/`)
 				.then((res: AxiosResponse) => res.data),
 		enabled: partID === undefined,
 	});
@@ -108,7 +108,7 @@ export const NewReelForm = ({
 		queryKey: [`supplierpart/${partID}`],
 		queryFn: () =>
 			axios
-				.get(`${process.env.REACT_APP_BE_HOST}company/parts/?part=${partID}`)
+				.get(`${process.env.REACT_APP_API_URL}company/parts/?part=${partID}`)
 				.then((res: AxiosResponse) => res.data),
 		enabled: partID !== undefined,
 	});
@@ -117,7 +117,7 @@ export const NewReelForm = ({
 		queryKey: ["ip"],
 		queryFn: () =>
 			axios
-				.get(`${process.env.REACT_APP_BE_HOST}location/IPs`)
+				.get(`${process.env.REACT_APP_API_URL}location/IPs`)
 				.then((res: AxiosResponse) => res.data),
 	});
 

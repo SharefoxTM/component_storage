@@ -18,7 +18,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const postData = (id: any, data: FormData) => {
 	axios
-		.put(`${process.env.REACT_APP_BE_HOST}parts/${id}/image/`, data, {
+		.put(`${process.env.REACT_APP_API_URL}parts/${id}/image/`, data, {
 			headers: {
 				"Content-Type": "multipart/form-data",
 			},
@@ -63,7 +63,7 @@ export const MainContent = () => {
 		queryKey: [`partView ${param.partID}`],
 		queryFn: () =>
 			axios
-				.get(`${process.env.REACT_APP_BE_HOST}parts/${param.partID}`)
+				.get(`${process.env.REACT_APP_API_URL}parts/${param.partID}`)
 				.then((res) => res.data),
 	});
 	if (part.error) return <p>An error has occurred: {part.error.message}</p>;

@@ -72,7 +72,7 @@ export const PaginatedItems = ({
 		queryKey: [categoryID, itemsPerPage, currentPage],
 		queryFn: () =>
 			axios
-				.get(`${process.env.REACT_APP_BE_HOST}parts/paginated/`, {
+				.get(`${process.env.REACT_APP_API_URL}parts/paginated/`, {
 					params: {
 						page: currentPage,
 						pageSize: itemsPerPage,

@@ -12,7 +12,7 @@ export const NewCategoryForm = ({ methods }: { methods: UseFormReturn }) => {
 		queryKey: ["categories"],
 		queryFn: () =>
 			axios
-				.get(`${process.env.REACT_APP_BE_HOST}categories/`)
+				.get(`${process.env.REACT_APP_API_URL}categories/`)
 				.then((res) => res.data),
 	});
 

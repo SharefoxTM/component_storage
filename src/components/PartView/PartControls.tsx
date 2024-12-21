@@ -9,7 +9,7 @@ import { ReturnReelForm } from "../Form/ReturnReelForm";
 
 const getReel = (e: React.MouseEvent<HTMLElement>) => {
 	axios
-		.get(`${process.env.REACT_APP_BE_HOST}storage/${e.currentTarget.id}`)
+		.get(`${process.env.REACT_APP_API_URL}storage/${e.currentTarget.id}`)
 		.then((res) => res.data)
 		.catch((err) => {
 			throw new Error(err.message);
@@ -26,7 +26,7 @@ const postReel = async (data: FieldValues) => {
 		qty: data.newReelQty,
 	};
 	axios
-		.post(`${process.env.REACT_APP_BE_HOST}storage/`, data, {
+		.post(`${process.env.REACT_APP_API_URL}storage/`, data, {
 			headers: {
 				"Content-Type": "application/json",
 			},

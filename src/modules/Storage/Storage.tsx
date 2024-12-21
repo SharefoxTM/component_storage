@@ -11,7 +11,7 @@ import { PartImportForm } from "../../components/Form/PartImportForm";
 
 const getReel = (e: React.MouseEvent<HTMLElement>) => {
 	axios
-		.get(`${process.env.REACT_APP_BE_HOST}storage/${e.currentTarget.id}`)
+		.get(`${process.env.REACT_APP_API_URL}storage/${e.currentTarget.id}`)
 		.then((res) => res.data)
 		.catch((err) => {
 			throw new Error(err.message);
@@ -27,7 +27,7 @@ const postReel = async (data: FieldValues) => {
 		qty: data.newReelQty,
 	};
 	axios
-		.post(`${process.env.REACT_APP_BE_HOST}storage/`, data, {
+		.post(`${process.env.REACT_APP_API_URL}storage/`, data, {
 			headers: {
 				"Content-Type": "application/json",
 			},
@@ -46,7 +46,7 @@ const postData = (files: File[], event: DropEvent) => {
 	body.append("file", files[0]);
 
 	axios
-		.post(`${process.env.REACT_APP_BE_HOST}file/parts/`, body, {
+		.post(`${process.env.REACT_APP_API_URL}file/parts/`, body, {
 			headers: {
 				"Content-Type": "multipart/form-data",
 			},

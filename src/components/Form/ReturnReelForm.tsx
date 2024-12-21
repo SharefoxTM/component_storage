@@ -10,7 +10,7 @@ export const ReturnReelForm = ({ methods }: { methods: UseFormReturn }) => {
 		queryKey: ["ip"],
 		queryFn: () =>
 			axios
-				.get(`${process.env.REACT_APP_BE_HOST}location/IPs`)
+				.get(`${process.env.REACT_APP_API_URL}location/IPs`)
 				.then((res: AxiosResponse) => res.data),
 	});
 

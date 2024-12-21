@@ -36,7 +36,7 @@ const buttonSize:
 	| undefined = "md";
 
 const deleteObject = (pk: number) => {
-	axios.delete(`${process.env.REACT_APP_BE_HOST}location`, {
+	axios.delete(`${process.env.REACT_APP_API_URL}location`, {
 		data: {
 			pk: pk,
 		},
@@ -61,7 +61,7 @@ const sendData = (
 ) => {
 	if (method === "post") {
 		axios
-			.post(`${process.env.REACT_APP_BE_HOST}location/`, data, {
+			.post(`${process.env.REACT_APP_API_URL}location/`, data, {
 				headers: {
 					"Content-Type": "application/json",
 				},
@@ -82,7 +82,7 @@ const sendData = (
 	} else {
 		console.log(data);
 		axios
-			.put(`${process.env.REACT_APP_BE_HOST}location/${pk}`, data, {
+			.put(`${process.env.REACT_APP_API_URL}location/${pk}`, data, {
 				headers: {
 					"Content-Type": "application/json",
 				},
@@ -104,7 +104,7 @@ export const LocationList = () => {
 		queryKey: ["locationTable"],
 		queryFn: () =>
 			axios
-				.get(`${process.env.REACT_APP_BE_HOST}location/IPs/`)
+				.get(`${process.env.REACT_APP_API_URL}location/IPs/`)
 				.then((res) => res.data),
 	});
 
@@ -138,7 +138,7 @@ export const LocationList = () => {
 								variant="info"
 								onClick={(e) =>
 									axios
-										.post(`${process.env.REACT_APP_BE_HOST}storage/init/`, {
+										.post(`${process.env.REACT_APP_API_URL}storage/init/`, {
 											pk: location.pk,
 										})
 										.then((data) => data)
@@ -154,7 +154,7 @@ export const LocationList = () => {
 									onClick={(e) =>
 										axios
 											.post(
-												`${process.env.REACT_APP_BE_HOST}storage/mode/`,
+												`${process.env.REACT_APP_API_URL}storage/mode/`,
 												JSON.stringify({
 													mode: button.mode,
 													ip: location.name,

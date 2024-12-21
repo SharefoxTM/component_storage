@@ -36,7 +36,7 @@ const sendData = (
 ) => {
 	if (method === "post") {
 		axios
-			.post(`${process.env.REACT_APP_BE_HOST}parts/`, data, {
+			.post(`${process.env.REACT_APP_API_URL}parts/`, data, {
 				headers: {
 					"Content-Type": "application/json",
 				},
@@ -57,7 +57,7 @@ const sendData = (
 	} else {
 		console.log(data);
 		axios
-			.put(`${process.env.REACT_APP_BE_HOST}parts/${pk}`, data, {
+			.put(`${process.env.REACT_APP_API_URL}parts/${pk}`, data, {
 				headers: {
 					"Content-Type": "application/json",
 				},

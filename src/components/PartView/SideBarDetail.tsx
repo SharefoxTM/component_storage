@@ -342,7 +342,7 @@ const GetSideDetailContent = ({ topic }: { topic: string }) => {
 		queryKey: [topic, param.partID],
 		queryFn: () =>
 			axios
-				.get(`${process.env.REACT_APP_BE_HOST}parts/${param.partID}/${topic}`)
+				.get(`${process.env.REACT_APP_API_URL}parts/${param.partID}/${topic}`)
 				.then((res) => res.data),
 	});
 
@@ -402,7 +402,7 @@ const sendData = (
 		data: data.data,
 	};
 	axios
-		.post(`${process.env.REACT_APP_BE_HOST}parts/parameter/`, data, {
+		.post(`${process.env.REACT_APP_API_URL}parts/parameter/`, data, {
 			headers: {
 				"Content-Type": "application/json",
 			},
