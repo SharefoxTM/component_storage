@@ -26,9 +26,8 @@ export const Navbar = () => {
 			>
 				Home
 			</NavButton>
-			<NavButton href="/parts">Parts</NavButton>
-			<NavButton href="/PO">Add PO</NavButton>
-			<NavButton href="/SO">Add SO</NavButton>
+			<NavButton href="#">Add PO</NavButton>
+			<NavButton href="#">Add SO</NavButton>
 			<NavButton
 				href="/storage"
 				className="justify-end ml-auto"

@@ -64,16 +64,11 @@ export const ErrorFallback = () => {
 const router = createBrowserRouter([
 	{
 		path: "/",
-		element: <div>Hello there!</div>,
-		errorElement: <ErrorFallback />,
-	},
-	{
-		path: "/parts",
 		element: <Parts />,
 		errorElement: <ErrorFallback />,
 	},
 	{
-		path: "/parts/:categoryID/:categoryName",
+		path: "/:categoryName",
 		element: <Parts />,
 		errorElement: <ErrorFallback />,
 	},
@@ -84,6 +79,16 @@ const router = createBrowserRouter([
 	},
 	{
 		path: "/storage",
+		element: <Storage />,
+		errorElement: <ErrorFallback />,
+	},
+	{
+		path: "/PO",
+		element: <ErrorFallback />,
+		errorElement: <ErrorFallback />,
+	},
+	{
+		path: "/SO",
 		element: <Storage />,
 		errorElement: <ErrorFallback />,
 	},

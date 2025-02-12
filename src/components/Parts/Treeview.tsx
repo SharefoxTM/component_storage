@@ -13,14 +13,14 @@ const renderTreeNodes = (nodes: CategoryTree) => {
 			{node.children && node.children.length > 0 ? (
 				<details>
 					<summary>
-						<Link to={`/parts/${node.pk}/${node.name}`}>
+						<Link to={`/${node.name}`}>
 							{node.name} ({node.part_count})
 						</Link>
 					</summary>
 					<ul>{renderTreeNodes(node.children)}</ul>
 				</details>
 			) : (
-				<Link to={`/parts/${node.pk}/${node.name}`}>
+				<Link to={`/${node.name}`}>
 					{node.name} ({node.part_count})
 				</Link>
 			)}
@@ -95,7 +95,7 @@ export const TreeView = () => {
 				<div className="mt-2 mx-2">
 					<ul className="menu bg-base-200 w-56 rounded-box">
 						<li>
-							<Link to={`/parts/`}>All ({totalPartCount})</Link>
+							<Link to={`/`}>All ({totalPartCount})</Link>
 							<ul>{renderTreeNodes(categories)}</ul>
 						</li>
 						<li className="mt-2">
