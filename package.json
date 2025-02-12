@@ -31,11 +31,13 @@
 		"web-vitals": "^2.1.4"
 	},
 	"scripts": {
-		"start": "react-scripts start",
+		"start": "concurrently --names BE,FE --restart-tries 2 --killOthers  \"npm:start:server\" \"npm:start:ui\"",
 		"build": "react-scripts build",
 		"test": "react-scripts test",
 		"eject": "react-scripts eject",
-		"docker": "docker compose up --build -d"
+		"docker": "docker compose up --build -d",
+		"start:server" : "cd ../../ && cd BE/cs_backend && npm start",
+		"start:ui": "react-scripts start"
 	},
 	"eslintConfig": {
 		"extends": [
