@@ -36,7 +36,7 @@
 		"test": "react-scripts test",
 		"eject": "react-scripts eject",
 		"docker": "docker compose up --build -d",
-		"start:server" : "cd ../../ && cd BE/cs_backend && npm start",
+		"start:server": "cd ../../ && cd BE/cs_backend && npm start",
 		"start:ui": "react-scripts start"
 	},
 	"eslintConfig": {
@@ -58,6 +58,11 @@
 		]
 	},
 	"devDependencies": {
-		"@babel/plugin-proposal-private-property-in-object": "^7.21.11"
+		"@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+		"@eslint/js": "^9.20.0",
+		"eslint": "^8.57.1",
+		"eslint-plugin-react": "^7.37.4",
+		"globals": "^15.15.0",
+		"typescript-eslint": "^8.24.1"
 	}
 }
