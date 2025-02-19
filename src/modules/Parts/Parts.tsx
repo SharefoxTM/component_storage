@@ -50,7 +50,7 @@ export const Parts = () => {
 
 	return (
 		<>
-			<div className="flex flex-col md:flex-shrink-0 md:flex-row md:gap-5">
+			<div className="flex flex-col md:flex-shrink-0 md:flex-row">
 				<div className="md:basis-1/5">
 					<TreeView />
 				</div>
