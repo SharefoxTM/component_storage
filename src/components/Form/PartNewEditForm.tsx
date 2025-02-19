@@ -1,14 +1,23 @@
-import { FormProvider, UseFormReturn } from "react-hook-form";
+import {
+	FieldValues,
+	FormProvider,
+	useForm,
+	UseFormReturn,
+} from "react-hook-form";
 import { Input } from "../Input/Input";
 import { Select } from "../Input/Select";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import { QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
+import axios, { AxiosResponse } from "axios";
 import { CategoryItems } from "../../models/CategoryItems.model";
 import { ChangeEvent, useEffect, useState } from "react";
 import { Checkbox } from "../Input/Checkbox";
 import { useEffectOnce } from "usehooks-ts";
 import { Textarea } from "../Input/Textarea";
 import { Option } from "../../models/Option.model";
+import { Button } from "../Button";
+import { Modal } from "../Modals/Modal";
+import { NavigateFunction, useLocation, useNavigate } from "react-router-dom";
+import { NewCategoryForm } from "./NewCategoryForm";
 
 type PartNewEditFormProps = {
 	methods: UseFormReturn;
@@ -31,6 +40,63 @@ type PartNewEditFormProps = {
 	setter?: React.Dispatch<React.SetStateAction<Option | undefined>>;
 };
 
+const onContinue = (method: UseFormReturn) => {
+	method.resetField("parent");
+	method.resetField("name");
+	method.resetField("structural");
+};
+
+const sendData = (
+	data: FieldValues,
+	formReturn: UseFormReturn,
+	method: "post" | "update",
+	queryClient: QueryClient,
+	moreParts: boolean,
+	nav: NavigateFunction,
+	pk?: string,
+) => {
+	if (method === "post") {
+		axios
+			.post(`${process.env.REACT_APP_API_URL}parts/`, data, {
+				headers: {
+					"Content-Type": "application/json",
+				},
+			})
+			.then((res: AxiosResponse) => {
+				if (!moreParts) {
+					(
+						document.getElementById(
+							"categoryNewEditModal",
+						)! as HTMLDialogElement
+					).close();
+					nav(`/part/${res.data.pk}`);
+				} else {
+					onContinue(formReturn);
+				}
+			})
+			.catch((r) => {
+				console.log(r.message);
+			});
+	} else {
+		console.log(data);
+		axios
+			.put(`${process.env.REACT_APP_API_URL}parts/${pk}`, data, {
+				headers: {
+					"Content-Type": "application/json",
+				},
+			})
+			.then((res) => {
+				(
+					document.getElementById("categoryNewEditModal")! as HTMLDialogElement
+				).close();
+				queryClient.refetchQueries({ queryKey: [`partView ${pk}`] });
+			})
+			.catch((r) => {
+				console.log(r.message);
+			});
+	}
+};
+
 export const PartNewEditForm = ({
 	methods,
 	data,
@@ -48,6 +114,25 @@ export const PartNewEditForm = ({
 	const [checkedItems, setCheckedItems] = useState(new Map());
 	const [selectedCategory, setSelectedCategory] = useState<Option>();
 
+	const SetCategorySelector = (
+		categories: CategoryItems,
+		categoryName: string | number,
+	) => {
+		setSelectedCategory(
+			categories
+				.filter((obj) => {
+					if (typeof categoryName === "number") return obj.pk === categoryName;
+					return obj.name === categoryName;
+				})
+				.map(
+					(val): Option => ({
+						value: val.pk,
+						label: val.pathstring,
+					}),
+				)[0],
+		);
+		methods.setValue("category", selectedCategory?.value);
+	};
 	const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
 		checkedItems.set(event.target.id, event.target.checked);
 		setCheckedItems(new Map(checkedItems));
@@ -96,35 +181,48 @@ export const PartNewEditForm = ({
 		},
 	];
 
+	const location = useLocation();
+	const pathname = location.pathname.split("/").slice(-1)[0];
+
 	useEffectOnce(() => {
 		checkboxes.map((CB) => checkedItems.set(CB.id, CB.checked));
 		setCheckedItems(new Map(checkedItems));
 	});
 
 	useEffect(() => {
-		if (data !== undefined) {
-			if (!categories.isLoading) {
-				const filtArray = (categories.data as CategoryItems)
-					?.filter((obj) => {
-						return obj.pk === data?.category;
-					})
-					.map(
-						(val): Option => ({
-							value: val.pk,
-							label: val.pathstring,
-						}),
-					);
-				setSelectedCategory(filtArray[0]);
+		if (!categories.isLoading) {
+			SetCategorySelector(
+				categories.data as CategoryItems,
+				(data && data.category) || pathname,
+			);
+			if (data !== undefined) {
 				methods.setValue("name", data.name);
 				methods.setValue("minimum_stock", data.minimum_stock);
 				methods.setValue("description", data.description);
 			}
 		}
-	}, [categories.data, categories.isLoading, data, methods]);
+	}, [categories.data, categories.isLoading, data, methods, pathname]);
 
 	useEffect(() => {
 		if (setter !== undefined) setter(selectedCategory);
 	}, [selectedCategory, setter, methods]);
+
+	const [moreCategories, setMoreCategories] = useState(false);
+
+	const method = useForm();
+	const nav = useNavigate();
+	const queryClient = useQueryClient();
+
+	const onSubmit = method.handleSubmit((data) => {
+		let methodREST: "post" | "update" = "post";
+
+		sendData(data, method, methodREST, queryClient, moreCategories, nav);
+	});
+
+	const onCancel = () => {
+		method.reset();
+		queryClient.refetchQueries();
+	};
 
 	return (
 		<FormProvider {...methods}>
@@ -139,6 +237,20 @@ export const PartNewEditForm = ({
 						<div className="form-control w-full">
 							<div className="label">
 								<span className="label-text">Select category *</span>
+								<Button
+									variant="success"
+									size="sm"
+									id="newCategory"
+									onClick={() => {
+										(
+											document.getElementById(
+												"categoryNewEditModal",
+											)! as HTMLDialogElement
+										).showModal();
+									}}
+								>
+									+
+								</Button>
 							</div>
 							<Select
 								id="category"
@@ -203,6 +315,18 @@ export const PartNewEditForm = ({
 								</div>
 							))}
 						</div>
+						<Modal
+							id="categoryNewEditModal"
+							title={"New category"}
+							checkboxLabel="Create more categories?"
+							checkboxSetter={setMoreCategories}
+							checkboxState={moreCategories}
+							onSubmit={onSubmit}
+							onCancel={onCancel}
+							submitTitle="Submit"
+						>
+							<NewCategoryForm methods={methods} />
+						</Modal>
 					</>
 				)}
 			</form>

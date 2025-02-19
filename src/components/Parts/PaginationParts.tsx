@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { Thumbnail } from "../Thumbnail";
 import ReactPaginate from "react-paginate";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import { backendAxios } from "../../../src/utilities/utils";
 import { Button } from "../Button";
 import { PartNewEditModal } from "../Modals/PartNewEditModal";
 
@@ -13,6 +13,7 @@ type PartItemsProps = {
 	items: PartsItems;
 	categoryName?: string;
 };
+
 const PartListItems = ({ items }: PartItemsProps) => {
 	if (items.length === 0)
 		return (
@@ -56,12 +57,14 @@ const PartListItems = ({ items }: PartItemsProps) => {
 };
 type PaginatedItemsProps = {
 	categoryName: string;
-	categoryID: string;
+	isFetchingID: boolean;
+	categoryID?: Number | null;
 };
 
 export const PaginatedItems = ({
 	categoryName,
 	categoryID,
+	isFetchingID,
 }: PaginatedItemsProps) => {
 	const [currentPage, setCurrentPage] = useState(0);
 	const [itemsPerPage, setItemsPerPage] = useState(
@@ -71,12 +74,12 @@ export const PaginatedItems = ({
 	const { isPending, error, data, isFetching } = useQuery({
 		queryKey: [categoryID, itemsPerPage, currentPage],
 		queryFn: () =>
-			axios
-				.get(`${process.env.REACT_APP_API_URL}parts/paginated/`, {
+			backendAxios
+				.get(`parts/`, {
 					params: {
-						page: currentPage,
-						pageSize: itemsPerPage,
-						category: parseInt(categoryID),
+						offset: currentPage * itemsPerPage,
+						limit: itemsPerPage,
+						category: categoryID,
 					},
 				})
 				.then((res) => res.data),
@@ -89,9 +92,11 @@ export const PaginatedItems = ({
 	const handlePageClick = (selectedItem: { selected: number }) => {
 		setCurrentPage(selectedItem.selected);
 	};
-	const isLoading = isPending || isFetching;
-	const parts: PartsItems = data?.data;
-	const totalPages: number = data?.totalPages;
+	const isLoading = isPending || isFetching || isFetchingID;
+	const parts: PartsItems = data?.results;
+	const totalPages: number = data?.count
+		? Math.ceil(data.count / itemsPerPage)
+		: 1;
 
 	return (
 		<>

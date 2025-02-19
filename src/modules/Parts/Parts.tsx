@@ -2,6 +2,8 @@ import { useParams } from "react-router-dom";
 import { Dispatch, SetStateAction } from "react";
 import { TreeView } from "../../components/Parts/Treeview";
 import { PaginatedItems } from "../../components/Parts/PaginationParts";
+import { backendAxios } from "../../utilities/utils";
+import { useQuery } from "@tanstack/react-query";
 
 type PaginationCountSelectorProps = {
 	partCount: number;
@@ -34,6 +36,17 @@ export const PaginationCountSelector = ({
 
 export const Parts = () => {
 	const params = useParams();
+	const { data, isLoading } = useQuery({
+		queryKey: [`part list ${params.categoryName}`],
+		queryFn: () => {
+			if (params.categoryName !== "All" && params.categoryName)
+				return backendAxios
+					.get(`categories/${params.categoryName}`)
+					.then((res) => res.data.pk)
+					.catch(() => null);
+			else return null;
+		},
+	});
 
 	return (
 		<>
@@ -45,7 +58,8 @@ export const Parts = () => {
 					<div>
 						<PaginatedItems
 							categoryName={params.categoryName || "All"}
-							categoryID={params.categoryID || ""}
+							isFetchingID={isLoading}
+							categoryID={data}
 						/>
 					</div>
 				</div>
