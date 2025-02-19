@@ -93,7 +93,7 @@ export const TreeView = () => {
 		return (
 			<>
 				<div className="mt-2 mx-2">
-					<ul className="menu bg-base-200 w-56 rounded-box">
+					<ul className="menu bg-base-200 rounded-box">
 						<li>
 							<Link to={`/`}>All ({totalPartCount})</Link>
 							<ul>{renderTreeNodes(categories)}</ul>
