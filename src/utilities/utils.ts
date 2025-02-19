@@ -34,3 +34,7 @@ export const deleteItem = async (
 			})) || 500;
 	return status;
 };
+
+export const backendAxios = axios.create({
+	baseURL: process.env.REACT_APP_API_URL,
+});
